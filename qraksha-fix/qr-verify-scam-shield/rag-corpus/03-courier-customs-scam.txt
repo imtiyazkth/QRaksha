@@ -1,9 +1,0 @@
-Pattern: Fake Courier / Customs Seizure Scam
-A caller claims to be from a courier company (FedEx, DHL, India Post) or
-customs, stating a parcel addressed to the victim has been seized because
-it contains illegal items (drugs, fake passports) or is going to a country
-under sanctions. The victim is told to "verify their identity" by
-connecting to a police/customs officer on the call, who then transitions
-into a digital-arrest-style extortion. Real customs seizures are handled
-through official written notices, never resolved by transferring money
-over a phone call.

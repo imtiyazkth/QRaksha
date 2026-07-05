@@ -1,8 +1,0 @@
-Pattern: Fake Bank Customer Care Number
-Victims search online for a bank's customer care number and find a fake
-number (often placed via fraudulent listings or comments) instead of the
-real one, then call it believing it's official support. The scammer
-answers pretending to be bank staff, and proceeds with an OTP-sharing or
-remote-access request to drain the account. Always use the number printed
-on the back of a bank card or the bank's official app/website, never a
-number found through a general web search.
