@@ -1,0 +1,9 @@
+Pattern: Fake TRAI / SIM Deactivation Notice
+Victims receive an automated call or message claiming to be from TRAI
+(Telecom Regulatory Authority of India), stating their SIM card will be
+deactivated within hours due to "misuse" or a pending complaint, and are
+asked to press a number or call back to resolve it — leading into a
+scam-call funnel that often escalates into a digital-arrest scenario.
+TRAI does not deactivate individual SIM cards and does not contact
+subscribers this way; SIM issues are handled solely through the telecom
+operator via verified channels.

@@ -1,0 +1,180 @@
+/* ==========================================================================
+   AI-MODE.CSS — additive styles for the Message/Screenshot Check mode,
+   consent modal, and Panic Mode. Uses the existing design tokens from
+   qr-verify-core.css (loaded first) — no new palette introduced.
+   ========================================================================== */
+
+/* ---------------------------------------------------------------------
+   MODE SWITCHER BAR
+--------------------------------------------------------------------- */
+.qrv-modebar{
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: var(--bg-surface);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border-color);
+}
+.qrv-modebar__inner{
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: var(--space-3) var(--space-5);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.qrv-modebar__btn{
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-pill);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-secondary);
+  font: 600 0.92rem var(--font-body);
+  cursor: pointer;
+  transition: background .2s var(--ease-out), color .2s var(--ease-out), border-color .2s var(--ease-out);
+}
+.qrv-modebar__btn svg{ width: 18px; height: 18px; }
+.qrv-modebar__btn:hover{ color: var(--text-primary); }
+.qrv-modebar__btn.is-active{
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent-strong);
+}
+.qrv-modebar__panic{
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(255,77,106,0.4);
+  background: rgba(255,77,106,0.08);
+  color: var(--risk-critical);
+  font: 600 0.88rem var(--font-body);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.qrv-modebar__panic:hover{ background: rgba(255,77,106,0.16); }
+.qrv-modebar__panic svg{ width: 15px; height: 15px; }
+
+@media (max-width: 640px){
+  .qrv-modebar__inner{ flex-wrap: wrap; }
+  .qrv-modebar__panic{ margin-left: 0; width: 100%; justify-content: center; }
+}
+
+/* ---------------------------------------------------------------------
+   MESSAGE CHECK — textarea
+--------------------------------------------------------------------- */
+.qrv-textarea{
+  width: 100%;
+  min-height: 160px;
+  resize: vertical;
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  background: var(--bg-console);
+  color: var(--text-primary);
+  font: 400 0.95rem/1.5 var(--font-body);
+}
+.qrv-textarea:focus-visible{
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.qrv-hero--message .qrv-hero__heading{ font-size: clamp(2rem, 4vw, 2.9rem); }
+
+/* ---------------------------------------------------------------------
+   AI-unavailable banner (shown when Tier 3 is off or unreachable)
+--------------------------------------------------------------------- */
+#aiUnavailableBanner{
+  margin-top: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  background: rgba(255,200,87,0.1);
+  border: 1px solid rgba(255,200,87,0.35);
+  color: var(--risk-medium);
+}
+
+/* ---------------------------------------------------------------------
+   MODALS — shared base for Consent + Panic Mode
+--------------------------------------------------------------------- */
+.qrv-modal{
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-5);
+  background: rgba(4,7,10,0.72);
+  backdrop-filter: blur(6px);
+}
+.qrv-modal[hidden]{ display: none; }
+.qrv-modal__card{
+  width: 100%;
+  max-width: 480px;
+  max-height: 86vh;
+  overflow-y: auto;
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-strong);
+  box-shadow: var(--shadow-soft);
+}
+.qrv-modal__card h2{
+  font: 700 1.4rem var(--font-display);
+  color: var(--text-primary);
+  margin: 0 0 var(--space-3);
+}
+.qrv-modal__card p{
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0 0 var(--space-4);
+}
+.qrv-modal .qrv-toggle{ margin-bottom: var(--space-5); }
+
+/* Panic Mode — deliberately higher contrast, no ambiguity, reachable instantly */
+.qrv-modal--panic .qrv-modal__card{
+  border-color: rgba(255,77,106,0.45);
+}
+.qrv-panic__steps{
+  margin: 0 0 var(--space-5);
+  padding-left: 1.2em;
+  color: var(--text-primary);
+  line-height: 1.65;
+}
+.qrv-panic__steps li{ margin-bottom: var(--space-3); }
+.qrv-panic__steps strong{ color: var(--risk-critical); }
+
+/* ---------------------------------------------------------------------
+   Source badge on message-check flags — shows which tier raised it
+--------------------------------------------------------------------- */
+.qrv-flag__source{
+  display: inline-block;
+  flex-shrink: 0;
+  font: 700 0.68rem var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 2px 7px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-console);
+  color: var(--text-muted);
+  border: 1px solid var(--border-color);
+  margin-right: var(--space-2);
+}
+
+/* Message gauge picks up the same risk palette used by the QR gauge */
+#msgRiskGaugeValue[data-level="low"]{ stroke: var(--risk-low); }
+#msgRiskGaugeValue[data-level="medium"]{ stroke: var(--risk-medium); }
+#msgRiskGaugeValue[data-level="high"]{ stroke: var(--risk-high); }
+#msgRiskGaugeValue[data-level="critical"]{ stroke: var(--risk-critical); }
+#msgRiskVerdictChip[data-level="low"]{ color: var(--risk-low); border-color: var(--risk-low); }
+#msgRiskVerdictChip[data-level="medium"]{ color: var(--risk-medium); border-color: var(--risk-medium); }
+#msgRiskVerdictChip[data-level="high"]{ color: var(--risk-high); border-color: var(--risk-high); }
+#msgRiskVerdictChip[data-level="critical"]{ color: var(--risk-critical); border-color: var(--risk-critical); }
+
+@media (prefers-reduced-motion: reduce){
+  .qrv-modal, .qrv-modebar__btn, .qrv-modebar__panic{ transition: none; }
+}

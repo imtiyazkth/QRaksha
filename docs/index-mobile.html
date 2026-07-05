@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>QRaksha — Scan with Privacy</title>
+<meta name="description" content="QRaksha scans QR codes, messages, and screenshots to catch scams before you fall for them.">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@600&display=swap" rel="stylesheet">
+
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ink: "#0B0E11",
+          panel: "#12161B",
+          line: "#232A31",
+          amber: "#FFB020",
+          safe: "#22C55E",
+          warn: "#F5A524",
+          danger: "#EF4444",
+        },
+        fontFamily: {
+          display: ["'Space Grotesk'", "sans-serif"],
+          body: ["Inter", "sans-serif"],
+          mono: ["'JetBrains Mono'", "monospace"],
+        },
+      },
+    },
+  };
+</script>
+
+<style>
+  /* Things Tailwind's utility classes can't express cleanly: the scan
+     laser animation and corner brackets — the one deliberate "signature"
+     visual moment of this redesign. */
+  @keyframes scanLaser {
+    0%   { top: 8%; opacity: 0; }
+    10%  { opacity: 1; }
+    90%  { opacity: 1; }
+    100% { top: 88%; opacity: 0; }
+  }
+  .scan-laser {
+    position: absolute; left: 6%; right: 6%; height: 2px;
+    background: linear-gradient(90deg, transparent, #FFB020 20%, #FFB020 80%, transparent);
+    box-shadow: 0 0 12px 2px rgba(255,176,32,0.6);
+    animation: scanLaser 2.6s ease-in-out infinite;
+  }
+  .scan-corner { position: absolute; width: 28px; height: 28px; border: 3px solid #22C55E; }
+  .scan-corner--tl { top: 8%; left: 6%; border-right: none; border-bottom: none; border-radius: 6px 0 0 0; }
+  .scan-corner--tr { top: 8%; right: 6%; border-left: none; border-bottom: none; border-radius: 0 6px 0 0; }
+  .scan-corner--bl { bottom: 12%; left: 6%; border-right: none; border-top: none; border-radius: 0 0 0 6px; }
+  .scan-corner--br { bottom: 12%; right: 6%; border-left: none; border-top: none; border-radius: 0 0 6px 0; }
+  @media (prefers-reduced-motion: reduce) { .scan-laser { animation: none; top: 50%; } }
+
+  #scanViewport video { width: 100%; height: 100%; object-fit: cover; }
+  .qrv-viewport--boxed { aspect-ratio: 1 / 1 !important; max-width: 82%; margin: 0 auto; border-radius: 20px; overflow: hidden; }
+
+  [data-theme="light"] { color-scheme: light; }
+  [data-theme="light"] body, [data-theme="light"] .qrv-surface { background: #F4F5F7 !important; color: #14181D !important; }
+</style>
+</head>
+
+<body class="bg-ink text-neutral-100 font-body antialiased">
+
+<div id="appWrapper" class="max-w-[480px] mx-auto min-h-screen flex flex-col relative shadow-2xl" data-theme="dark">
+
+  <!-- ============================================================
+       POINT 2 — Scan Alert Banner (Panic Mode trigger)
+  ============================================================ -->
+  <div class="sticky top-0 z-40 bg-danger/15 border-b border-danger/40 backdrop-blur">
+    <button id="btnOpenPanicMode" type="button" class="w-full flex items-center justify-center gap-2 py-2.5 px-4 text-sm font-semibold text-danger">
+      <span aria-hidden="true">🚨</span> Being scammed right now? Tap here for immediate help
+    </button>
+  </div>
+
+  <!-- Inline banner ad slot — top view, non-blocking, never covers safety UI -->
+  <div id="topBannerAdSlot" class="w-full h-[50px] flex items-center justify-center text-[11px] uppercase tracking-wide text-neutral-500 bg-panel border-b border-line">
+    Ad slot — banner (sticky, non-intrusive)
+  </div>
+
+  <!-- ============================================================
+       MAIN TAB PANELS
+  ============================================================ -->
+  <main class="flex-1 overflow-y-auto pb-24">
+
+    <!-- ---------------- SCAN TAB (Point 9 default active) ---------------- -->
+    <section id="tabScan" class="tab-panel px-4 pt-4">
+      <div class="relative rounded-3xl overflow-hidden bg-panel border border-line" style="aspect-ratio:3/4;">
+        <!-- Point 3 — Privacy badge -->
+        <div class="absolute top-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 bg-black/60 backdrop-blur px-3 py-1.5 rounded-full text-xs font-medium text-neutral-100 border border-white/10">
+          <span aria-hidden="true">🔒</span> Scan with privacy
+        </div>
+
+        <!-- Point 4 — Active scanning viewport -->
+        <div id="scanViewport" class="absolute inset-0 bg-black"></div>
+        <div class="scan-laser" aria-hidden="true"></div>
+        <div class="scan-corner scan-corner--tl" aria-hidden="true"></div>
+        <div class="scan-corner scan-corner--tr" aria-hidden="true"></div>
+        <div class="scan-corner scan-corner--bl" aria-hidden="true"></div>
+        <div class="scan-corner scan-corner--br" aria-hidden="true"></div>
+
+        <!-- Point 5 / 6 / 7 — Torch, camera switch, aspect toggle -->
+        <div class="absolute top-3 right-3 z-20 flex flex-col gap-2">
+          <button id="btnTorch" type="button" hidden class="w-10 h-10 rounded-full bg-black/60 border border-white/10 flex items-center justify-center text-lg backdrop-blur">🔦</button>
+          <button id="btnSwitchCamera" type="button" class="w-10 h-10 rounded-full bg-black/60 border border-white/10 flex items-center justify-center text-lg backdrop-blur">🔄</button>
+          <button id="btnAspectToggle" type="button" class="w-10 h-10 rounded-full bg-black/60 border border-white/10 flex items-center justify-center text-lg backdrop-blur">⬚</button>
+        </div>
+
+        <!-- Point 8 — Media upload -->
+        <label for="uploadInput" class="absolute bottom-3 left-3 z-20 w-11 h-11 rounded-full bg-amber text-ink flex items-center justify-center text-xl shadow-lg cursor-pointer">
+          🖼️
+          <input type="file" id="uploadInput" accept="image/*" hidden>
+        </label>
+
+        <!-- Point 10 — Digital zoom -->
+        <input type="range" id="zoomSlider" min="1" max="3" step="0.1" value="1" aria-label="Zoom"
+          class="absolute bottom-4 right-4 z-20 w-28 accent-amber">
+      </div>
+
+      <p id="scanStatusText" class="text-center text-sm text-neutral-400 mt-3">Point your camera at a QR code, or upload an image.</p>
+
+      <button id="btnGoMessageCheck" type="button" class="w-full mt-4 py-3 rounded-2xl border border-line bg-panel text-sm font-medium text-neutral-200">
+        Got a suspicious message instead? Check it here →
+      </button>
+
+      <!-- ============================================================
+           DUAL-ROUTE SCAN RESULT (Section 2)
+      ============================================================ -->
+      <div id="resultCard" hidden class="mt-4 rounded-3xl bg-panel border border-line p-5">
+        <p class="text-xs uppercase tracking-wide text-neutral-500 mb-1">What this is</p>
+        <p id="resultContext" class="text-base font-medium text-neutral-100 mb-4"></p>
+
+        <div class="flex items-center gap-4 mb-4">
+          <div class="relative w-16 h-16 shrink-0">
+            <svg viewBox="0 0 64 64" class="w-16 h-16 -rotate-90">
+              <circle cx="32" cy="32" r="27" fill="none" stroke="#232A31" stroke-width="6"/>
+              <circle id="riskMeterCircle" cx="32" cy="32" r="27" fill="none" stroke="#22C55E" stroke-width="6" stroke-linecap="round"/>
+            </svg>
+            <span id="riskMeterNumber" class="absolute inset-0 flex items-center justify-center font-mono text-sm font-semibold">0%</span>
+          </div>
+          <div>
+            <p id="riskMeterLabel" class="font-display font-bold text-lg">Low Risk</p>
+            <p id="historicalAudit" class="text-xs text-neutral-400"></p>
+          </div>
+        </div>
+
+        <div id="offlineFlagsList" class="space-y-2 mb-4"></div>
+
+        <!-- Route B — Advanced AI analysis. Deliberately NOT ad-gated. -->
+        <button id="btnAnalyzeAI" type="button" class="w-full py-3 rounded-2xl bg-amber text-ink font-semibold text-sm">
+          Analyze with AI — deeper check, instant result
+        </button>
+        <p class="text-[11px] text-neutral-500 text-center mt-2">Free basic check always runs automatically. AI second opinion is optional and never delayed by ads.</p>
+      </div>
+    </section>
+
+    <!-- ---------------- MESSAGE / SCREENSHOT CHECK TAB ---------------- -->
+    <section id="tabMessage" class="tab-panel px-4 pt-4" hidden>
+      <h2 class="font-display font-bold text-xl mb-1">Message &amp; Screenshot Check</h2>
+      <p class="text-sm text-neutral-400 mb-4">Paste a suspicious message or upload a screenshot.</p>
+
+      <div class="flex rounded-xl overflow-hidden border border-line mb-3">
+        <button id="msgTabText" class="flex-1 py-2 text-sm font-medium bg-amber text-ink">Paste Message</button>
+        <button id="msgTabImage" class="flex-1 py-2 text-sm font-medium bg-panel text-neutral-300">Upload Screenshot</button>
+      </div>
+
+      <div id="msgPanelText">
+        <textarea id="msgTextInput" maxlength="2000" rows="5" placeholder="Paste the suspicious SMS / WhatsApp message here…"
+          class="w-full rounded-2xl bg-panel border border-line p-4 text-sm text-neutral-100 placeholder:text-neutral-500"></textarea>
+      </div>
+      <div id="msgPanelImage" hidden>
+        <label for="msgFileInput" class="flex flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-line py-10 text-neutral-400 text-sm cursor-pointer">
+          <span class="text-2xl" aria-hidden="true">⬆️</span> Tap to upload a screenshot
+          <input type="file" id="msgFileInput" accept="image/png,image/jpeg,image/webp" hidden>
+        </label>
+      </div>
+
+      <button id="btnCheckMessage" type="button" class="w-full mt-4 py-3 rounded-2xl bg-amber text-ink font-semibold text-sm">Check for scam</button>
+      <p id="aiUnavailableBanner" hidden class="mt-3 text-xs text-warn bg-warn/10 border border-warn/30 rounded-xl p-3">AI second opinion is currently unavailable — showing offline + open threat-intel analysis only.</p>
+
+      <div id="msgReportSection" hidden class="mt-4 rounded-3xl bg-panel border border-line p-5">
+        <p id="msgSourceHeading" class="text-xs uppercase tracking-wide text-neutral-500 mb-1"></p>
+        <p id="msgExplanation" class="text-sm text-neutral-100 mb-3"></p>
+        <div id="msgRiskFlags" class="space-y-2 mb-3"></div>
+        <button id="btnAiSecondOpinionMsg" type="button" hidden class="w-full py-2.5 rounded-xl border border-amber text-amber text-sm font-medium">Get AI second opinion</button>
+      </div>
+    </section>
+
+    <!-- ---------------- GENERATE TAB (Point 14, minus 12/13) ---------------- -->
+    <section id="tabGenerate" class="tab-panel px-4 pt-4" hidden>
+      <h2 class="font-display font-bold text-xl mb-1">Generate</h2>
+      <p class="text-sm text-neutral-400 mb-4">Create a QR code for the things people actually scan.</p>
+
+      <!--
+        Points 12 & 13: the legacy "Compress" and "Convert" utility modules
+        have been permanently removed from this build — intentionally not
+        present anywhere in this file or its navigation.
+      -->
+
+      <div class="grid grid-cols-2 gap-3">
+        <button class="qrv-gen-tile" data-kind="social">📱<span>Social Media Profile</span></button>
+        <button class="qrv-gen-tile" data-kind="campaign">📣<span>Marketing Campaign</span></button>
+        <button class="qrv-gen-tile" data-kind="account">🪪<span>Account Card</span></button>
+        <button class="qrv-gen-tile" data-kind="review">⭐<span>Google Review</span></button>
+        <button class="qrv-gen-tile" data-kind="maps">📍<span>Google Maps Location</span></button>
+        <button class="qrv-gen-tile" data-kind="store">⬇️<span>App / Play Store Link</span></button>
+      </div>
+      <p class="text-[11px] text-neutral-500 text-center mt-4">Downloading a generated QR image plays a short ad first — generating and previewing it is always free.</p>
+    </section>
+  </main>
+
+  <!-- ============================================================
+       POINT 9 / 15 — Bottom navigation
+  ============================================================ -->
+  <nav class="fixed bottom-0 left-0 right-0 max-w-[480px] mx-auto bg-panel border-t border-line grid grid-cols-4 z-30">
+    <button class="qrv-navbtn is-active" data-tab="tabScan"><span>🔍</span>Scan</button>
+    <button class="qrv-navbtn" data-tab="tabGenerate"><span>➕</span>Generate</button>
+    <button id="btnGenerateComplain" class="qrv-navbtn text-danger"><span>📋</span>Complain</button>
+    <button id="btnOpenSettings" class="qrv-navbtn"><span>⚙️</span>Settings</button>
+  </nav>
+
+  <!-- ============================================================
+       POINT 11 — Settings (theme customizer), ad-gated on open
+  ============================================================ -->
+  <div id="settingsModal" hidden class="fixed inset-0 z-50 flex items-end justify-center bg-black/70">
+    <div class="w-full max-w-[480px] bg-panel rounded-t-3xl p-6 border-t border-line">
+      <h2 class="font-display font-bold text-lg mb-4">Appearance</h2>
+      <div class="grid grid-cols-3 gap-3 mb-6">
+        <button class="qrv-theme-swatch" data-theme="dark">Dark</button>
+        <button class="qrv-theme-swatch" data-theme="light">Light</button>
+        <button class="qrv-theme-swatch" data-theme="dark" data-accent="amber">Custom</button>
+      </div>
+      <button id="btnCloseSettings" type="button" class="w-full py-3 rounded-2xl border border-line text-sm">Close</button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       Consent modal (AI opt-in) — unchanged behavior from before
+  ============================================================ -->
+  <div id="consentModal" role="dialog" aria-modal="true" hidden class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-6">
+    <div class="w-full max-w-sm bg-panel rounded-3xl p-6 border border-line">
+      <h2 class="font-display font-bold text-lg mb-2">Enable AI second opinion?</h2>
+      <p class="text-sm text-neutral-300 mb-4">Offline and free threat-intel checks always run automatically. An AI second opinion sends the text/image to our server, which forwards it to Mesh API. Nothing is stored afterward.</p>
+      <label class="flex items-center gap-2 text-sm mb-4">
+        <input type="checkbox" id="consentCheckbox"> I understand and want to enable AI second opinion
+      </label>
+      <div class="flex gap-2">
+        <button id="btnConsentAccept" type="button" class="flex-1 py-2.5 rounded-xl bg-amber text-ink font-semibold text-sm">Enable</button>
+        <button id="btnConsentDecline" type="button" class="flex-1 py-2.5 rounded-xl border border-line text-sm">Not now</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       Panic Mode — zero network, zero ads, always instant
+  ============================================================ -->
+  <div id="panicModal" role="dialog" aria-modal="true" hidden class="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 px-6">
+    <div class="w-full max-w-sm bg-panel rounded-3xl p-6 border border-danger/40">
+      <h2 class="font-display font-bold text-xl mb-3 text-danger">Stop. Think. Act.</h2>
+      <ol class="text-sm text-neutral-200 space-y-3 mb-5 list-decimal list-inside">
+        <li><strong class="text-danger">Stop.</strong> No real police, court, or bank official asks you to stay on video call or transfer money. Hang up.</li>
+        <li><strong class="text-danger">Think.</strong> "Digital arrest" is not a real legal process in India.</li>
+        <li><strong class="text-danger">Act.</strong> Report now. Do not send more money.</li>
+      </ol>
+      <div class="flex flex-col gap-2">
+        <a href="tel:1930" class="text-center py-3 rounded-2xl bg-danger text-white font-semibold text-sm">Call 1930 (Cyber Helpline)</a>
+        <a href="https://cybercrime.gov.in" target="_blank" rel="noopener noreferrer" class="text-center py-3 rounded-2xl border border-line text-sm">Report at cybercrime.gov.in</a>
+        <button id="btnClosePanic" type="button" class="py-2 text-sm text-neutral-400">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       Ad-gate overlay — the ONLY place a forced ad ever shows.
+       Never used for: AI analysis results, Panic Mode, or Complain.
+  ============================================================ -->
+  <div id="adGateOverlay" hidden class="fixed inset-0 z-[70] flex flex-col items-center justify-center bg-black/90 text-center px-6">
+    <div class="w-10 h-10 border-2 border-amber border-t-transparent rounded-full animate-spin mb-4"></div>
+    <p id="adGateLabel" class="text-sm text-neutral-300"></p>
+  </div>
+
+</div>
+
+<style>
+  .qrv-navbtn { display:flex; flex-direction:column; align-items:center; gap:2px; padding:10px 0; font-size:11px; color:#8B95A1; }
+  .qrv-navbtn span:first-child { font-size:18px; }
+  .qrv-navbtn.is-active { color:#FFB020; }
+  .qrv-gen-tile { display:flex; flex-direction:column; align-items:center; gap:8px; padding:20px 8px; background:#12161B; border:1px solid #232A31; border-radius:16px; font-size:13px; color:#E5E7EB; }
+  .qrv-theme-swatch { padding:14px 0; border-radius:14px; border:1px solid #232A31; background:#12161B; font-size:13px; color:#E5E7EB; }
+  .tab-panel:not([hidden]) { display:block; }
+  .qrv-flag { display:flex; align-items:flex-start; gap:8px; padding:10px 12px; border-radius:12px; background:#0B0E11; border:1px solid #232A31; font-size:13px; color:#E5E7EB; }
+  .qrv-flag[data-severity="critical"] { border-color:#EF4444; }
+  .qrv-flag[data-severity="high"] { border-color:#F5A524; }
+  .qrv-flag__source { flex-shrink:0; font:700 10px/1 'JetBrains Mono',monospace; text-transform:uppercase; letter-spacing:.04em; padding:2px 6px; border-radius:6px; background:#12161B; color:#8B95A1; border:1px solid #232A31; }
+</style>
+
+<!-- NOTE: pin real Subresource Integrity hashes before final submission — see docs/SECURITY.md -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script src="js/sanitize.js"></script>
+<script src="js/config.js"></script>
+<script src="js/risk-engine-core.js"></script>
+<script src="js/free-intel-check.js"></script>
+<script src="js/ad-gate.js"></script>
+<script src="js/consent.js"></script>
+<script src="js/panic-mode.js"></script>
+<script src="js/ai-scam-check.js"></script>
+<script src="js/mobile-scanner.js"></script>
+<script src="js/mobile-app.js"></script>
+</body>
+</html>

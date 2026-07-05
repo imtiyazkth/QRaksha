@@ -1,0 +1,22 @@
+{
+  "source": "Manually curated, based on I4C / cybercrime.gov.in public advisories",
+  "updatedAt": "2026-07-04T00:00:00Z",
+  "maintainNote": "Update this list yourself over time as new scam patterns emerge. No API or account needed — just edit this file and redeploy.",
+  "patterns": [
+    { "phrase": "digital arrest", "severity": "critical", "explanation": "\u2018Digital arrest\u2019 does not exist as a legal process in India \u2014 this phrase alone is a strong scam indicator." },
+    { "phrase": "your aadhaar", "severity": "high", "explanation": "Messages threatening consequences tied to your Aadhaar number are a common impersonation-scam opener." },
+    { "phrase": "kyc will expire", "severity": "medium", "explanation": "Urgent KYC-expiry threats pushing you to click a link are a widespread phishing pattern." },
+    { "phrase": "customs department", "severity": "high", "explanation": "Fake customs/courier seizure claims are a known fraud script used to extract payment." },
+    { "phrase": "trai", "severity": "medium", "explanation": "Fake TRAI/telecom disconnection notices are frequently used to build urgency in scam calls." },
+    { "phrase": "anydesk", "severity": "critical", "explanation": "Requests to install AnyDesk or similar remote-access apps are strongly associated with fraud that drains bank accounts." },
+    { "phrase": "teamviewer", "severity": "critical", "explanation": "Same pattern as AnyDesk \u2014 remote-access app requests from an unsolicited caller are a major red flag." },
+    { "phrase": "share your otp", "severity": "critical", "explanation": "No bank, agency, or courier service will ever legitimately ask for your OTP." },
+    { "phrase": "video call with uniform", "severity": "high", "explanation": "Scammers often stage a fake uniformed video call to appear like real law enforcement." },
+    { "phrase": "loan will be legal action", "severity": "medium", "explanation": "Threats of immediate legal action over a loan/EMI are a common recovery-scam pressure tactic." },
+    { "phrase": "parcel contains drugs", "severity": "high", "explanation": "Fake courier calls claiming your parcel contains illegal items are a well-documented scam script." },
+    { "phrase": "sim card will be blocked", "severity": "medium", "explanation": "Urgent SIM-block threats are commonly used to pressure victims into sharing personal details." },
+    { "phrase": "income tax notice", "severity": "medium", "explanation": "Fake income-tax notices sent via SMS/WhatsApp with a payment link are a known phishing tactic." },
+    { "phrase": "your account will be suspended", "severity": "medium", "explanation": "Generic urgent account-suspension threats are a broad phishing pattern across many scam scripts." },
+    { "phrase": "cbi", "severity": "high", "explanation": "Claims of contact from CBI over phone/video call, especially demanding money, are a hallmark of digital-arrest scams." }
+  ]
+}

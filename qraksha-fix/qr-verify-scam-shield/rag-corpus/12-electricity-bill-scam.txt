@@ -1,0 +1,8 @@
+Pattern: Fake Electricity Bill Disconnection Notice
+An SMS claims the recipient's electricity connection will be disconnected
+that same night due to an unpaid bill, providing a phone number to call
+"customer support" immediately. The scammer on the other end guides the
+victim to install a remote-access app or make a payment to a personal UPI
+ID. Electricity providers do not threaten same-day disconnection via SMS
+with a personal callback number, and never ask for remote-desktop access
+to resolve a billing issue.

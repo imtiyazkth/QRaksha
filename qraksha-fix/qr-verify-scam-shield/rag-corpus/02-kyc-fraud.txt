@@ -1,0 +1,9 @@
+Pattern: Fake KYC Update Fraud
+Victims receive an SMS or WhatsApp message claiming their bank account,
+SIM card, or e-wallet KYC (Know Your Customer) details will expire or be
+suspended within 24 hours unless they click a link and "update" their
+details. The link leads to a fake bank/telecom login page designed to
+steal banking credentials, or asks the victim to install a remote-access
+app. Real banks and telecom companies do not send KYC-update deadlines via
+unsolicited SMS links, and never ask customers to install remote-access
+software to complete KYC.

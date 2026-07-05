@@ -1,0 +1,6 @@
+{
+  "source": "OpenPhish community feed (free, no API key)",
+  "updatedAt": "2026-07-04T00:00:00Z",
+  "note": "This is a small seed sample committed at build time. .github/workflows/update-blocklists.yml refreshes this file automatically on its schedule — replace this note once the first automated run completes.",
+  "domains": []
+}

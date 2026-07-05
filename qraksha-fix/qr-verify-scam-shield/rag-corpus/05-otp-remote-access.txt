@@ -1,0 +1,8 @@
+Pattern: OTP Sharing & Remote-Access App Requests
+A caller poses as a bank representative, telecom support agent, or
+"refund processing" agent and asks the victim to share an OTP received by
+SMS, or to install a remote-access app (AnyDesk, TeamViewer, QuickSupport)
+so the "agent" can help resolve an issue. Once installed, the scammer can
+see the victim's screen and initiate transactions. No legitimate bank,
+telecom company, or government agency will ever ask a customer to share an
+OTP or install remote-access software over an unsolicited call.
