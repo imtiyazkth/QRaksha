@@ -11,7 +11,7 @@ const { isRateLimited, getClientIp } = require("./rateLimiter");
 const meshApiKey = defineSecret("MESH_API_KEY");
 
 // Restrict to your actual deployed frontend — replace before final deploy.
-const ALLOWED_ORIGIN = "https://YOUR-GITHUB-USERNAME.github.io";
+const ALLOWED_ORIGIN = "https://imtiyazkth.github.io";
 
 // Server-side mirror of aiStatus.js's flag. Keeping this check here too
 // means someone hitting this endpoint directly (bypassing the frontend's

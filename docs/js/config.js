@@ -11,7 +11,7 @@ window.QRVConfig = (function () {
   // Replace with your deployed Cloud Function base URL after `firebase deploy`.
   // Keep this as a plain URL — it is not a secret, only the Mesh key behind
   // it is. Anyone can see this value; that is fine by design.
-  const FUNCTIONS_BASE_URL = "https://asia-south1-qraksha.cloudfunctions.net";
+  const FUNCTIONS_BASE_URL = "https://asia-south1-qraksha-india.cloudfunctions.net";
 
   const state = {
     // Becomes true only after /aiStatus confirms the backend is up AND
@@ -38,6 +38,9 @@ window.QRVConfig = (function () {
       // Any failure — network down, function down, developer disabled it,
       // timeout — is treated identically: AI is simply not available right
       // now. This is not an error state for the app, it's an expected one.
+      // The reason IS logged to console though, so you can tell "Mesh is
+      // just down right now" apart from "I never deployed the functions."
+      console.warn("aiStatus check failed (AI features will show as unavailable):", err.message);
       state.aiAvailable = false;
     }
     state.aiStatusChecked = true;

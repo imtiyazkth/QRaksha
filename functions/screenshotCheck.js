@@ -9,7 +9,7 @@ const { validateImageBase64 } = require("./validateInput");
 const { isRateLimited, getClientIp } = require("./rateLimiter");
 
 const meshApiKey = defineSecret("MESH_API_KEY");
-const ALLOWED_ORIGIN = "https://YOUR-GITHUB-USERNAME.github.io";
+const ALLOWED_ORIGIN = "https://imtiyazkth.github.io";
 const AI_FEATURE_ENABLED = true;
 
 exports.checkScreenshot = onRequest(

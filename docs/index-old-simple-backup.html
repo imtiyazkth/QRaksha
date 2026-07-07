@@ -116,36 +116,12 @@
   ============================================================ -->
   <main class="flex-1 overflow-y-auto pb-24">
 
-    <!-- ---------------- HOME TAB (new landing screen) ---------------- -->
-    <section id="tabHome" class="tab-panel px-4 pt-4">
-      <h1 class="font-display font-bold text-2xl mb-1">What do you want to check?</h1>
-      <p class="text-sm text-neutral-400 mb-4">Pick a category — generic icons only, no official branding copied.</p>
-
-      <div id="dashboardGrid" class="grid grid-cols-2 gap-3 mb-6"></div>
-
-      <!-- Awareness gallery -->
-      <h2 class="font-display font-bold text-lg mb-2">Awareness &amp; Resources</h2>
-      <div id="awarenessGallery" class="flex gap-3 overflow-x-auto pb-2 mb-6 snap-x"></div>
-
-      <!-- Complaint router -->
-      <h2 class="font-display font-bold text-lg mb-2">Report Directly to a Platform</h2>
-      <p class="text-xs text-neutral-500 mb-3">Links go straight to each platform's own official report page — QRaksha does not process these reports itself.</p>
-      <div id="platformReportGrid" class="grid grid-cols-3 gap-2 mb-4"></div>
-
-      <!-- Success story CTA -->
-      <div class="rounded-2xl bg-panel border border-amber/30 p-4 mb-4">
-        <h2 class="font-display font-bold text-lg mb-1">Aapki Kahani, Cyber Suraksha ki Zubani</h2>
-        <p class="text-xs text-neutral-400 mb-3">Agar aap hamare app ka istemal karke kisi dhokhadhadi ya fraud se bache hain, toh apni kahani hamare sath saja karein. Aapki kahani social media aur public awareness ke liye share ki jayegi.</p>
-        <button id="btnOpenStoryForm" type="button" class="w-full py-2.5 rounded-xl bg-amber text-ink text-sm font-semibold">Share Your Success Story</button>
-      </div>
-    </section>
-
-    <!-- ---------------- SCAN TAB ---------------- -->
-    <section id="tabScan" class="tab-panel px-4 pt-4" hidden>
+    <!-- ---------------- SCAN TAB (Point 9 default active) ---------------- -->
+    <section id="tabScan" class="tab-panel px-4 pt-4">
       <div class="relative rounded-3xl overflow-hidden bg-panel border border-line" style="aspect-ratio:3/4;">
         <!-- Point 3 — Privacy badge -->
         <div class="absolute top-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 bg-black/60 backdrop-blur px-3 py-1.5 rounded-full text-xs font-medium text-neutral-100 border border-white/10">
-          <span aria-hidden="true">🔒</span> <span data-i18n="scanPrivacy">Scan with privacy</span>
+          <span aria-hidden="true">🔒</span> Scan with privacy
         </div>
 
         <!-- Point 4 — Active scanning viewport -->
@@ -201,15 +177,6 @@
           </div>
         </div>
 
-        <!-- Raw content transparency — always shown, exactly as decoded -->
-        <div class="mb-4 rounded-xl bg-ink border border-line p-3">
-          <p class="text-[10px] uppercase tracking-wide text-neutral-500 mb-1">Exact decoded content</p>
-          <p id="resultRawContent" class="font-mono text-xs text-neutral-300 break-all"></p>
-        </div>
-
-        <!-- Source label — set to "[AI Analysis Result]" or "[Offline / Free Threat-Intel]" -->
-        <p id="resultSourceLabel" class="text-[11px] font-mono uppercase tracking-wide text-neutral-500 mb-3"></p>
-
         <div id="offlineFlagsList" class="space-y-2 mb-4"></div>
 
         <!-- Route B — Advanced AI analysis. Deliberately NOT ad-gated. -->
@@ -217,10 +184,6 @@
           Analyze with AI — deeper check, instant result
         </button>
         <p class="text-[11px] text-neutral-500 text-center mt-2">Free basic check always runs automatically. AI second opinion is optional and never delayed by ads.</p>
-
-        <p class="text-[10px] leading-relaxed text-neutral-500 mt-4 pt-3 border-t border-line">
-          <strong class="text-neutral-400">Important Disclaimer:</strong> This screening is based on signatures and automated metrics. AI outputs are experimental and can be incorrect. This platform does not take responsibility for financial losses, fraud, or damage. Always double-check and verify information directly via official government channels or authorities before taking any transaction decisions. Users act at their own individual discretion.
-        </p>
       </div>
     </section>
 
@@ -246,7 +209,7 @@
         <p id="msgFileName" class="text-center text-xs text-neutral-500 mt-2"></p>
       </div>
 
-      <button id="btnCheckMessage" type="button" data-i18n="checkForScam" class="w-full mt-4 py-3 rounded-2xl bg-amber text-ink font-semibold text-sm">Check for scam</button>
+      <button id="btnCheckMessage" type="button" class="w-full mt-4 py-3 rounded-2xl bg-amber text-ink font-semibold text-sm">Check for scam</button>
       <p id="aiUnavailableBanner" hidden class="mt-3 text-xs text-warn bg-warn/10 border border-warn/30 rounded-xl p-3">AI second opinion is currently unavailable — showing offline + open threat-intel analysis only.</p>
 
       <div id="msgReportSection" hidden class="mt-4 rounded-3xl bg-panel border border-line p-5">
@@ -254,9 +217,6 @@
         <p id="msgExplanation" class="text-sm text-neutral-100 mb-3"></p>
         <div id="msgRiskFlags" class="space-y-2 mb-3"></div>
         <button id="btnAiSecondOpinionMsg" type="button" hidden class="w-full py-2.5 rounded-xl border border-amber text-amber text-sm font-medium">Get AI second opinion</button>
-        <p class="text-[10px] leading-relaxed text-neutral-500 mt-3 pt-3 border-t border-line">
-          <strong class="text-neutral-400">Important Disclaimer:</strong> This screening is based on signatures and automated metrics. AI outputs are experimental and can be incorrect. This platform does not take responsibility for financial losses, fraud, or damage. Always double-check and verify information directly via official government channels or authorities before taking any transaction decisions. Users act at their own individual discretion.
-        </p>
       </div>
     </section>
 
@@ -287,11 +247,10 @@
   <!-- ============================================================
        POINT 9 / 15 — Bottom navigation
   ============================================================ -->
-  <nav class="fixed bottom-0 left-0 right-0 max-w-[480px] mx-auto bg-panel border-t border-line grid grid-cols-5 z-30">
-    <button class="qrv-navbtn is-active" data-tab="tabHome"><span>🏠</span>Home</button>
-    <button class="qrv-navbtn" data-tab="tabScan"><span>🔍</span>Scan</button>
+  <nav class="fixed bottom-0 left-0 right-0 max-w-[480px] mx-auto bg-panel border-t border-line grid grid-cols-4 z-30">
+    <button class="qrv-navbtn is-active" data-tab="tabScan"><span>🔍</span>Scan</button>
     <button class="qrv-navbtn" data-tab="tabGenerate"><span>➕</span>Generate</button>
-    <button id="btnGenerateComplain" class="qrv-navbtn qrv-navbtn--complain"><span>🛡️⚖️</span>Complain<em>Official portal ↗</em></button>
+    <button id="btnGenerateComplain" class="qrv-navbtn text-danger"><span>📋</span>Complain</button>
     <button id="btnOpenSettings" class="qrv-navbtn"><span>⚙️</span>Settings</button>
   </nav>
 
@@ -310,62 +269,6 @@
         </label>
       </div>
       <button id="btnCloseSettings" type="button" class="w-full py-3 rounded-2xl border border-line text-sm">Close</button>
-
-      <h2 class="font-display font-bold text-lg mt-6 mb-3">Language</h2>
-      <div id="langPickerOptions" class="grid grid-cols-3 gap-2 max-h-48 overflow-y-auto"></div>
-      <p class="text-[10px] text-neutral-500 mt-2">Languages marked "(beta)" aren't fully translated yet and will show English for untranslated text rather than a guessed translation.</p>
-
-      <h2 class="font-display font-bold text-lg mt-6 mb-3">About &amp; Transparency</h2>
-      <div class="space-y-2">
-        <button id="btnOpenFounder" type="button" class="w-full text-left py-3 px-4 rounded-xl border border-line text-sm text-neutral-200">About the Founder</button>
-        <button id="btnOpenPrivacy" type="button" class="w-full text-left py-3 px-4 rounded-xl border border-line text-sm text-neutral-200">Privacy Policy</button>
-      </div>
-
-      <div class="mt-4 rounded-xl bg-ink border border-line p-4">
-        <p class="text-xs font-semibold text-neutral-300 mb-1">Revenue &amp; Growth Roadmap (transparency)</p>
-        <p class="text-[11px] text-neutral-500 leading-relaxed">QRaksha is free today. To stay sustainable long-term, the roadmap may include: non-intrusive Google AdMob/AdSense placements, an optional premium tier (unlimited AI checks, ad-free), and B2B API licensing for other apps/institutions. Core safety features — offline QR check, Panic Mode, and basic scam detection — are intended to always remain free.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- ============================================================
-       About Founder
-  ============================================================ -->
-  <div id="founderModal" role="dialog" aria-modal="true" hidden class="fixed inset-0 z-50 flex items-end justify-center bg-black/70">
-    <div class="w-full max-w-[480px] max-h-[86vh] overflow-y-auto bg-panel rounded-t-3xl p-6 border-t border-line">
-      <div class="flex items-center gap-4 mb-4">
-        <img src="./assets/founder/imtiyaz.jpg" alt="Imtiyaz Surjapuri" class="w-16 h-16 rounded-full object-cover border border-line" onerror="this.style.display='none'">
-        <div>
-          <p class="font-display font-bold text-lg">Imtiyaz Surjapuri</p>
-          <p class="text-xs text-neutral-400">Founder, QRaksha</p>
-        </div>
-      </div>
-
-      <h3 class="text-sm font-semibold text-neutral-300 mb-2">Other Projects</h3>
-      <div id="founderPortfolioGrid" class="grid grid-cols-2 gap-3 mb-5"></div>
-
-      <h3 class="text-sm font-semibold text-neutral-300 mb-2">Connect</h3>
-      <div class="flex flex-wrap gap-2 mb-5">
-        <a href="https://facebook.com/ImtiyaSurjapuri" target="_blank" rel="noopener noreferrer" class="px-4 py-2 rounded-full border border-line text-xs text-neutral-200">Facebook</a>
-        <a href="https://instagram.com/ImtiyazSurjapuri" target="_blank" rel="noopener noreferrer" class="px-4 py-2 rounded-full border border-line text-xs text-neutral-200">Instagram</a>
-        <a href="https://x.com/Imtiyazkth" target="_blank" rel="noopener noreferrer" class="px-4 py-2 rounded-full border border-line text-xs text-neutral-200">X (@Imtiyazkth)</a>
-      </div>
-
-      <button id="btnCloseFounder" type="button" class="w-full py-3 rounded-2xl border border-line text-sm">Close</button>
-    </div>
-  </div>
-
-  <!-- ============================================================
-       Privacy Policy
-  ============================================================ -->
-  <div id="privacyModal" role="dialog" aria-modal="true" hidden class="fixed inset-0 z-50 flex items-end justify-center bg-black/70">
-    <div class="w-full max-w-[480px] max-h-[86vh] overflow-y-auto bg-panel rounded-t-3xl p-6 border-t border-line">
-      <h2 class="font-display font-bold text-lg mb-3">Privacy Policy</h2>
-      <p class="text-sm text-neutral-300 mb-3">QR scanning and offline message checks run entirely in your browser — nothing is sent anywhere.</p>
-      <p class="text-sm text-neutral-300 mb-3">The optional AI second opinion is off by default and sends only the text/image you explicitly submit to our server, which forwards it to Mesh API. It is not stored afterward.</p>
-      <p class="text-sm text-neutral-300 mb-3">Success stories you explicitly submit and consent to publish are stored in our database (<code class="text-xs bg-ink px-1 rounded">success_stories</code>/<code class="text-xs bg-ink px-1 rounded">successStories</code>). We ask you not to include anyone else's personal identifying details (phone numbers, account numbers, full addresses of third parties) in your story text — only your own experience.</p>
-      <p class="text-sm text-neutral-300 mb-5">A human reviews each story before it is ever published publicly or on social media.</p>
-      <button id="btnClosePrivacy" type="button" class="w-full py-3 rounded-2xl border border-line text-sm">Close</button>
     </div>
   </div>
 
@@ -391,7 +294,7 @@
   ============================================================ -->
   <div id="panicModal" role="dialog" aria-modal="true" hidden class="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 px-6">
     <div class="w-full max-w-sm bg-panel rounded-3xl p-6 border border-danger/40">
-      <h2 class="font-display font-bold text-xl mb-3 text-danger" data-i18n="panicTitle">Stop. Think. Act.</h2>
+      <h2 class="font-display font-bold text-xl mb-3 text-danger">Stop. Think. Act.</h2>
       <ol class="text-sm text-neutral-200 space-y-3 mb-5 list-decimal list-inside">
         <li><strong class="text-danger">Stop.</strong> No real police, court, or bank official asks you to stay on video call or transfer money. Hang up.</li>
         <li><strong class="text-danger">Think.</strong> "Digital arrest" is not a real legal process in India.</li>
@@ -415,83 +318,6 @@
   </div>
 
   <!-- ============================================================
-       Success Story submission form
-  ============================================================ -->
-  <div id="storyFormModal" role="dialog" aria-modal="true" hidden class="fixed inset-0 z-50 flex items-end justify-center bg-black/70">
-    <div class="w-full max-w-[480px] max-h-[88vh] overflow-y-auto bg-panel rounded-t-3xl p-6 border-t border-line">
-      <h2 class="font-display font-bold text-lg mb-1">Share Your Success Story</h2>
-      <p class="text-xs text-neutral-400 mb-4">Aapki kahani cyber awareness badhane mein madad karegi.</p>
-
-      <form id="storyForm" class="space-y-3">
-        <div>
-          <label class="text-xs text-neutral-400" for="storyFullName">Full Name</label>
-          <input id="storyFullName" required maxlength="80" type="text" class="w-full mt-1 rounded-xl bg-ink border border-line p-3 text-sm text-neutral-100">
-        </div>
-        <div>
-          <label class="text-xs text-neutral-400" for="storyCity">Location / City</label>
-          <input id="storyCity" required maxlength="60" type="text" class="w-full mt-1 rounded-xl bg-ink border border-line p-3 text-sm text-neutral-100">
-        </div>
-        <div>
-          <label class="text-xs text-neutral-400" for="storyAmount">Estimated Amount Saved (₹)</label>
-          <input id="storyAmount" required min="0" max="100000000" type="number" class="w-full mt-1 rounded-xl bg-ink border border-line p-3 text-sm text-neutral-100">
-        </div>
-        <div>
-          <label class="text-xs text-neutral-400" for="storyFraudType">Fraud Type</label>
-          <select id="storyFraudType" required class="w-full mt-1 rounded-xl bg-ink border border-line p-3 text-sm text-neutral-100">
-            <option value="QR Code Scam">QR Code Scam</option>
-            <option value="WhatsApp Job Fraud">WhatsApp Job Fraud</option>
-            <option value="Fake Customer Care">Fake Customer Care</option>
-            <option value="Suspicious App">Suspicious App</option>
-            <option value="Other">Other</option>
-          </select>
-        </div>
-        <div>
-          <label class="text-xs text-neutral-400" for="storyDescription">Your Story</label>
-          <textarea id="storyDescription" required minlength="20" maxlength="3000" rows="4" placeholder="QRaksha ne kaise warning di aur aap kaise bache…" class="w-full mt-1 rounded-xl bg-ink border border-line p-3 text-sm text-neutral-100"></textarea>
-        </div>
-
-        <label class="flex items-start gap-2 text-xs text-neutral-300">
-          <input type="checkbox" id="storyAnonymous" class="mt-0.5">
-          Meri kahani bina naam ke (Anonymous) publish karein.
-        </label>
-        <label class="flex items-start gap-2 text-xs text-neutral-300">
-          <input type="checkbox" id="storyConsent" required class="mt-0.5">
-          Main sehmat hoon ki meri kahani cyber awareness badhane ke liye public platforms aur social media par publish ki jaye.
-        </label>
-
-        <p id="storyFormError" class="text-xs text-danger" hidden></p>
-
-        <div class="flex gap-2 pt-2">
-          <button type="submit" id="btnSubmitStory" class="flex-1 py-3 rounded-2xl bg-amber text-ink font-semibold text-sm">Submit</button>
-          <button type="button" id="btnCancelStoryForm" class="flex-1 py-3 rounded-2xl border border-line text-sm">Cancel</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- ============================================================
-       Viral celebration + share modal — shown only after a successful
-       story submission
-  ============================================================ -->
-  <div id="celebrationModal" role="dialog" aria-modal="true" hidden class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 px-6">
-    <div class="w-full max-w-sm bg-panel rounded-3xl p-6 border border-amber/40 text-center">
-      <h2 class="font-display font-bold text-xl mb-3">🏆 Aap Hain Asli Cyber Masiha!</h2>
-      <p class="text-sm text-neutral-300 mb-5 text-left">Badhai ho! Aapne apni samajhdari aur QRaksha app ki madad se fraudster ko hara diya aur apne paise bacha liye. Lekin ladai abhi khatam nahi hui hai! Aaj hazaron masoom log isi fraud ka shikar ho rahe hain. Ek asli masiha baniye—apni yeh jeet ki kahani aur QRaksha app ka link abhi apne WhatsApp, Facebook aur X par share karein. Aapka ek share kisi ki poori zindagi ki kamai doobne se bacha sakta hai!</p>
-
-      <img id="celebrationShareImage" alt="Shareable QRaksha success card" class="w-full rounded-2xl border border-line mb-4">
-
-      <div class="flex flex-col gap-2">
-        <button id="btnCopyShareImage" type="button" class="py-3 rounded-2xl bg-amber text-ink font-semibold text-sm">Copy text &amp; share image</button>
-        <button id="btnShareNative" type="button" class="py-3 rounded-2xl border border-line text-sm">Share Now</button>
-        <button id="btnShareWhatsapp" type="button" class="py-3 rounded-2xl border border-line text-sm">Share on WhatsApp</button>
-        <button id="btnShareX" type="button" class="py-3 rounded-2xl border border-line text-sm">Share on X</button>
-        <button id="btnShareFacebook" type="button" class="py-3 rounded-2xl border border-line text-sm">Share on Facebook</button>
-        <button id="btnCloseCelebration" type="button" class="py-2 text-sm text-neutral-400 mt-1">Maybe later</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ============================================================
        Ad-gate overlay — the ONLY place a forced ad ever shows.
        Never used for: AI analysis results, Panic Mode, or Complain.
   ============================================================ -->
@@ -506,9 +332,6 @@
   .qrv-navbtn { display:flex; flex-direction:column; align-items:center; gap:2px; padding:10px 0; font-size:11px; color:#8B95A1; }
   .qrv-navbtn span:first-child { font-size:18px; }
   .qrv-navbtn.is-active { color:#FFB020; }
-  .qrv-navbtn--complain { color:#EF4444; }
-  .qrv-navbtn--complain span:first-child { font-size:16px; }
-  .qrv-navbtn--complain em { font-style:normal; font-size:8px; color:#8B95A1; }
   .qrv-gen-tile { display:flex; flex-direction:column; align-items:center; gap:8px; padding:20px 8px; background:#12161B; border:1px solid #232A31; border-radius:16px; font-size:13px; color:#E5E7EB; }
   .qrv-gen-tile.is-active { border-color: var(--qrv-accent); color: var(--qrv-accent); }
   .qrv-theme-swatch { padding:14px 0; border-radius:14px; border:1px solid #232A31; background:#12161B; font-size:13px; color:#E5E7EB; }
@@ -526,7 +349,6 @@
 
 <script src="js/sanitize.js"></script>
 <script src="js/config.js"></script>
-<script src="js/lang.js"></script>
 <script src="js/risk-engine-core.js"></script>
 <script src="js/free-intel-check.js"></script>
 <script src="js/ad-gate.js"></script>
@@ -534,8 +356,6 @@
 <script src="js/panic-mode.js"></script>
 <script src="js/ai-scam-check.js"></script>
 <script src="js/mobile-scanner.js"></script>
-<script src="js/dashboard.js"></script>
-<script src="js/story-submit.js"></script>
 <script src="js/mobile-app.js"></script>
 </body>
 </html>

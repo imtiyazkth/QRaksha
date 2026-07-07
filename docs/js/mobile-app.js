@@ -380,6 +380,41 @@
   }
 
   /* ------------------------------------------------------------------
+     About Founder — portfolio grid + modal wiring
+  ------------------------------------------------------------------ */
+  const FOUNDER_PORTFOLIO = [
+    { projectName: "OneSearch", projectLink: "https://imtiyazkth.github.io/onesearch/" },
+    { projectName: "PrompterPro", projectLink: "https://github.com/imtiyazkth" },
+    { projectName: "SM 10X", projectLink: "https://github.com/imtiyazkth" },
+    { projectName: "School Management System", projectLink: "https://github.com/imtiyazkth" },
+  ];
+
+  function renderFounderPortfolio() {
+    const grid = $("founderPortfolioGrid");
+    if (!grid) return;
+    grid.innerHTML = "";
+    FOUNDER_PORTFOLIO.forEach((p) => {
+      const a = document.createElement("a");
+      a.href = p.projectLink;
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      a.className = "rounded-xl bg-ink border border-line p-3 text-xs text-neutral-200 text-center";
+      a.textContent = p.projectName;
+      grid.appendChild(a);
+    });
+  }
+
+  if ($("btnOpenFounder")) {
+    $("btnOpenFounder").addEventListener("click", () => { $("founderModal").hidden = false; });
+    $("btnCloseFounder").addEventListener("click", () => { $("founderModal").hidden = true; });
+    renderFounderPortfolio();
+  }
+  if ($("btnOpenPrivacy")) {
+    $("btnOpenPrivacy").addEventListener("click", () => { $("privacyModal").hidden = false; });
+    $("btnClosePrivacy").addEventListener("click", () => { $("privacyModal").hidden = true; });
+  }
+
+  /* ------------------------------------------------------------------
      Boot
   ------------------------------------------------------------------ */
   document.addEventListener("DOMContentLoaded", async () => {
