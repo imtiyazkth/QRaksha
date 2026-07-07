@@ -13,12 +13,16 @@
   /* ------------------------------------------------------------------
      Tab navigation (Point 9)
   ------------------------------------------------------------------ */
+  let scannerStarted = false;
   function activateTab(tabId) {
     document.querySelectorAll(".tab-panel").forEach((el) => { el.hidden = el.id !== tabId; });
     document.querySelectorAll(".qrv-navbtn[data-tab]").forEach((btn) => {
       btn.classList.toggle("is-active", btn.dataset.tab === tabId);
     });
-    if (tabId === "tabScan") window.QRVScanner.resumeScanning();
+    if (tabId === "tabScan") {
+      if (!scannerStarted) { scannerStarted = true; window.QRVScanner.start(); }
+      else window.QRVScanner.resumeScanning();
+    }
   }
   document.querySelectorAll(".qrv-navbtn[data-tab]").forEach((btn) => {
     btn.addEventListener("click", () => activateTab(btn.dataset.tab));
@@ -115,6 +119,8 @@
       : `This is a ${parsed.typeLabel || parsed.type} QR code.`;
     setText($("resultContext"), contextLine);
     setText($("historicalAudit"), explanation);
+    setText($("resultRawContent"), parsed.raw != null ? String(parsed.raw) : "(no content decoded)");
+    setText($("resultSourceLabel"), "[Offline / Free Threat-Intel Analysis]");
 
     const pct = risk.score;
     const circumference = 2 * Math.PI * 27;
@@ -392,6 +398,8 @@
       }
     } catch (e) {}
 
-    await window.QRVScanner.start();
+    if (window.QRVDashboard) window.QRVDashboard.init(activateTab);
+    if (window.QRVLang) window.QRVLang.init();
+    if (window.QRVStorySubmit) window.QRVStorySubmit.init();
   });
 })();

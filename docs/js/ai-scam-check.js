@@ -65,7 +65,10 @@ window.QRVAiScamCheck = (function () {
       const res = await fetch(`${window.QRVConfig.FUNCTIONS_BASE_URL}/checkMessage`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: window.QRVSanitize.normalizeForAiInput(text) }),
+        body: JSON.stringify({
+          text: window.QRVSanitize.normalizeForAiInput(text),
+          lang: window.QRVLang ? window.QRVLang.currentLangForAi() : "English",
+        }),
         signal: controller.signal,
       });
       clearTimeout(timeout);
@@ -86,7 +89,7 @@ window.QRVAiScamCheck = (function () {
     let explanation = allFlags.length
       ? "Offline and open threat-intel checks found known scam indicators in this content."
       : "No known scam indicators found by offline or open threat-intel checks.";
-    let source = "Offline + open threat-intel";
+    let source = "[Internet Source Data / Offline Mode]";
 
     if (ai) {
       // AI can only ever raise the score / add detail, never silently
@@ -94,7 +97,7 @@ window.QRVAiScamCheck = (function () {
       const aiScore = typeof ai.score === "number" ? ai.score : scoreFromFlags(allFlags);
       score = Math.max(score, aiScore);
       if (ai.explanation) explanation = ai.explanation;
-      source = "Offline + open threat-intel + Mesh AI";
+      source = "[AI Analysis Result]";
       if (ai.matchedPattern) {
         allFlags.push({ severity: "high", message: `Matches known pattern: ${ai.matchedPattern}`, source: "ai" });
       }

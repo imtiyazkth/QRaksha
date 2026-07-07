@@ -151,6 +151,9 @@ window.QRVEngine = (function () {
         "Note": params.tn || "—",
       };
       result.upiHandle = params.pa || "";
+      result.upiAmount = params.am ? Number(params.am) : null;
+      result.upiPayeeName = params.pn || "";
+      result.upiNote = params.tn || "";
       return result;
     }
 
@@ -362,6 +365,25 @@ window.QRVEngine = (function () {
       addFlag("info", 5, "Always check the payee name shown in your UPI app before approving any payment.");
       if (parsed.fields["Amount"] && parsed.fields["Amount"] !== "Not fixed (you'll be asked)") {
         addFlag("low", 5, "This QR requests a pre-filled amount — confirm it matches what you expect to pay.");
+      }
+
+      // --- Strict risk-tuning rules (deceptive VPA / support-name / urgency combos) ---
+      const DECEPTIVE_VPA_TERMS = ["refund", "support", "helpline", "customercare", "kyc", "verify", "cashback", "reward"];
+      const vpaLower = (parsed.upiHandle || "").toLowerCase();
+      if (DECEPTIVE_VPA_TERMS.some((term) => vpaLower.includes(term))) {
+        addFlag("critical", 30, `The payee address ("${parsed.upiHandle}") contains a deceptive term commonly used in refund/support-impersonation scams — legitimate businesses rarely use these words in their actual VPA.`);
+      }
+
+      const payeeNameLower = (parsed.upiPayeeName || "").toLowerCase();
+      const looksLikeSupportName = /customer\s*care|support\s*team|help\s*desk|refund\s*team/i.test(payeeNameLower);
+      if (parsed.upiAmount && parsed.upiAmount >= 5000 && looksLikeSupportName) {
+        addFlag("critical", 35, `A high pre-filled amount (₹${parsed.upiAmount}) combined with a "customer support"-style payee name is a well-documented refund-scam pattern — real refunds are never collected by scanning a QR and paying money.`);
+      }
+
+      const URGENT_NOTE_TERMS = ["immediate kyc", "urgent", "blocked", "will be blocked", "account suspend", "verify now"];
+      const noteLower = (parsed.upiNote || "").toLowerCase();
+      if (URGENT_NOTE_TERMS.some((term) => noteLower.includes(term))) {
+        addFlag("high", 25, `The payment note contains urgent/panic-inducing language ("${parsed.upiNote}") — this pressure tactic is common in KYC and account-block scam QR codes.`);
       }
     }
 

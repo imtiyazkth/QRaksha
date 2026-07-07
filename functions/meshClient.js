@@ -27,9 +27,12 @@ agencies). Respond ONLY with a JSON object of this exact shape, no other
 text:
 {"score": <0-100 integer>, "matchedPattern": "<short label or null>", "explanation": "<2-3 sentences, in Hindi and English, plain language, explaining the verdict>"}`;
 
-async function classifyAndExplain({ meshApiKey, text, ragContext }) {
+async function classifyAndExplain({ meshApiKey, text, ragContext, lang }) {
   const groundingBlock = ragContext && ragContext.length
     ? `\n\nKnown scam patterns for reference:\n${ragContext.join("\n---\n")}`
+    : "";
+  const languageInstruction = lang && lang !== "English"
+    ? `\n\nWrite the "explanation" field in ${lang}, with a short English phrase in parentheses for key terms if helpful. If you are not confident producing accurate ${lang}, fall back to clear English instead of guessing.`
     : "";
 
   const res = await fetch(`${MESH_BASE_URL}/v1/chat/completions`, {
@@ -41,7 +44,7 @@ async function classifyAndExplain({ meshApiKey, text, ragContext }) {
     body: JSON.stringify({
       model: "auto",
       messages: [
-        { role: "system", content: SYSTEM_PROMPT + groundingBlock },
+        { role: "system", content: SYSTEM_PROMPT + groundingBlock + languageInstruction },
         { role: "user", content: `<<<MESSAGE_START>>>\n${text}\n<<<MESSAGE_END>>>` },
       ],
     }),

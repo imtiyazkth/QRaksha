@@ -1,0 +1,62 @@
+{
+  "categories": [
+    { "id": "url", "icon": "🔗", "label": "Website URL", "desc": "Scan phishing or fake links", "route": "message", "supported": true },
+    { "id": "whatsapp", "icon": "💬", "label": "WhatsApp / Telegram", "desc": "Check a chat handle sending scams", "route": "message", "supported": true },
+    { "id": "phone", "icon": "📞", "label": "Phone Number", "desc": "Check a suspicious call/SMS source", "route": "message", "supported": true },
+    { "id": "email", "icon": "✉️", "label": "Email Id", "desc": "Check mail headers / spam senders", "route": "message", "supported": true },
+    { "id": "sms", "icon": "📩", "label": "SMS Header / Number", "desc": "Check financial/courier spoof messages", "route": "message", "supported": true },
+    { "id": "social", "icon": "📱", "label": "Social Media URL", "desc": "Screen profile cloning or fake giveaways", "route": "message", "supported": true },
+    { "id": "deepfake", "icon": "🎭", "label": "Deepfake Media", "desc": "Report manipulated media", "route": "external", "url": "https://cybercrime.gov.in", "supported": false, "note": "QRaksha doesn't run deepfake-detection AI yet — this routes to the official reporting portal instead of a fake result." },
+    { "id": "app", "icon": "📦", "label": "Mobile App (.apk)", "desc": "Inspect modded / untrusted installs", "route": "external", "url": "https://cybercrime.gov.in", "supported": false, "note": "APK inspection needs a dedicated static-analysis engine QRaksha doesn't have built yet — routes to official reporting for now." }
+  ],
+
+  "awareness": [
+    {
+      "title": "Jhutha App Ko Pahchano",
+      "body": "Refrain from installing and investing through suspicious money-earning apps offering quick, high returns/benefits.",
+      "source": "Adapted from public RBI/cybercrime awareness advisories",
+      "sourceUrl": "https://cybercrime.gov.in"
+    },
+    {
+      "title": "Digital Arrest Is Not Real",
+      "body": "No Indian law enforcement agency conducts arrests or legal proceedings over a video call. Hang up and report at cybercrime.gov.in.",
+      "source": "I4C public advisory",
+      "sourceUrl": "https://cybercrime.gov.in"
+    },
+    {
+      "title": "Never Share an OTP",
+      "body": "No bank, telecom company, or government agency will ever ask you to share an OTP over a call or message.",
+      "source": "RBI public safe-banking guidance",
+      "sourceUrl": "https://www.rbi.org.in"
+    },
+    {
+      "title": "Job Offers Never Cost Money",
+      "body": "A real employer never asks a candidate to pay a 'registration' or 'task unlock' fee to receive work.",
+      "source": "General consumer-protection guidance",
+      "sourceUrl": "https://consumerhelpline.gov.in"
+    },
+    {
+      "title": "Matrimonial Safety",
+      "body": "Be cautious of a match who quickly moves the conversation toward investment advice or urgent money requests.",
+      "source": "General consumer-protection guidance",
+      "sourceUrl": "https://cybercrime.gov.in"
+    }
+  ],
+
+  "booklets": [
+    { "title": "Financial Fraud Prevention Manual", "type": "PDF Guide", "sourceUrl": "https://cybercrime.gov.in" },
+    { "title": "Job Fraud Prevention Guide", "type": "Awareness Booklet", "sourceUrl": "https://cybercrime.gov.in" },
+    { "title": "Matrimonial Safety Guidelines", "type": "Awareness Booklet", "sourceUrl": "https://cybercrime.gov.in" }
+  ],
+
+  "platformReports": [
+    { "id": "google", "label": "Google", "url": "https://safebrowsing.google.com/safebrowsing/report_phish/" },
+    { "id": "x", "label": "X (Twitter)", "url": "https://help.twitter.com/en/forms" },
+    { "id": "whatsapp", "label": "WhatsApp", "url": "https://faq.whatsapp.com/1246999616191333" },
+    { "id": "telegram", "label": "Telegram", "url": "https://telegram.org/support" },
+    { "id": "facebook", "label": "Facebook", "url": "https://www.facebook.com/help/263149623790594" },
+    { "id": "instagram", "label": "Instagram", "url": "https://help.instagram.com/192435014247952" }
+  ],
+
+  "note": "Category icons are generic emoji, not official logos. Platform report links point to each company's own public help/report pages — QRaksha does not use or reproduce their trademarked logos. Awareness content is adapted/paraphrased from public advisories; each entry links to its own source rather than presenting itself as that authority."
+}

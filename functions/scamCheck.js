@@ -38,6 +38,7 @@ exports.checkMessage = onRequest(
     if (!validation.valid) {
       return res.status(400).json({ error: validation.error });
     }
+    const lang = typeof (req.body && req.body.lang) === "string" ? req.body.lang.slice(0, 30) : "English";
 
     try {
       const ragContext = await searchRagCorpus({ meshApiKey: meshApiKey.value(), query: validation.value });
@@ -45,6 +46,7 @@ exports.checkMessage = onRequest(
         meshApiKey: meshApiKey.value(),
         text: validation.value,
         ragContext,
+        lang,
       });
 
       if (!result) {
