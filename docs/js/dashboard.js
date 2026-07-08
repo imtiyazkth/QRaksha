@@ -23,12 +23,12 @@ window.QRVDashboard = (function () {
   }
 
   const CATEGORY_PROMPTS = {
-    url: { labelKey: "pasteUrlPrompt", label: "Paste the suspicious URL below", placeholder: "https://example.com/…" },
-    whatsapp: { labelKey: "pasteHandlePrompt", label: "Paste the WhatsApp / Telegram link or handle", placeholder: "https://wa.me/91… or @handle" },
-    phone: { labelKey: "pastePhonePrompt", label: "Enter the suspicious phone number", placeholder: "+91XXXXXXXXXX" },
-    email: { label: "Paste the suspicious sender's email address", placeholder: "someone@example.com" },
-    sms: { label: "Paste the SMS header / sender number", placeholder: "e.g. VM-AXISBK or +91XXXXXXXXXX" },
-    social: { label: "Paste the social media profile URL", placeholder: "https://instagram.com/…" },
+    url: { labelKey: "pasteUrlPrompt", label: "Paste the suspicious URL below", placeholder: "https://example.com/…", engineKey: "WEBSITE_URL" },
+    whatsapp: { labelKey: "pasteHandlePrompt", label: "Paste the WhatsApp / Telegram link or handle", placeholder: "https://wa.me/91… or @handle", engineKey: "WHATSAPP_TELEGRAM" },
+    phone: { labelKey: "pastePhonePrompt", label: "Enter the suspicious phone number", placeholder: "+91XXXXXXXXXX", engineKey: "PHONE_NUMBER" },
+    email: { label: "Paste the suspicious sender's email address", placeholder: "someone@example.com", engineKey: "EMAIL_ID" },
+    sms: { label: "Paste the SMS header / sender number", placeholder: "e.g. VM-AXISBK or +91XXXXXXXXXX", engineKey: "SMS_HEADER" },
+    social: { label: "Paste the social media profile URL", placeholder: "https://instagram.com/…", engineKey: "SOCIAL_MEDIA" },
   };
 
   function renderCategoryGrid(categories, onNavigate) {
@@ -78,14 +78,31 @@ window.QRVDashboard = (function () {
     panel.scrollIntoView({ behavior: "smooth", block: "center" });
     $("categoryInputBox").focus();
 
-    $("btnCategoryCheckNow").addEventListener("click", () => {
+    $("btnCategoryCheckNow").addEventListener("click", async () => {
       const value = $("categoryInputBox").value.trim();
+      const checkBtn = $("btnCategoryCheckNow");
+      if (!value) return;
+
+      checkBtn.disabled = true;
+      checkBtn.textContent = "Checking\u2026";
+
+      const verdict = await window.QRVVerification.handleVerificationCheck(prompt.engineKey, value);
+
+      checkBtn.disabled = false;
+      checkBtn.textContent = (window.QRVLang ? window.QRVLang.t("checkNow") : "Check now");
       panel.hidden = true;
-      onNavigate("tabMessage");
-      const msgInput = document.getElementById("msgTextInput");
-      if (msgInput) msgInput.value = value;
-      const checkBtn = document.getElementById("btnCheckMessage");
-      if (checkBtn && value) checkBtn.click();
+
+      window.QRVVerification.renderVerdictCard("verdictCardDisplay", verdict, () => {
+        // "Chat with AI" inside the verdict card — reuses the existing
+        // consent + message-check pipeline, pre-filled with context.
+        const question = `I checked this ${cat.label}: "${value}"\nVerdict: ${verdict.title}\n\nHow should I respond, and how do I report this to the cyber cell if needed?`;
+        onNavigate("tabMessage");
+        const msgInput = document.getElementById("msgTextInput");
+        if (msgInput) msgInput.value = question;
+        window.QRVConsent.requireConsent(async () => {
+          await window.QRVAiScamCheck.runMessageCheck(question);
+        });
+      }, { showGovtRegistryLink: prompt.engineKey === "PHONE_NUMBER", category: prompt.engineKey });
     });
     $("btnCategoryCancel").addEventListener("click", () => { panel.hidden = true; });
   }
