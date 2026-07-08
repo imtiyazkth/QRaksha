@@ -125,7 +125,14 @@
 
     <!-- ---------------- HOME TAB (new landing screen) ---------------- -->
     <section id="tabHome" class="tab-panel px-4 pt-4">
-      <h1 class="font-display font-bold text-2xl mb-1" data-i18n="whatToCheck">What do you want to check?</h1>
+      <div class="flex items-start justify-between gap-3 mb-1">
+        <h1 class="font-display font-bold text-2xl" data-i18n="whatToCheck">What do you want to check?</h1>
+        <button id="btnHomeLanguage" type="button" aria-label="Change language"
+          class="shrink-0 flex items-center gap-1.5 rounded-full border border-line bg-panel px-3 py-1.5 text-xs font-medium text-neutral-200 mt-1">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4"><circle cx="12" cy="12" r="9" stroke-width="1.6"/><path d="M3 12h18M12 3c2.5 2.7 4 6 4 9s-1.5 6.3-4 9c-2.5-2.7-4-6-4-9s1.5-6.3 4-9z" stroke-width="1.6"/></svg>
+          <span>文/A</span>
+        </button>
+      </div>
       <p class="text-sm text-neutral-400 mb-4" data-i18n="pickCategory">Pick a category — generic icons only, no official branding copied.</p>
 
       <div id="dashboardGrid" class="grid grid-cols-2 gap-3 mb-6"></div>
@@ -369,20 +376,22 @@
         Back to Home
       </button>
       <div class="flex items-center gap-4 mb-4">
-        <<!-- Premium Founder Typography Block -->
-<div class="mt-4 text-center sm:text-left">
-    <h3 class="text-2xl sm:text-3xl font-extrabold tracking-tight bg-gradient-to-r from-white via-neutral-200 to-neutral-400 bg-clip-text text-transparent font-sans">
-        Imtiyaz Surjapuri
-    </h3>
-    <div class="mt-1.5 flex flex-wrap items-center gap-2 justify-center sm:justify-start">
-        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-500/10 text-red-400 border border-red-500/20 tracking-wide uppercase">
-            Founder
-        </span>
-        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-neutral-800 text-neutral-300 border border-neutral-700 tracking-wide uppercase">
-            Lead Developer
-        </span>
-    </div>
-</div> 
+        <img src="./assets/founder/imtiyaz.jpg" alt="Imtiyaz Surjapuri" class="w-16 h-16 rounded-full object-cover border border-line shrink-0" onerror="this.style.display='none'">
+        <!-- Premium Founder Typography Block -->
+        <div class="text-left">
+          <h3 class="text-2xl sm:text-3xl font-extrabold tracking-tight bg-gradient-to-r from-white via-neutral-200 to-neutral-400 bg-clip-text text-transparent font-sans">
+            Imtiyaz Surjapuri
+          </h3>
+          <div class="mt-1.5 flex flex-wrap items-center gap-2">
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-500/10 text-red-400 border border-red-500/20 tracking-wide uppercase">
+              Founder
+            </span>
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-neutral-800 text-neutral-300 border border-neutral-700 tracking-wide uppercase">
+              Lead Developer
+            </span>
+          </div>
+        </div>
+      </div>
 
       <h3 class="text-sm font-semibold text-neutral-300 mb-2">Other Projects</h3>
       <div id="founderPortfolioGrid" class="grid grid-cols-2 gap-3 mb-5"></div>
@@ -607,6 +616,7 @@
 <script src="js/lang.js"></script>
 <script src="js/risk-engine-core.js"></script>
 <script src="js/free-intel-check.js"></script>
+<script src="js/verification-engine.js"></script>
 <script src="js/ad-gate.js"></script>
 <script src="js/consent.js"></script>
 <script src="js/panic-mode.js"></script>

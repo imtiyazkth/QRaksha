@@ -536,11 +536,13 @@ a:focus-visible, button:focus-visible, input:focus-visible, [tabindex]:focus-vis
 --------------------------------------------------------------------- */
 .qrv-social-icon{
   display: flex; align-items: center; justify-content: center;
-  width: 44px; height: 44px; border-radius: 14px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.35);
-  transition: transform .15s ease;
+  width: 56px; height: 56px; border-radius: 18px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.45);
+  transition: transform .18s ease, box-shadow .18s ease, opacity .18s ease;
 }
-.qrv-social-icon:active{ transform: scale(0.92); }
+.qrv-social-icon svg{ width: 26px; height: 26px; }
+.qrv-social-icon:hover{ transform: translateY(-2px) scale(1.05); box-shadow: 0 8px 20px rgba(0,0,0,0.55); opacity: 0.92; }
+.qrv-social-icon:active{ transform: scale(0.94); }
 
 .qrv-portfolio-card:active{ transform: scale(0.97); }
 

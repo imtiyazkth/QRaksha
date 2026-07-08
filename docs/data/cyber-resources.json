@@ -49,24 +49,14 @@
       "supported": true
     },
     {
-      "id": "deepfake",
-      "icon": "🎭",
-      "label": "Deepfake Media",
-      "desc": "Report manipulated media",
+      "id": "govt_data",
+      "icon": "🛡️",
+      "label": "Verify with Government Data",
+      "desc": "Source: Cyber Crime Portal",
       "route": "external",
       "url": "https://cybercrime.gov.in",
-      "supported": false,
-      "note": "QRaksha doesn't run deepfake-detection AI yet — this routes to the official reporting portal instead of a fake result."
-    },
-    {
-      "id": "app",
-      "icon": "📦",
-      "label": "Mobile App (.apk)",
-      "desc": "Inspect modded / untrusted installs",
-      "route": "external",
-      "url": "https://cybercrime.gov.in",
-      "supported": false,
-      "note": "APK inspection needs a dedicated static-analysis engine QRaksha doesn't have built yet — routes to official reporting for now."
+      "supported": true,
+      "featured": true
     }
   ],
   "awareness": [

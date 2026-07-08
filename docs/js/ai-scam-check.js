@@ -41,6 +41,31 @@ window.QRVAiScamCheck = (function () {
     return { flags };
   }
 
+  /* ------------------------------------------------------------------
+     If the pasted text IS a bare URL (nothing else), also run it through
+     the sharper URL-specific engine (suspicious TLDs, lookalike brands,
+     fast-flux subdomain patterns, phishunt.io live feed, global
+     government-signature database) — the generic message rules above
+     only look for known scam PHRASES, so a link like "https://blocklog.xyz"
+     with no scam wording in it previously showed "no risk found" even
+     though the TLD/structure itself is a real signal.
+  ------------------------------------------------------------------ */
+  async function urlSpecificCheck(text) {
+    const trimmed = text.trim();
+    const isBareUrl = /^https?:\/\/\S+$/i.test(trimmed) && !/\s/.test(trimmed);
+    if (!isBareUrl || !window.QRVVerification) return [];
+    try {
+      const verdict = await window.QRVVerification.handleVerificationCheck("WEBSITE_URL", trimmed);
+      if (!verdict || !verdict.details) return [];
+      const severity = verdict.level === "danger" ? "critical" : verdict.level === "warn" ? "high" : verdict.level === "info" ? "medium" : "low";
+      return verdict.details
+        .filter((d) => !d.startsWith("No known")) // skip the "all clear" filler line
+        .map((d) => ({ severity, message: d, source: "url-engine" }));
+    } catch (e) {
+      return [];
+    }
+  }
+
   function scoreFromFlags(flags) {
     if (!flags.length) return 5;
     return Math.min(100, Math.max(...flags.map((f) => SEVERITY_WEIGHT[f.severity] || 10)));
@@ -112,6 +137,8 @@ window.QRVAiScamCheck = (function () {
   ------------------------------------------------------------------ */
   async function runMessageCheck(text) {
     const offline = offlineMessageCheck(text);
+    const urlFlags = await urlSpecificCheck(text);
+    offline.flags = [...offline.flags, ...urlFlags];
     const freeIntel = await window.QRVFreeIntel.checkText(text);
     let result = combineResults({ offline, freeIntel, ai: null });
     renderMessageResult(result, { aiRan: false });

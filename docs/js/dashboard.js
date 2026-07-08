@@ -37,13 +37,25 @@ window.QRVDashboard = (function () {
     categories.forEach((cat) => {
       const btn = document.createElement("button");
       btn.type = "button";
-      btn.className = "flex flex-col items-start gap-1 rounded-2xl bg-panel border border-line p-4 text-left";
-      btn.innerHTML = `
-        <span class="text-2xl" aria-hidden="true">${cat.icon}</span>
-        <span class="font-medium text-sm text-neutral-100">${cat.label}</span>
-        <span class="text-[11px] text-neutral-500">${cat.desc}</span>
-        ${cat.supported === false ? '<span class="text-[10px] text-warn mt-1">Coming soon — routes to official report portal</span>' : ""}
-      `;
+      if (cat.featured) {
+        btn.className = "col-span-2 flex items-center gap-3 rounded-2xl p-4 text-left bg-gradient-to-r from-[#0B2E6B] to-[#123a82] border border-blue-400/30 shadow-[0_0_16px_rgba(29,78,216,0.35)]";
+        btn.innerHTML = `
+          <span class="text-2xl shrink-0" aria-hidden="true">${cat.icon}</span>
+          <span class="flex-1 min-w-0">
+            <span class="block font-semibold text-sm text-white">${cat.label}</span>
+            <span class="block text-[11px] text-blue-200">${cat.desc}</span>
+          </span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4 text-blue-200 shrink-0"><path d="M7 17L17 7M9 7h8v8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        `;
+      } else {
+        btn.className = "flex flex-col items-start gap-1 rounded-2xl bg-panel border border-line p-4 text-left";
+        btn.innerHTML = `
+          <span class="text-2xl" aria-hidden="true">${cat.icon}</span>
+          <span class="font-medium text-sm text-neutral-100">${cat.label}</span>
+          <span class="text-[11px] text-neutral-500">${cat.desc}</span>
+          ${cat.supported === false ? '<span class="text-[10px] text-warn mt-1">Coming soon — routes to official report portal</span>' : ""}
+        `;
+      }
       btn.addEventListener("click", () => {
         if (cat.route === "external" && cat.url) {
           window.open(cat.url, "_blank", "noopener,noreferrer");

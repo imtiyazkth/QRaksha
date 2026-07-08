@@ -92,6 +92,48 @@ window.QRVVerification = (function () {
   /* ------------------------------------------------------------------
      2. CORE ROUTER
   ------------------------------------------------------------------ */
+  /* ------------------------------------------------------------------
+     International Government-Agency Scam Signature Database
+     (FBI IC3, CISA, UK Action Fraud/NCSC, UAE TDRA, INTERPOL, Chainalysis,
+     CAFC, Qatar MoI, Dubai Police). Loaded once, matched by exact string.
+  ------------------------------------------------------------------ */
+  let globalSigCache = null;
+  async function loadGlobalSignatures() {
+    if (globalSigCache) return globalSigCache;
+    try {
+      const res = await fetch("data/global-scam-signatures.json");
+      const data = await res.json();
+      globalSigCache = data.category_type_mapping || {};
+    } catch (e) {
+      globalSigCache = {};
+    }
+    return globalSigCache;
+  }
+
+  async function checkGlobalSignature(input) {
+    const db = await loadGlobalSignatures();
+    if (db[input]) return db[input];
+    const normalized = input.trim().toLowerCase();
+    const hit = Object.keys(db).find((k) => k.toLowerCase() === normalized);
+    return hit ? db[hit] : null;
+  }
+
+  function buildGlobalSignatureVerdict(entry, input) {
+    const level = entry.risk_score === "CRITICAL" ? "danger" : entry.risk_score === "HIGH" ? "warn" : "info";
+    return {
+      level,
+      title: `${entry.scam_type} — flagged by ${entry.source_agency}`,
+      details: [
+        entry.action_payload,
+        `Country/region: ${entry.country_origin}. Verify independently at: ${entry.verification_link}`,
+      ],
+      raw: input,
+      riskScore: level === "danger" ? 100 : level === "warn" ? 65 : 30,
+      fromGlobalDb: true,
+      verificationLink: entry.verification_link,
+    };
+  }
+
   async function handleVerificationCheck(category, userInput) {
     const input = (userInput || "").trim();
     if (!input) {
@@ -99,6 +141,12 @@ window.QRVVerification = (function () {
     }
 
     try {
+      // Layer 0: international government-agency signature database.
+      const globalHit = await checkGlobalSignature(input);
+      if (globalHit) {
+        return buildGlobalSignatureVerdict(globalHit, input);
+      }
+
       // Community layer: instant check against crowd-reported exact
       // matches, before running the slower local regex/keyword analysis.
       if (window.QRVFirebase && window.QRVFirebase.checkScamSignature) {
@@ -513,5 +561,5 @@ window.QRVVerification = (function () {
     container.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 
-  return { handleVerificationCheck, renderVerdictCard, INTEL };
+  return { handleVerificationCheck, renderVerdictCard, INTEL, checkGlobalSignature, buildGlobalSignatureVerdict };
 })();

@@ -47,12 +47,32 @@
   ------------------------------------------------------------------ */
   let lastDecodedText = null;
 
-  window.addEventListener("qrv:qr-decoded", (e) => {
+  window.addEventListener("qrv:qr-decoded", async (e) => {
     lastDecodedText = e.detail.rawText;
     const parsed = window.QRVEngine.parseQRContent(lastDecodedText);
     const brand = window.QRVEngine.detectBrand(parsed);
     const risk = window.QRVEngine.computeRisk(parsed);
     const explanation = window.QRVEngine.buildExplanation(parsed, risk, brand);
+
+    // International government-agency signature database cross-check —
+    // covers UPI/intent/SWIFT payment strings and crypto wallet addresses
+    // that can appear as raw QR content, not just URLs. Runs before the
+    // card renders so a hit is folded straight into the same result the
+    // user is already looking at.
+    if (window.QRVVerification) {
+      try {
+        const globalHit = await window.QRVVerification.checkGlobalSignature(lastDecodedText.trim());
+        if (globalHit) {
+          risk.level = "critical";
+          risk.score = 100;
+          risk.flags = [
+            { severity: "critical", message: `${globalHit.scam_type} — flagged by ${globalHit.source_agency}. ${globalHit.action_payload}` },
+            { severity: "critical", message: `Verify independently at: ${globalHit.verification_link}` },
+            ...(risk.flags || []),
+          ];
+        }
+      } catch (err) { /* signature DB unavailable — local analysis still shown */ }
+    }
 
     // Instant notification the moment the QR is decoded — before the
     // rest of the result card even finishes rendering below.
@@ -432,6 +452,13 @@
     const completed = await window.QRVAdGate.adGate("interstitial");
     if (completed) $("settingsModal").hidden = false;
   });
+  if ($("btnHomeLanguage")) {
+    $("btnHomeLanguage").addEventListener("click", () => {
+      $("settingsModal").hidden = false;
+      const langSection = document.getElementById("langPickerOptions");
+      if (langSection) langSection.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+  }
   $("btnCloseSettings").addEventListener("click", () => { $("settingsModal").hidden = true; });
   if ($("btnSettingsHome")) {
     $("btnSettingsHome").addEventListener("click", () => {
