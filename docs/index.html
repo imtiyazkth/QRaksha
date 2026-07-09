@@ -99,14 +99,14 @@
 
 <body class="bg-ink text-neutral-100 font-body antialiased" data-theme="dark">
 
-<div id="appWrapper" class="max-w-[480px] mx-auto min-h-screen flex flex-col relative shadow-2xl">
+<div id="appWrapper" class="max-w-4xl w-full mx-auto min-h-screen flex flex-col relative shadow-2xl">
 
   <!-- ============================================================
        POINT 2 — Scan Alert Banner (Panic Mode trigger)
   ============================================================ -->
 <!-- QRaksha Hyper-Visible Emergency Panic Container -->
 <div class="sticky top-0 z-50 w-full bg-gradient-to-r from-red-800 via-red-600 to-red-800 shadow-[0_4px_20px_rgba(239,68,68,0.4)]">
-    <button id="btnOpenPanicMode" type="button" class="w-full max-w-4xl mx-auto flex items-center justify-center gap-2 py-3 px-4 font-black tracking-wide text-white animate-pulse text-xs sm:text-sm uppercase" data-i18n="scannedRightNow">
+    <button id="btnOpenPanicMode" type="button" class="w-full max-w-4xl mx-auto flex items-center justify-center gap-2 py-3 px-4 font-black tracking-wide text-white animate-pulse text-xs sm:text-sm uppercase" data-i18n="scammedRightNow">
         <span aria-hidden="true" class="text-lg flex-shrink-0">🚨</span>
         <span id="panic-banner-text">Being scammed right now? Tap here for immediate help / क्या आपके साथ अभी धोखाधड़ी हो रही है? तुरंत मदद के लिए यहाँ टैप करें</span>
     </button>
@@ -121,7 +121,7 @@
   <!-- ============================================================
        MAIN TAB PANELS
   ============================================================ -->
-  <main class="flex-1 overflow-y-auto pb-24">
+  <main class="flex-1 min-h-0 overflow-y-visible pb-32">
 
     <!-- ---------------- HOME TAB (new landing screen) ---------------- -->
     <section id="tabHome" class="tab-panel px-4 pt-4">
@@ -316,7 +316,7 @@
   <!-- ============================================================
        POINT 9 / 15 — Bottom navigation
   ============================================================ -->
-  <nav class="fixed bottom-0 left-0 right-0 max-w-[480px] mx-auto bg-panel border-t border-line grid grid-cols-5 z-30">
+  <nav class="fixed bottom-0 left-0 right-0 max-w-4xl mx-auto bg-panel border-t border-line grid grid-cols-5 z-30">
     <button class="qrv-navbtn is-active" data-tab="tabHome"><span>🏠</span><span data-i18n="home">Home</span></button>
     <button class="qrv-navbtn" data-tab="tabScan"><span>🔍</span><span data-i18n="scan">Scan</span></button>
     <button class="qrv-navbtn" data-tab="tabGenerate"><span>➕</span><span data-i18n="generate">Generate</span></button>
@@ -480,6 +480,24 @@
            data-i18n="reportPortalLabel">
           Report at cybercrime.gov.in
         </a>
+
+        <!-- Immediate Quick-Switch language row — zero-friction localization
+             right where a panicking user needs it, no digging through Settings -->
+        <div class="pt-3 mt-1 border-t border-white/10">
+          <label for="inlineLanguagePicker" class="block text-[11px] text-gray-400 mb-1.5 text-center">Change language / भाषा बदलें</label>
+          <select id="inlineLanguagePicker"
+            class="w-full rounded-xl bg-gray-900 border border-red-500/40 text-white text-sm p-2.5 text-center">
+            <option value="English">English</option>
+            <option value="Hindi">हिन्दी — Hindi</option>
+            <option value="Bengali">বাংলা — Bengali</option>
+            <option value="Telugu">తెలుగు — Telugu</option>
+            <option value="Marathi">मराठी — Marathi</option>
+            <option value="Tamil">தமிழ் — Tamil</option>
+            <option value="Urdu">اردو — Urdu</option>
+            <option value="Gujarati">ગુજરાતી — Gujarati</option>
+            <option value="Kannada">ಕನ್ನಡ — Kannada</option>
+          </select>
+        </div>
 
         <!-- Compliance transparency notice -->
         <p class="text-[11px] text-gray-400 tracking-normal block text-center mt-1 italic leading-snug">

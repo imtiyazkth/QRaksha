@@ -184,9 +184,31 @@ window.QRVLang = (function () {
     });
   }
 
+  // Inline quick-switch <select> inside the Emergency Portal (Module 1).
+  // Only lists the 9 languages that actually have verified translations —
+  // deliberately not the full 22-language LANGUAGES list, since this
+  // control sits in a panic/emergency context where a "(beta, may fall
+  // back to English)" caveat would be the wrong thing to show.
+  function wireInlinePicker() {
+    const select = document.getElementById("inlineLanguagePicker");
+    if (!select) return;
+    select.value = getSaved();
+    select.addEventListener("change", () => {
+      save(select.value);
+      applyToDom();
+      renderPicker();
+      document.dispatchEvent(new CustomEvent("qrv:lang-changed", { detail: { lang: select.value } }));
+    });
+    // Keep in sync if the language is changed from the Settings picker instead.
+    document.addEventListener("qrv:lang-changed", (e) => {
+      if (select.value !== e.detail.lang) select.value = e.detail.lang;
+    });
+  }
+
   function init() {
     applyToDom();
     renderPicker();
+    wireInlinePicker();
   }
 
   // Exposed so ai-scam-check.js / mobile-app.js can pass the current

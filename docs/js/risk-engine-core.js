@@ -9,6 +9,26 @@
 window.QRVEngine = (function () {
   "use strict";
 
+  /* ------------------------------------------------------------------
+     BUGFIX (2026-07-09): these two arrays were referenced by
+     parseQRContent()/computeRisk() below but never actually copied over
+     during the extraction from qr-verify-core.js, so any URL-type QR
+     scanned through the mobile-app.js path (window.QRVEngine.*) threw
+     "SHORTENERS is not defined" / "SUSPICIOUS_KEYWORDS is not defined"
+     and crashed before producing a result. Restored to match the
+     canonical lists in qr-verify-core.js so both engines score
+     identically instead of drifting out of sync.
+  ------------------------------------------------------------------ */
+  const SHORTENERS = [
+    "bit.ly", "tinyurl.com", "cutt.ly", "rebrand.ly", "t.co", "is.gd",
+    "ow.ly", "shorturl.at", "buff.ly", "shorte.st", "adf.ly", "lnkd.in", "tiny.cc",
+  ];
+
+  const SUSPICIOUS_KEYWORDS = [
+    "login", "verify", "reward", "gift", "bonus", "otp", "bank", "payment",
+    "wallet", "update", "free", "urgent", "win", "crypto", "secure", "confirm", "suspend",
+  ];
+
   function parseQRContent(raw) {
     const text = (raw || "").trim();
     const result = {
