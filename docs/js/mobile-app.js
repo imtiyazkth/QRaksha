@@ -537,6 +537,15 @@
     $("btnClosePrivacy").addEventListener("click", () => { $("privacyModal").hidden = true; });
   }
 
+  // Same "About the Founder" / "Privacy Policy" buttons, duplicated at the
+  // bottom of the Home tab so they're reachable without opening Settings.
+  if ($("btnOpenFounderHome")) {
+    $("btnOpenFounderHome").addEventListener("click", () => { $("founderModal").hidden = false; });
+  }
+  if ($("btnOpenPrivacyHome")) {
+    $("btnOpenPrivacyHome").addEventListener("click", () => { $("privacyModal").hidden = false; });
+  }
+
   /* ------------------------------------------------------------------
      Boot
   ------------------------------------------------------------------ */

@@ -153,6 +153,13 @@
         <p class="text-xs text-neutral-400 mb-3">Agar aap hamare app ka istemal karke kisi dhokhadhadi ya fraud se bache hain, toh apni kahani hamare sath saja karein. Aapki kahani social media aur public awareness ke liye share ki jayegi.</p>
         <button id="btnOpenStoryForm" type="button" class="w-full py-2.5 rounded-xl bg-amber text-ink text-sm font-semibold">Share Your Success Story</button>
       </div>
+
+      <!-- About & Transparency — bottom of Home tab, always reachable without opening Settings -->
+      <h2 class="font-display font-bold text-lg mb-2">About &amp; Transparency</h2>
+      <div class="space-y-2 mb-8">
+        <button id="btnOpenFounderHome" type="button" class="w-full text-left py-3 px-4 rounded-xl border border-line text-sm text-neutral-200 bg-panel">About the Founder</button>
+        <button id="btnOpenPrivacyHome" type="button" class="w-full text-left py-3 px-4 rounded-xl border border-line text-sm text-neutral-200 bg-panel">Privacy Policy</button>
+      </div>
     </section>
 
     <!-- ---------------- SCAN TAB ---------------- -->
@@ -375,21 +382,21 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4"><path d="M15 18l-6-6 6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         Back to Home
       </button>
-      <div class="flex items-center gap-4 mb-4">
-        <img src="https://i.postimg.cc/NFfYBcd1/output-onlinepngtools.png" alt="Imtiyaz Surjapuri" class="w-16 h-16 rounded-full object-cover border border-line shrink-0" onerror="this.style.display='none'">
-        <!-- Premium Founder Typography Block -->
-        <div class="text-left">
-          <h3 class="text-2xl sm:text-3xl font-extrabold tracking-tight bg-gradient-to-r from-white via-neutral-200 to-neutral-400 bg-clip-text text-transparent font-sans">
-            Imtiyaz Surjapuri
-          </h3>
-          <div class="mt-1.5 flex flex-wrap items-center gap-2">
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-500/10 text-red-400 border border-red-500/20 tracking-wide uppercase">
-              Founder
-            </span>
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-neutral-800 text-neutral-300 border border-neutral-700 tracking-wide uppercase">
-              Lead Developer
-            </span>
-          </div>
+      <img src="https://i.postimg.cc/NFfYBcd1/output-onlinepngtools.png" alt="Imtiyaz Surjapuri"
+        class="w-full aspect-square object-cover rounded-2xl border border-line mb-4"
+        onerror="this.style.display='none'">
+      <!-- Premium Founder Typography Block -->
+      <div class="text-left mb-5">
+        <h3 class="text-2xl sm:text-3xl font-extrabold tracking-tight bg-gradient-to-r from-white via-neutral-200 to-neutral-400 bg-clip-text text-transparent font-sans">
+          Imtiyaz Surjapuri
+        </h3>
+        <div class="mt-1.5 flex flex-wrap items-center gap-2">
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-500/10 text-red-400 border border-red-500/20 tracking-wide uppercase">
+            Founder
+          </span>
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-neutral-800 text-neutral-300 border border-neutral-700 tracking-wide uppercase">
+            Lead Developer
+          </span>
         </div>
       </div>
 
@@ -397,18 +404,30 @@
       <div id="founderPortfolioGrid" class="grid grid-cols-2 gap-3 mb-5"></div>
 
       <h3 class="text-sm font-semibold text-neutral-300 mb-2">Connect</h3>
-      <div class="flex flex-wrap gap-3 mb-5">
-        <a href="https://facebook.com/ImtiyaSurjapuri" target="_blank" rel="noopener noreferrer" aria-label="Facebook" class="qrv-social-icon" style="background:#0866FF">
-          <svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-white"><path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5 3.66 9.15 8.44 9.94v-7.03H7.9v-2.9h2.54V9.85c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.44 2.9h-2.34V22c4.78-.79 8.44-4.94 8.44-9.94z"/></svg>
+      <div class="space-y-2 mb-5">
+        <a href="https://facebook.com/ImtiyaSurjapuri" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 rounded-xl border border-line px-4 py-2.5 text-sm text-neutral-200">
+          <span class="qrv-social-icon shrink-0" style="background:#0866FF">
+            <svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-white"><path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5 3.66 9.15 8.44 9.94v-7.03H7.9v-2.9h2.54V9.85c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.44 2.9h-2.34V22c4.78-.79 8.44-4.94 8.44-9.94z"/></svg>
+          </span>
+          Facebook — ImtiyaSurjapuri
         </a>
-        <a href="https://instagram.com/ImtiyazSurjapuri" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="qrv-social-icon" style="background:radial-gradient(circle at 30% 110%, #fdf497 0%, #fd5949 45%, #d6249f 60%, #285AEB 90%)">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-5 h-5 text-white"><rect x="3" y="3" width="18" height="18" rx="5" stroke-width="1.8"/><circle cx="12" cy="12" r="4" stroke-width="1.8"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+        <a href="https://instagram.com/ImtiyazSurjapuri" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 rounded-xl border border-line px-4 py-2.5 text-sm text-neutral-200">
+          <span class="qrv-social-icon shrink-0" style="background:radial-gradient(circle at 30% 110%, #fdf497 0%, #fd5949 45%, #d6249f 60%, #285AEB 90%)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-5 h-5 text-white"><rect x="3" y="3" width="18" height="18" rx="5" stroke-width="1.8"/><circle cx="12" cy="12" r="4" stroke-width="1.8"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+          </span>
+          Instagram — ImtiyazSurjapuri
         </a>
-        <a href="https://x.com/Imtiyazkth" target="_blank" rel="noopener noreferrer" aria-label="X" class="qrv-social-icon" style="background:#000000">
-          <svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 text-white"><path d="M18.9 2H22l-7.6 8.7L23 22h-6.6l-5.2-6.8L5 22H1.9l8.1-9.3L1 2h6.8l4.7 6.3L18.9 2zm-1.2 18h1.8L7.4 4H5.5l12.2 16z"/></svg>
+        <a href="https://x.com/Imtiyazkth" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 rounded-xl border border-line px-4 py-2.5 text-sm text-neutral-200">
+          <span class="qrv-social-icon shrink-0" style="background:#000000">
+            <svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 text-white"><path d="M18.9 2H22l-7.6 8.7L23 22h-6.6l-5.2-6.8L5 22H1.9l8.1-9.3L1 2h6.8l4.7 6.3L18.9 2zm-1.2 18h1.8L7.4 4H5.5l12.2 16z"/></svg>
+          </span>
+          X — Imtiyazkth
         </a>
-        <a href="https://youtube.com/@imtiyazvedio" target="_blank" rel="noopener noreferrer" aria-label="YouTube" class="qrv-social-icon" style="background:#FF0000">
-          <svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-white"><path d="M23 12s0-3.6-.46-5.3a3 3 0 0 0-2.1-2.1C18.7 4 12 4 12 4s-6.7 0-8.44.6a3 3 0 0 0-2.1 2.1C1 8.4 1 12 1 12s0 3.6.46 5.3a3 3 0 0 0 2.1 2.1C5.3 20 12 20 12 20s6.7 0 8.44-.6a3 3 0 0 0 2.1-2.1C23 15.6 23 12 23 12z" stroke="none"/><path d="M10 15.5v-7l6 3.5-6 3.5z" fill="#FF0000" stroke="none"/></svg>
+        <a href="https://youtube.com/@imtiyazvedio" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 rounded-xl border border-line px-4 py-2.5 text-sm text-neutral-200">
+          <span class="qrv-social-icon shrink-0" style="background:#FF0000">
+            <svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-white"><path d="M23 12s0-3.6-.46-5.3a3 3 0 0 0-2.1-2.1C18.7 4 12 4 12 4s-6.7 0-8.44.6a3 3 0 0 0-2.1 2.1C1 8.4 1 12 1 12s0 3.6.46 5.3a3 3 0 0 0 2.1 2.1C5.3 20 12 20 12 20s6.7 0 8.44-.6a3 3 0 0 0 2.1-2.1C23 15.6 23 12 23 12z" stroke="none"/><path d="M10 15.5v-7l6 3.5-6 3.5z" fill="#FF0000" stroke="none"/></svg>
+          </span>
+          YouTube — How Political
         </a>
       </div>
 
