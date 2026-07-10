@@ -1,780 +1,695 @@
-<!DOCTYPE html>
-<html lang="en" class="dark">
+<!doctype html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="description" content="QRaksha — India's free QR scam detection and URL safety app. Scan QR codes, check suspicious links, detect fraud, report to cybercrime helpline.">
-<meta name="theme-color" content="#0a0a0a">
-<title>QRaksha — Scan Safe, Stay Safe</title>
-<link rel="manifest" href="manifest.json">
-<link rel="icon" href="icons/icon-192.png" sizes="192x192">
-<link rel="apple-touch-icon" href="icons/icon-512.png">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>QRaksha — Scan with Privacy</title>
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#0B0E11">
+<link rel="icon" href="./icons/icon-192.png">
+<link rel="apple-touch-icon" href="./icons/icon-192.png">
+<meta name="description" content="QRaksha scans QR codes, messages, and screenshots to catch scams before you fall for them.">
+
 <script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@600&display=swap" rel="stylesheet">
+
 <script>
   tailwind.config = {
-    darkMode: "class",
     theme: {
       extend: {
-        fontFamily: { display: ["'Inter'","system-ui","sans-serif"] },
         colors: {
-          ink:   { DEFAULT: "#0a0a0a" },
-          panel: { DEFAULT: "#111111" },
-          card:  { DEFAULT: "#1a1a1a" },
-          line:  { DEFAULT: "#2a2a2a" },
-          amber: { DEFAULT: "#FFB020" },
+          ink: "#0B0E11",
+          panel: "#12161B",
+          line: "#232A31",
+          amber: "#FFB020",
+          safe: "#22C55E",
+          warn: "#F5A524",
+          danger: "#EF4444",
         },
-      }
-    }
+        fontFamily: {
+          display: ["'Space Grotesk'", "sans-serif"],
+          body: ["Inter", "sans-serif"],
+          mono: ["'JetBrains Mono'", "monospace"],
+        },
+      },
+    },
   };
 </script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<style>
-  *,*::before,*::after{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  html{background:#0a0a0a;color:#e5e5e5;font-family:'Inter',system-ui,sans-serif;scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-  body{margin:0;padding:0;min-height:100dvh;background:#0a0a0a;overscroll-behavior:none}
-  /* Scrolling: body scrolls, nothing nested */
-  #appWrapper{max-width:56rem;margin:0 auto;min-height:100dvh;display:flex;flex-direction:column;box-shadow:0 0 60px rgba(0,0,0,.6)}
-  main{flex:1;min-height:0;overflow-y:visible;padding-bottom:7rem}
-  .tab-panel{display:none}
-  .tab-panel.is-active{display:block}
-  /* Nav */
-  .qrv-navbtn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;flex:1;padding:.55rem .25rem .4rem;font-size:10px;font-weight:600;color:#737373;transition:color .15s,background .15s;border:none;background:none;cursor:pointer;letter-spacing:.02em}
-  .qrv-navbtn.is-active{color:#FFB020}
-  .qrv-navbtn span:first-child{font-size:18px;line-height:1}
-  /* Cards */
-  .qrv-card{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:16px;padding:1rem;transition:border-color .2s,transform .15s;cursor:pointer;user-select:none}
-  .qrv-card:hover{border-color:#3a3a3a}
-  .qrv-card:active{transform:scale(.97)}
-  /* Buttons */
-  .btn-primary{background:#FFB020;color:#0a0a0a;font-weight:700;border:none;border-radius:12px;padding:.7rem 1.25rem;font-size:.9rem;cursor:pointer;transition:opacity .15s,transform .15s;width:100%}
-  .btn-primary:hover{opacity:.88}
-  .btn-primary:active{transform:scale(.97)}
-  .btn-outline{background:transparent;color:#e5e5e5;font-weight:600;border:1px solid #2a2a2a;border-radius:12px;padding:.65rem 1.25rem;font-size:.875rem;cursor:pointer;transition:border-color .2s,transform .15s;width:100%}
-  .btn-outline:hover{border-color:#3a3a3a}
-  .btn-outline:active{transform:scale(.97)}
-  /* Input */
-  .qrv-input{width:100%;background:#111;border:1px solid #2a2a2a;border-radius:12px;padding:.75rem 1rem;font-size:.95rem;color:#e5e5e5;outline:none;transition:border-color .2s}
-  .qrv-input:focus{border-color:#FFB020}
-  .qrv-input::placeholder{color:#555}
-  /* Badge pill */
-  .badge{display:inline-flex;align-items:center;padding:.2rem .65rem;border-radius:9999px;font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
-  /* Risk verdict colours */
-  .risk-safe{background:#14532d;color:#86efac}
-  .risk-low{background:#1c3a52;color:#7dd3fc}
-  .risk-suspicious{background:#713f12;color:#fde68a}
-  .risk-high{background:#7f1d1d;color:#fca5a5}
-  .risk-confirmed{background:#450a0a;color:#f87171}
-  /* Panic banner */
-  #panicBanner{background:linear-gradient(90deg,#991b1b,#dc2626,#991b1b);animation:qrv-pulse-banner 2.5s ease-in-out infinite}
-  @keyframes qrv-pulse-banner{0%,100%{opacity:1}50%{opacity:.82}}
-  /* Language first-visit screen */
-  #langGate{position:fixed;inset:0;z-index:100;background:#0a0a0a;display:flex;flex-direction:column;overflow-y:auto}
-  #langGate.hidden{display:none}
-  .lang-pill{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:12px;padding:.55rem 1rem;font-size:.875rem;font-weight:500;color:#e5e5e5;cursor:pointer;text-align:center;transition:border-color .2s,background .2s}
-  .lang-pill:hover,.lang-pill.selected{border-color:#FFB020;background:#FFB020;color:#0a0a0a}
-  /* Social icon */
-  .social-row{display:flex;align-items:center;gap:.75rem;padding:.65rem 1rem;border:1px solid #2a2a2a;border-radius:12px;color:#e5e5e5;font-size:.875rem;text-decoration:none;transition:border-color .2s}
-  .social-row:hover{border-color:#3a3a3a}
-  .social-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-  /* Modal */
-  .qrv-modal{position:fixed;inset:0;z-index:60;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.7)}
-  .qrv-modal[hidden]{display:none}
-  .qrv-sheet{width:100%;max-width:56rem;max-height:90dvh;overflow-y:auto;background:#111;border-radius:24px 24px 0 0;padding:1.5rem;border-top:1px solid #2a2a2a}
-  /* Section headings */
-  .section-head{font-size:1.1rem;font-weight:700;color:#e5e5e5;margin-bottom:.75rem}
-  /* Toast */
-  #toast{position:fixed;bottom:5.5rem;left:50%;transform:translateX(-50%);background:#1a1a1a;border:1px solid #2a2a2a;color:#e5e5e5;font-size:.8rem;font-weight:600;padding:.5rem 1.25rem;border-radius:9999px;z-index:90;opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap}
-  #toast.show{opacity:1}
-  /* Scrollbar */
-  ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#2a2a2a;border-radius:2px}
-  /* Back btn */
-  .back-btn{display:flex;align-items:center;gap:.4rem;font-size:.8rem;color:#737373;background:none;border:none;cursor:pointer;padding:0;margin-bottom:1rem}
-  .back-btn:hover{color:#e5e5e5}
-  /* Setup guide section pill */
-  .guide-step{display:flex;gap:1rem;align-items:flex-start;padding:.85rem;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:12px}
-  .guide-num{width:28px;height:28px;border-radius:9999px;background:#FFB020;color:#0a0a0a;font-weight:800;font-size:.8rem;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-  code,.code-block{font-family:'Courier New',monospace;background:#0a0a0a;border:1px solid #2a2a2a;border-radius:8px;padding:.15rem .45rem;font-size:.78rem;color:#a3e635}
-  pre.code-block{padding:.75rem 1rem;overflow-x:auto;line-height:1.6;white-space:pre}
-</style>
-</head>
-<body>
 
-<!-- ============================================================
-     LANGUAGE GATE — shown on first visit, dismissed on pick
-============================================================ -->
-<div id="langGate">
-  <div class="px-5 pt-12 pb-8 flex-1">
-    <div class="max-w-sm mx-auto">
-      <div class="text-center mb-8">
-        <div class="text-5xl mb-3">🛡️</div>
-        <h1 class="text-3xl font-black tracking-tight text-white mb-1">QRaksha</h1>
-        <p class="text-sm text-neutral-400">QR Scam Detection · Cyber Safety</p>
-        <p class="text-xs text-neutral-500 mt-1">India's free, multilingual fraud protection app</p>
-      </div>
-      <p class="text-center text-sm font-semibold text-neutral-300 mb-4">Choose your language / अपनी भाषा चुनें</p>
-      <div id="langGateGrid" class="grid grid-cols-2 gap-2.5"></div>
-      <button id="btnLangGateContinue" class="btn-primary mt-6 hidden">Continue →</button>
-      <p class="text-center text-xs text-neutral-600 mt-4">You can change this later in Settings</p>
-    </div>
-  </div>
+<style>
+  /* Things Tailwind's utility classes can't express cleanly: the scan
+     laser animation and corner brackets — the one deliberate "signature"
+     visual moment of this redesign. */
+  @keyframes scanLaser {
+    0%   { top: 8%; opacity: 0; }
+    10%  { opacity: 1; }
+    90%  { opacity: 1; }
+    100% { top: 88%; opacity: 0; }
+  }
+  .scan-laser {
+    position: absolute; left: 6%; right: 6%; height: 2px;
+    background: linear-gradient(90deg, transparent, #FFB020 20%, #FFB020 80%, transparent);
+    box-shadow: 0 0 12px 2px rgba(255,176,32,0.6);
+    animation: scanLaser 2.6s ease-in-out infinite;
+  }
+  .scan-corner { position: absolute; width: 28px; height: 28px; border: 3px solid #22C55E; }
+  .scan-corner--tl { top: 8%; left: 6%; border-right: none; border-bottom: none; border-radius: 6px 0 0 0; }
+  .scan-corner--tr { top: 8%; right: 6%; border-left: none; border-bottom: none; border-radius: 0 6px 0 0; }
+  .scan-corner--bl { bottom: 12%; left: 6%; border-right: none; border-top: none; border-radius: 0 0 0 6px; }
+  .scan-corner--br { bottom: 12%; right: 6%; border-left: none; border-top: none; border-radius: 0 0 6px 0; }
+  @media (prefers-reduced-motion: reduce) { .scan-laser { animation: none; top: 50%; } }
+
+  #scanViewport video { width: 100%; height: 100%; object-fit: cover; }
+  .qrv-viewport--boxed { aspect-ratio: 1 / 1 !important; max-width: 82%; margin: 0 auto; border-radius: 20px; overflow: hidden; }
+
+  /* --------------------------------------------------------------------
+     THEME SYSTEM (fixed)
+     Root cause of "no theme button works": this used to be
+     `[data-theme="light"] body {...}` which can never match — body is
+     the ANCESTOR of #appWrapper, not its descendant, so that selector
+     never selects anything. `data-theme` now lives on <body> itself, and
+     every rule below is scoped from there. Accent color drives every
+     "amber" utility class through a single CSS variable so the Custom
+     picker can actually change something.
+  -------------------------------------------------------------------- */
+  :root { --qrv-accent: #FFB020; --qrv-accent-ink: #14181D; }
+  .bg-amber { background-color: var(--qrv-accent) !important; }
+  .text-amber { color: var(--qrv-accent) !important; }
+  .border-amber { border-color: var(--qrv-accent) !important; }
+  .accent-amber { accent-color: var(--qrv-accent) !important; }
+  .qrv-navbtn.is-active { color: var(--qrv-accent) !important; }
+
+  body[data-theme="light"] { color-scheme: light; background:#F4F5F7 !important; color:#14181D !important; }
+  body[data-theme="light"] .bg-ink { background-color:#F4F5F7 !important; }
+  body[data-theme="light"] .bg-panel { background-color:#FFFFFF !important; }
+  body[data-theme="light"] .border-line { border-color:#E1E5EA !important; }
+  body[data-theme="light"] .text-neutral-100,
+  body[data-theme="light"] .text-neutral-200 { color:#14181D !important; }
+  body[data-theme="light"] .text-neutral-300,
+  body[data-theme="light"] .text-neutral-400 { color:#4B5563 !important; }
+  body[data-theme="light"] .text-neutral-500 { color:#6B7280 !important; }
+  body[data-theme="light"] .bg-black\/60,
+  body[data-theme="light"] .bg-black\/70,
+  body[data-theme="light"] .bg-black\/80,
+  body[data-theme="light"] .bg-black\/90 { background-color:rgba(20,24,29,0.75) !important; }
+</style>
+<style>[hidden]{display:none !important;}</style>
+</head>
+
+<body class="bg-ink text-neutral-100 font-body antialiased" data-theme="dark">
+
+<div id="appWrapper" class="max-w-4xl w-full mx-auto min-h-screen flex flex-col relative shadow-2xl">
+
+  <!-- ============================================================
+       POINT 2 — Scan Alert Banner (Panic Mode trigger)
+  ============================================================ -->
+<!-- QRaksha Hyper-Visible Emergency Panic Container -->
+<div class="sticky top-0 z-50 w-full bg-gradient-to-r from-red-800 via-red-600 to-red-800 shadow-[0_4px_20px_rgba(239,68,68,0.4)]">
+    <button id="btnOpenPanicMode" type="button" class="w-full max-w-4xl mx-auto flex items-center justify-center gap-2 py-3 px-4 font-black tracking-wide text-white animate-pulse text-xs sm:text-sm uppercase" data-i18n="scammedRightNow">
+        <span aria-hidden="true" class="text-lg flex-shrink-0">🚨</span>
+        <span id="panic-banner-text">Being scammed right now? Tap here for immediate help / क्या आपके साथ अभी धोखाधड़ी हो रही है? तुरंत मदद के लिए यहाँ टैप करें</span>
+    </button>
 </div>
 
-<!-- ============================================================
-     APP WRAPPER
-============================================================ -->
-<div id="appWrapper">
 
-  <!-- PANIC BANNER (always sticky top) -->
-  <div class="sticky top-0 z-40 w-full" id="panicBanner">
-    <button id="btnOpenPanic" type="button"
-      class="w-full flex items-center justify-center gap-2 py-3 px-4 font-black tracking-widest text-white text-xs sm:text-sm uppercase">
-      <span class="text-lg flex-shrink-0">🚨</span>
-      <span data-i18n="scammedRightNow">Being scammed right now? Tap here for immediate help</span>
-    </button>
+  <!-- Inline banner ad slot — top view, non-blocking, never covers safety UI -->
+  <div id="topBannerAdSlot" class="w-full h-[50px] flex items-center justify-center text-[11px] uppercase tracking-wide text-neutral-500 bg-panel border-b border-line">
+    Ad slot — banner (sticky, non-intrusive)
   </div>
 
-  <!-- MAIN CONTENT AREA -->
-  <main>
+  <!-- ============================================================
+       MAIN TAB PANELS
+  ============================================================ -->
+  <main class="flex-1 min-h-0 overflow-y-visible pb-32">
 
-    <!-- ======================================================
-         HOME TAB
-    ====================================================== -->
-    <section id="tabHome" class="tab-panel is-active px-4 pt-5">
-      <div class="flex items-center justify-between gap-3 mb-1">
-        <h1 class="text-2xl font-black tracking-tight" data-i18n="whatToCheck">What do you want to check?</h1>
-        <button id="btnHomeLang" type="button" aria-label="Language"
-          class="shrink-0 flex items-center gap-1.5 rounded-full border border-line px-3 py-1.5 text-xs font-semibold text-neutral-300 bg-card">
+    <!-- ---------------- HOME TAB (new landing screen) ---------------- -->
+    <section id="tabHome" class="tab-panel px-4 pt-4">
+      <div class="flex items-start justify-between gap-3 mb-1">
+        <h1 class="font-display font-bold text-2xl" data-i18n="whatToCheck">What do you want to check?</h1>
+        <button id="btnHomeLanguage" type="button" aria-label="Change language"
+          class="shrink-0 flex items-center gap-1.5 rounded-full border border-line bg-panel px-3 py-1.5 text-xs font-medium text-neutral-200 mt-1">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4"><circle cx="12" cy="12" r="9" stroke-width="1.6"/><path d="M3 12h18M12 3c2.5 2.7 4 6 4 9s-1.5 6.3-4 9c-2.5-2.7-4-6-4-9s1.5-6.3 4-9z" stroke-width="1.6"/></svg>
-          <span id="homeLangLabel">EN</span>
+          <span>文/A</span>
         </button>
       </div>
-      <p class="text-sm text-neutral-500 mb-4" data-i18n="pickCategory">Pick a category below to check it for scams.</p>
+      <p class="text-sm text-neutral-400 mb-4" data-i18n="pickCategory">Pick a category — generic icons only, no official branding copied.</p>
 
-      <!-- Category grid (filled by dashboard.js) -->
-      <div id="dashboardGrid" class="grid grid-cols-2 gap-3 mb-5"></div>
-      <!-- Input panel (shown on category pick) -->
-      <div id="categoryInputPanel" hidden class="mb-5 rounded-2xl bg-card border border-amber/30 p-4"></div>
+      <div id="dashboardGrid" class="grid grid-cols-2 gap-3 mb-6"></div>
+      <div id="categoryInputPanel" hidden class="mb-6 rounded-2xl bg-panel border border-amber/30 p-4 transition-all"></div>
 
-      <!-- Awareness resources -->
-      <p class="section-head">Awareness &amp; Resources</p>
-      <div id="awarenessGallery" class="flex gap-3 overflow-x-auto pb-2 mb-5 snap-x -mx-1 px-1"></div>
+      <!-- Awareness gallery -->
+      <h2 class="font-display font-bold text-lg mb-2">Awareness &amp; Resources</h2>
+      <div id="awarenessGallery" class="flex gap-3 overflow-x-auto pb-2 mb-6 snap-x"></div>
 
-      <!-- Platform report shortcuts -->
-      <p class="section-head">Report Directly to a Platform</p>
-      <p class="text-xs text-neutral-500 mb-3">These go to each platform's own official report page — QRaksha doesn't process reports itself.</p>
-      <div id="platformReportGrid" class="grid grid-cols-3 gap-2 mb-5"></div>
+      <!-- Complaint router -->
+      <h2 class="font-display font-bold text-lg mb-2">Report Directly to a Platform</h2>
+      <p class="text-xs text-neutral-500 mb-3">Links go straight to each platform's own official report page — QRaksha does not process these reports itself.</p>
+      <div id="platformReportGrid" class="grid grid-cols-3 gap-2 mb-4"></div>
 
-      <!-- Success story -->
-      <div class="rounded-2xl bg-card border border-amber/20 p-4 mb-5">
-        <p class="text-sm font-bold mb-1">Aapki Kahani, Cyber Suraksha ki Zubani 🙏</p>
-        <p class="text-xs text-neutral-400 mb-3">Agar QRaksha se aap fraud se bache hain — apni kahani share karein. Aapki kahani doosron ko bachayegi.</p>
-        <button id="btnOpenStoryForm" type="button" class="btn-primary">Share Your Success Story</button>
+      <!-- Success story CTA -->
+      <div class="rounded-2xl bg-panel border border-amber/30 p-4 mb-4">
+        <h2 class="font-display font-bold text-lg mb-1">Aapki Kahani, Cyber Suraksha ki Zubani</h2>
+        <p class="text-xs text-neutral-400 mb-3">Agar aap hamare app ka istemal karke kisi dhokhadhadi ya fraud se bache hain, toh apni kahani hamare sath saja karein. Aapki kahani social media aur public awareness ke liye share ki jayegi.</p>
+        <button id="btnOpenStoryForm" type="button" class="w-full py-2.5 rounded-xl bg-amber text-ink text-sm font-semibold">Share Your Success Story</button>
       </div>
 
-      <!-- About & Transparency quick links (on home, always visible) -->
-      <p class="section-head">About &amp; Transparency</p>
-      <div class="space-y-2 mb-5">
-        <button id="btnOpenAbout" type="button" class="btn-outline text-left flex items-center gap-2">
-          <span>📖</span> About QRaksha Project
-        </button>
-        <button id="btnOpenFounder" type="button" class="btn-outline text-left flex items-center gap-2">
-          <span>👤</span> About the Founder
-        </button>
-        <button id="btnOpenPrivacy" type="button" class="btn-outline text-left flex items-center gap-2">
-          <span>🔒</span> Privacy Policy
-        </button>
+      <!-- About & Transparency — bottom of Home tab, always reachable without opening Settings -->
+      <h2 class="font-display font-bold text-lg mb-2">About &amp; Transparency</h2>
+      <div class="space-y-2 mb-8">
+        <button id="btnOpenFounderHome" type="button" class="w-full text-left py-3 px-4 rounded-xl border border-line text-sm text-neutral-200 bg-panel">About the Founder</button>
+        <button id="btnOpenPrivacyHome" type="button" class="w-full text-left py-3 px-4 rounded-xl border border-line text-sm text-neutral-200 bg-panel">Privacy Policy</button>
       </div>
     </section>
 
-    <!-- ======================================================
-         SCAN TAB
-    ====================================================== -->
-    <section id="tabScan" class="tab-panel px-4 pt-5" hidden>
-      <h2 class="text-xl font-black mb-1" data-i18n="scan">Scan QR Code</h2>
-      <p class="text-xs text-neutral-500 mb-4" data-i18n="scanPrivacy">Camera feed is processed on-device — nothing is uploaded.</p>
-      <!-- Scanner UI (filled by mobile-scanner.js) -->
-      <div id="scannerPanel"></div>
-    </section>
-
-    <!-- ======================================================
-         GENERATE TAB
-    ====================================================== -->
-    <section id="tabGenerate" class="tab-panel px-4 pt-5" hidden>
-      <h2 class="text-xl font-black mb-4" data-i18n="generate">Generate QR</h2>
-      <div id="generatePanel"></div>
-    </section>
-
-    <!-- ======================================================
-         SETUP GUIDE TAB
-    ====================================================== -->
-    <section id="tabAbout" class="tab-panel px-4 pt-5" hidden>
-
-      <!-- ── About QRaksha ── -->
-      <h2 class="text-xl font-black mb-1">About QRaksha</h2>
-      <p class="text-xs text-neutral-500 mb-4">India's free, multilingual cyber safety app</p>
-
-      <div class="space-y-3 mb-7">
-        <div class="rounded-2xl bg-card border border-line p-4">
-          <p class="font-bold text-amber mb-1">🛡️ What does QRaksha do?</p>
-          <p class="text-neutral-400 text-xs leading-relaxed">QRaksha helps you check whether a QR code, URL, phone number, email address, or SMS sender is safe before you interact with it. It uses a three-tier analysis — fast offline heuristics → free threat-intel feeds → Advanced AI — and always shows the most cautious result.</p>
+    <!-- ---------------- SCAN TAB ---------------- -->
+    <section id="tabScan" class="tab-panel px-4 pt-4" hidden>
+      <div class="relative rounded-3xl overflow-hidden bg-panel border border-line" style="aspect-ratio:3/4;">
+        <!-- Point 3 — Privacy badge -->
+        <div class="absolute top-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 bg-black/60 backdrop-blur px-3 py-1.5 rounded-full text-xs font-medium text-neutral-100 border border-white/10">
+          <span aria-hidden="true">🔒</span> <span data-i18n="scanPrivacy">Scan with privacy</span>
         </div>
-        <div class="rounded-2xl bg-card border border-line p-4">
-          <p class="font-bold text-amber mb-1">📷 How does QR scanning work?</p>
-          <p class="text-neutral-400 text-xs leading-relaxed">Your camera captures the QR image on-device using the Html5-QrCode library. The decoded text is analysed locally — no image is ever uploaded. The camera feed never leaves your phone.</p>
+
+        <!-- Point 4 — Active scanning viewport -->
+        <div id="scanViewport" class="absolute inset-0 bg-black"></div>
+        <div class="scan-laser" aria-hidden="true"></div>
+        <div class="scan-corner scan-corner--tl" aria-hidden="true"></div>
+        <div class="scan-corner scan-corner--tr" aria-hidden="true"></div>
+        <div class="scan-corner scan-corner--bl" aria-hidden="true"></div>
+        <div class="scan-corner scan-corner--br" aria-hidden="true"></div>
+
+        <!-- Point 5 / 6 / 7 — Torch, camera switch, aspect toggle -->
+        <div class="absolute top-3 right-3 z-20 flex flex-col gap-2">
+          <button id="btnTorch" type="button" hidden class="w-10 h-10 rounded-full bg-black/60 border border-white/10 flex items-center justify-center text-lg backdrop-blur">🔦</button>
+          <button id="btnSwitchCamera" type="button" class="w-10 h-10 rounded-full bg-black/60 border border-white/10 flex items-center justify-center text-lg backdrop-blur">🔄</button>
+          <button id="btnAspectToggle" type="button" class="w-10 h-10 rounded-full bg-black/60 border border-white/10 flex items-center justify-center text-lg backdrop-blur">⬚</button>
         </div>
-        <div class="rounded-2xl bg-card border border-line p-4">
-          <p class="font-bold text-amber mb-1">🔗 How are suspicious links detected?</p>
-          <p class="text-neutral-400 text-xs leading-relaxed">The risk engine checks URLs against known phishing/malware blocklists (PhishTank, OpenPhish, URLhaus), suspicious keyword patterns, URL-shortener detection, brand impersonation checks, and mismatched domain signals. Each check adds a risk score — the aggregate determines the final verdict.</p>
-        </div>
-        <div class="rounded-2xl bg-card border border-line p-4">
-          <p class="font-bold text-amber mb-1">💬 How is sensitive text scanned?</p>
-          <p class="text-neutral-400 text-xs leading-relaxed">Phone numbers are checked against India-specific scam databases. Emails are pattern-analysed for spoofing. SMS headers are checked against TRAI sender ID patterns. All checks run offline first — AI is called only when needed, always through our secure server proxy, never directly from your browser.</p>
-        </div>
-        <div class="rounded-2xl bg-card border border-amber/20 p-4">
-          <p class="font-bold text-amber mb-2">⚙️ The Three-Tier Risk Engine</p>
-          <div class="space-y-2">
-            <div class="rounded-xl bg-ink/60 border border-line p-3">
-              <p class="text-xs font-bold text-white mb-1">Tier 1 — Offline Heuristics</p>
-              <p class="text-neutral-400 text-xs leading-relaxed">Instant. No network needed. Pattern matching against 500+ known scam signatures, URL structure checks, keyword analysis. Always available — even in airplane mode.</p>
-            </div>
-            <div class="rounded-xl bg-ink/60 border border-line p-3">
-              <p class="text-xs font-bold text-white mb-1">Tier 2 — Free Threat Intel</p>
-              <p class="text-neutral-400 text-xs leading-relaxed">Checks live blocklists — PhishTank, OpenPhish, URLhaus — refreshed daily via GitHub Actions. No AI cost. No API key needed. Covers tens of thousands of known malicious URLs.</p>
-            </div>
-            <div class="rounded-xl bg-ink/60 border border-amber/20 p-3">
-              <p class="text-xs font-bold text-amber mb-1">Tier 3 — Mesh Advanced AI ✨</p>
-              <p class="text-neutral-400 text-xs leading-relaxed">Deep contextual analysis for ambiguous or complex cases. Powered by <b class="text-neutral-200">Mesh API</b> — an advanced AI aggregator that combines the power of multiple world-class AI providers including <b class="text-neutral-200">ChatGPT (OpenAI), Claude (Anthropic), Gemini (Google)</b>, and many more, selecting the best model for each analysis. Runs through our Firebase Cloud Function — your data is proxied safely, never sent directly from your browser. <b class="text-neutral-200">The most cautious verdict from any tier always wins.</b></p>
-            </div>
+
+        <!-- Point 8 — Media upload -->
+        <label for="uploadInput" class="absolute bottom-3 left-3 z-20 w-11 h-11 rounded-full bg-amber text-ink flex items-center justify-center text-xl shadow-lg cursor-pointer">
+          🖼️
+          <input type="file" id="uploadInput" accept="image/*" hidden>
+        </label>
+
+        <!-- Point 10 — Digital zoom -->
+        <input type="range" id="zoomSlider" min="1" max="3" step="0.1" value="1" aria-label="Zoom"
+          class="absolute bottom-4 right-4 z-20 w-28 accent-amber">
+      </div>
+
+      <p id="scanStatusText" class="text-center text-sm text-neutral-400 mt-3">Point your camera at a QR code, or upload an image.</p>
+
+      <button id="btnGoMessageCheck" type="button" class="w-full mt-4 py-3 rounded-2xl border border-line bg-panel text-sm font-medium text-neutral-200">
+        Got a suspicious message instead? Check it here →
+      </button>
+
+      <!-- ============================================================
+           DUAL-ROUTE SCAN RESULT (Section 2)
+      ============================================================ -->
+      <div id="resultCard" hidden class="mt-4 rounded-3xl bg-panel border border-line p-5">
+        <p class="text-xs uppercase tracking-wide text-neutral-500 mb-1">What this is</p>
+        <p id="resultContext" class="text-base font-medium text-neutral-100 mb-4"></p>
+
+        <div class="flex items-center gap-4 mb-4">
+          <div class="relative w-16 h-16 shrink-0">
+            <svg viewBox="0 0 64 64" class="w-16 h-16 -rotate-90">
+              <circle cx="32" cy="32" r="27" fill="none" stroke="#232A31" stroke-width="6"/>
+              <circle id="riskMeterCircle" cx="32" cy="32" r="27" fill="none" stroke="#22C55E" stroke-width="6" stroke-linecap="round"/>
+            </svg>
+            <span id="riskMeterNumber" class="absolute inset-0 flex items-center justify-center font-mono text-sm font-semibold">0%</span>
+          </div>
+          <div>
+            <p id="riskMeterLabel" class="font-display font-bold text-lg">Low Risk</p>
+            <p id="historicalAudit" class="text-xs text-neutral-400"></p>
           </div>
         </div>
-        <div class="rounded-2xl bg-card border border-line p-4">
-          <p class="font-bold text-amber mb-1">🔐 Safety &amp; Privacy</p>
-          <p class="text-neutral-400 text-xs leading-relaxed">QRaksha never stores your scans. Camera frames are processed locally and discarded. The only data sent to our servers is the specific text/URL you explicitly ask to check via AI — and only when you tap "Analyze with AI". We do not sell your data. Core safety features are permanently free.</p>
+
+        <!-- Raw content transparency — always shown, exactly as decoded -->
+        <div class="mb-4 rounded-xl bg-ink border border-line p-3">
+          <p class="text-[10px] uppercase tracking-wide text-neutral-500 mb-1">Exact decoded content</p>
+          <p id="resultRawContent" class="font-mono text-xs text-neutral-300 break-all"></p>
         </div>
+
+        <!-- UPI / payment QR summary — only shown when the decoded QR is a payment request -->
+        <div id="upiSummaryBlock" hidden class="mb-4 rounded-xl bg-ink border border-amber/30 p-3 space-y-1.5">
+          <p class="text-[10px] uppercase tracking-wide text-amber mb-1">Payment request details</p>
+          <p class="text-xs text-neutral-300"><span class="text-neutral-500">Receiver / Payee:</span> <span id="upiSummaryPayee" class="font-medium text-neutral-100"></span></p>
+          <p class="text-xs text-neutral-300"><span class="text-neutral-500">Amount:</span> <span id="upiSummaryAmount" class="font-medium text-neutral-100"></span></p>
+          <p class="text-xs text-neutral-300 break-all"><span class="text-neutral-500">UPI address:</span> <span id="upiSummaryVpa" class="font-mono text-neutral-100"></span></p>
+        </div>
+
+        <!-- Source label — set to "[AI Analysis Result]" or "[Offline / Free Threat-Intel]" -->
+        <p id="resultSourceLabel" class="text-[11px] font-mono uppercase tracking-wide text-neutral-500 mb-3"></p>
+
+        <div id="offlineFlagsList" class="space-y-2 mb-4"></div>
+
+        <!-- Route B — Advanced AI analysis. Deliberately NOT ad-gated. -->
+        <button id="btnAnalyzeAI" type="button" class="w-full py-3 rounded-2xl bg-amber text-ink font-semibold text-sm">
+          Analyze with AI — deeper check, instant result
+        </button>
+        <p class="text-[11px] text-neutral-500 text-center mt-2">Free basic check always runs automatically. AI second opinion is optional and never delayed by ads.</p>
+
+        <!-- AI Safety Assistant chat prompt — shown under every scan verdict -->
+        <div class="qrv-ai-chat-prompt">
+          <p class="text-xs text-neutral-300 flex-1" data-i18n="askAiPrompt">Want to know how to avoid this scam? Ask our AI Assistant.</p>
+          <button id="btnAskAiSafety" type="button" data-i18n="chatWithAi">Chat with AI</button>
+        </div>
+
+        <p class="text-[10px] leading-relaxed text-neutral-500 mt-4 pt-3 border-t border-line">
+          <strong class="text-neutral-400">Important Disclaimer:</strong> This screening is based on signatures and automated metrics. AI outputs are experimental and can be incorrect. This platform does not take responsibility for financial losses, fraud, or damage. Always double-check and verify information directly via official government channels or authorities before taking any transaction decisions. Users act at their own individual discretion.
+        </p>
       </div>
-
-      <!-- ── About the Founder ── -->
-      <h2 class="text-xl font-black mb-4">About the Founder</h2>
-
-      <img src="https://i.postimg.cc/NFfYBcd1/output-onlinepngtools.png" alt="Imtiyaz Surjapuri"
-        class="w-full aspect-square object-cover rounded-2xl border border-line mb-4"
-        onerror="this.style.display='none'">
-
-      <h3 class="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-white via-neutral-200 to-neutral-400 bg-clip-text text-transparent mb-1">
-        Imtiyaz Surjapuri
-      </h3>
-      <p class="text-sm text-neutral-500 mb-2">Journalist · Analyst · Civic Tech Builder · India &amp; Qatar</p>
-      <div class="flex flex-wrap gap-2 mb-4">
-        <span class="badge bg-red-500/10 text-red-400 border border-red-500/20">Founder</span>
-        <span class="badge bg-neutral-800 text-neutral-300 border border-neutral-700">Lead Developer</span>
-        <span class="badge bg-amber/10 text-amber border border-amber/20">Journalist</span>
-      </div>
-
-      <div class="rounded-2xl bg-card border border-line p-4 mb-4">
-        <p class="text-xs text-neutral-400 leading-relaxed">Imtiyaz Surjapuri is an independent journalist and analyst based in India and Qatar, covering Indian constitutional affairs, electoral politics, and South Asian affairs. He built QRaksha to protect everyday Indians from digital fraud — entirely from an Android phone using Termux, with zero laptop access. QRaksha is part of his broader civic-tech mission: speaking truth without fear.</p>
-      </div>
-
-      <p class="section-head">Coverage Topics</p>
-      <div class="flex flex-wrap gap-2 mb-4">
-        <span class="badge bg-blue-500/10 text-blue-300 border border-blue-500/20">Political Affairs</span>
-        <span class="badge bg-orange-500/10 text-orange-300 border border-orange-500/20">Social Affairs</span>
-        <span class="badge bg-green-500/10 text-green-300 border border-green-500/20">Economic Affairs</span>
-        <span class="badge bg-purple-500/10 text-purple-300 border border-purple-500/20">Cyber Safety</span>
-      </div>
-
-      <p class="section-head">Connect</p>
-      <div class="space-y-2 mb-6">
-        <a href="https://facebook.com/ImtiyaSurjapuri" target="_blank" rel="noopener noreferrer" class="social-row">
-          <span class="social-icon" style="background:#0866FF"><svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-white"><path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5 3.66 9.15 8.44 9.94v-7.03H7.9v-2.9h2.54V9.85c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.44 2.9h-2.34V22c4.78-.79 8.44-4.94 8.44-9.94z"/></svg></span>
-          <div><p class="font-semibold text-sm">Facebook</p><p class="text-xs text-neutral-500">ImtiyaSurjapuri</p></div>
-        </a>
-        <a href="https://instagram.com/ImtiyazSurjapuri" target="_blank" rel="noopener noreferrer" class="social-row">
-          <span class="social-icon" style="background:radial-gradient(circle at 30% 110%,#fdf497 0%,#fd5949 45%,#d6249f 60%,#285AEB 90%)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-5 h-5 text-white"><rect x="3" y="3" width="18" height="18" rx="5" stroke-width="1.8"/><circle cx="12" cy="12" r="4" stroke-width="1.8"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></span>
-          <div><p class="font-semibold text-sm">Instagram</p><p class="text-xs text-neutral-500">ImtiyazSurjapuri</p></div>
-        </a>
-        <a href="https://x.com/Imtiyazkth" target="_blank" rel="noopener noreferrer" class="social-row">
-          <span class="social-icon" style="background:#000"><svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-white"><path d="M18.9 2H22l-7.6 8.7L23 22h-6.6l-5.2-6.8L5 22H1.9l8.1-9.3L1 2h6.8l4.7 6.3L18.9 2zm-1.2 18h1.8L7.4 4H5.5l12.2 16z"/></svg></span>
-          <div><p class="font-semibold text-sm">X (Twitter)</p><p class="text-xs text-neutral-500">Imtiyazkth</p></div>
-        </a>
-        <a href="https://youtube.com/@imtiyazvedio" target="_blank" rel="noopener noreferrer" class="social-row">
-          <span class="social-icon" style="background:#FF0000"><svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-white"><path d="M23 12s0-3.6-.46-5.3a3 3 0 0 0-2.1-2.1C18.7 4 12 4 12 4s-6.7 0-8.44.6a3 3 0 0 0-2.1 2.1C1 8.4 1 12 1 12s0 3.6.46 5.3a3 3 0 0 0 2.1 2.1C5.3 20 12 20 12 20s6.7 0 8.44-.6a3 3 0 0 0 2.1-2.1C23 15.6 23 12 23 12z"/><path d="M10 15.5v-7l6 3.5-6 3.5z" fill="#FF0000"/></svg></span>
-          <div><p class="font-semibold text-sm">YouTube</p><p class="text-xs text-neutral-500">How Political</p></div>
-        </a>
-        <a href="https://ImtiyazSurjapuri.com" target="_blank" rel="noopener noreferrer" class="social-row">
-          <span class="social-icon" style="background:#1a1a2e"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-5 h-5 text-white"><circle cx="12" cy="12" r="9" stroke-width="1.6"/><path d="M3 12h18M12 3c2.5 2.7 4 6 4 9s-1.5 6.3-4 9c-2.5-2.7-4-6-4-9s1.5-6.3 4-9z" stroke-width="1.6"/></svg></span>
-          <div><p class="font-semibold text-sm">Website</p><p class="text-xs text-neutral-500">ImtiyazSurjapuri.com</p></div>
-        </a>
-      </div>
-
-      <div id="founderPortfolioGrid2" class="grid grid-cols-2 gap-3 mb-4"></div>
     </section>
 
-    <!-- ======================================================
-         SETTINGS TAB
-    ====================================================== -->
-    <section id="tabSettings" class="tab-panel px-4 pt-5" hidden>
-      <h2 class="text-xl font-black mb-4">Settings</h2>
+    <!-- ---------------- MESSAGE / SCREENSHOT CHECK TAB ---------------- -->
+    <section id="tabMessage" class="tab-panel px-4 pt-4" hidden>
+      <h2 class="font-display font-bold text-xl mb-1">Message &amp; Screenshot Check</h2>
+      <p class="text-sm text-neutral-400 mb-4">Paste a suspicious message or upload a screenshot.</p>
 
-      <!-- Theme -->
-      <p class="section-head">Appearance</p>
-      <div class="grid grid-cols-3 gap-2 mb-5">
-        <button class="qrv-theme-swatch btn-outline text-sm" data-theme="dark">🌙 Dark</button>
-        <button class="qrv-theme-swatch btn-outline text-sm" data-theme="light">☀️ Light</button>
-        <label class="btn-outline text-sm flex items-center justify-center gap-1 cursor-pointer relative">
-          🎨 Custom
-          <input type="color" id="customAccentInput" value="#FFB020"
-            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+      <div class="flex rounded-xl overflow-hidden border border-line mb-3">
+        <button id="msgTabText" class="flex-1 py-2 text-sm font-medium bg-amber text-ink">Paste Message</button>
+        <button id="msgTabImage" class="flex-1 py-2 text-sm font-medium bg-panel text-neutral-300">Upload Screenshot</button>
+      </div>
+
+      <div id="msgPanelText">
+        <textarea id="msgTextInput" maxlength="2000" rows="5" placeholder="Paste the suspicious SMS / WhatsApp message here…"
+          class="w-full rounded-2xl bg-panel border border-line p-4 text-sm text-neutral-100 placeholder:text-neutral-500"></textarea>
+      </div>
+      <div id="msgPanelImage" hidden>
+        <label for="msgFileInput" class="flex flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-line py-10 text-neutral-400 text-sm cursor-pointer">
+          <span class="text-2xl" aria-hidden="true">⬆️</span> Tap to upload a screenshot
+          <input type="file" id="msgFileInput" accept="image/png,image/jpeg,image/webp" hidden>
         </label>
+        <p id="msgFileName" class="text-center text-xs text-neutral-500 mt-2"></p>
       </div>
 
-      <!-- Language -->
-      <p class="section-head">Language / भाषा</p>
-      <div id="langPickerOptions" class="grid grid-cols-3 gap-2 mb-2"></div>
-      <p class="text-[10px] text-neutral-600 mb-5">Languages marked "(beta)" show English for untranslated text rather than a guessed translation.</p>
+      <button id="btnCheckMessage" type="button" data-i18n="checkForScam" class="w-full mt-4 py-3 rounded-2xl bg-amber text-ink font-semibold text-sm">Check for scam</button>
+      <p id="aiUnavailableBanner" hidden class="mt-3 text-xs text-warn bg-warn/10 border border-warn/30 rounded-xl p-3">AI second opinion is currently unavailable — showing offline + open threat-intel analysis only.</p>
 
-      <!-- Quick inline language switcher -->
-      <div class="rounded-2xl bg-card border border-line p-4 mb-5">
-        <label for="inlineLanguagePicker" class="text-xs text-neutral-400 block mb-2">Quick switch / जल्दी बदलें</label>
-        <select id="inlineLanguagePicker" class="w-full rounded-xl bg-ink border border-line text-sm p-2.5 text-neutral-200">
-          <option value="English">English</option>
-          <option value="Hindi">हिन्दी — Hindi</option>
-          <option value="Bengali">বাংলা — Bengali</option>
-          <option value="Telugu">తెలుగు — Telugu</option>
-          <option value="Marathi">मराठी — Marathi</option>
-          <option value="Tamil">தமிழ் — Tamil</option>
-          <option value="Urdu">اردو — Urdu</option>
-          <option value="Gujarati">ગુજરાતી — Gujarati</option>
-          <option value="Kannada">ಕನ್ನಡ — Kannada</option>
-        </select>
-      </div>
-
-      <!-- About links -->
-      <p class="section-head">About &amp; Transparency</p>
-      <div class="space-y-2">
-        <button id="btnSettingsAbout" type="button" class="btn-outline text-left flex items-center gap-2">📖 About QRaksha &amp; Founder</button>
-        <button id="btnSettingsPrivacy" type="button" class="btn-outline text-left flex items-center gap-2">🔒 Privacy Policy</button>
-      </div>
-
-      <!-- Revenue transparency -->
-      <div class="mt-4 rounded-2xl bg-card border border-line p-4">
-        <p class="text-xs font-bold text-neutral-300 mb-1">Revenue &amp; Growth Roadmap (transparency)</p>
-        <p class="text-[11px] text-neutral-500 leading-relaxed">QRaksha is free today. To stay sustainable long-term, the roadmap may include non-intrusive AdMob placements, an optional premium tier (unlimited AI checks, ad-free), and B2B API licensing. Core safety features — offline QR check, Panic Mode, basic scam detection — are always free.</p>
-        <p class="text-[11px] text-amber leading-relaxed mt-2">We are working toward direct API integrations with Government Law Enforcement Authorities.</p>
+      <div id="msgReportSection" hidden class="mt-4 rounded-3xl bg-panel border border-line p-5">
+        <p id="msgSourceHeading" class="text-xs uppercase tracking-wide text-neutral-500 mb-1"></p>
+        <p id="msgExplanation" class="text-sm text-neutral-100 mb-3"></p>
+        <div id="msgRiskFlags" class="space-y-2 mb-3"></div>
+        <button id="btnAiSecondOpinionMsg" type="button" hidden class="w-full py-2.5 rounded-xl border border-amber text-amber text-sm font-medium">Get AI second opinion</button>
+        <p class="text-[10px] leading-relaxed text-neutral-500 mt-3 pt-3 border-t border-line">
+          <strong class="text-neutral-400">Important Disclaimer:</strong> This screening is based on signatures and automated metrics. AI outputs are experimental and can be incorrect. This platform does not take responsibility for financial losses, fraud, or damage. Always double-check and verify information directly via official government channels or authorities before taking any transaction decisions. Users act at their own individual discretion.
+        </p>
       </div>
     </section>
 
+    <!-- ---------------- GENERATE TAB (Point 14, minus 12/13) ---------------- -->
+    <section id="tabGenerate" class="tab-panel px-4 pt-4" hidden>
+      <h2 class="font-display font-bold text-xl mb-1">Generate</h2>
+      <p class="text-sm text-neutral-400 mb-4">Create a QR code for the things people actually scan.</p>
+
+      <!--
+        Points 12 & 13: the legacy "Compress" and "Convert" utility modules
+        have been permanently removed from this build — intentionally not
+        present anywhere in this file or its navigation.
+      -->
+
+      <div class="grid grid-cols-2 gap-3">
+        <button class="qrv-gen-tile" data-kind="social">📱<span>Social Media Profile</span></button>
+        <button class="qrv-gen-tile" data-kind="campaign">📣<span>Marketing Campaign</span></button>
+        <button class="qrv-gen-tile" data-kind="account">🪪<span>Account Card</span></button>
+        <button class="qrv-gen-tile" data-kind="review">⭐<span>Google Review</span></button>
+        <button class="qrv-gen-tile" data-kind="maps">📍<span>Google Maps Location</span></button>
+        <button class="qrv-gen-tile" data-kind="store">⬇️<span>App / Play Store Link</span></button>
+      </div>
+      <div id="genFormArea" class="mt-4"></div>
+      <p class="text-[11px] text-neutral-500 text-center mt-4">Downloading a generated QR image plays a short ad first — generating and previewing it is always free.</p>
+    </section>
   </main>
 
-  <!-- BOTTOM NAV -->
+  <!-- ============================================================
+       POINT 9 / 15 — Bottom navigation
+  ============================================================ -->
   <nav class="fixed bottom-0 left-0 right-0 max-w-4xl mx-auto bg-panel border-t border-line grid grid-cols-5 z-30">
     <button class="qrv-navbtn is-active" data-tab="tabHome"><span>🏠</span><span data-i18n="home">Home</span></button>
     <button class="qrv-navbtn" data-tab="tabScan"><span>🔍</span><span data-i18n="scan">Scan</span></button>
     <button class="qrv-navbtn" data-tab="tabGenerate"><span>➕</span><span data-i18n="generate">Generate</span></button>
-    <button class="qrv-navbtn" data-tab="tabAbout"><span>ℹ️</span><span>About</span></button>
-    <button class="qrv-navbtn" data-tab="tabSettings"><span>⚙️</span><span data-i18n="settings">Settings</span></button>
+    <button class="qrv-navbtn" id="btnNavAbout"><span>ℹ️</span><span>About</span></button>
+    <button id="btnOpenSettings" class="qrv-navbtn"><span>⚙️</span><span data-i18n="settings">Settings</span></button>
   </nav>
 
-</div><!-- /appWrapper -->
-
-<!-- ============================================================
-     TOAST
-============================================================ -->
-<div id="toast" aria-live="polite"></div>
-
-<!-- ============================================================
-     PANIC / EMERGENCY MODAL
-============================================================ -->
-<div id="panicModal" class="qrv-modal" hidden>
-  <div class="qrv-sheet">
-    <button class="back-btn" id="btnClosePanic">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4"><path d="M15 18l-6-6 6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      Close
-    </button>
-    <div class="text-center mb-5">
-      <div class="text-4xl mb-2">🚨</div>
-      <h2 class="text-xl font-black text-red-400" data-i18n="panicTitle">Stop. Think. Act.</h2>
-      <p class="text-xs text-neutral-400 mt-1">If you are being scammed right now — do NOT transfer any money. Do NOT share OTP. Call 1930 immediately.</p>
-    </div>
-    <!-- Helpline -->
-    <a href="tel:1930" class="flex items-center justify-center gap-3 rounded-2xl bg-gray-900 border-2 border-red-500 p-4 mb-3 text-white font-black text-2xl tracking-widest shadow-[0_0_20px_rgba(239,68,68,0.4)]">
-      📞 1930
-    </a>
-    <p class="text-center text-xs text-neutral-500 mb-3" data-i18n="callHelplineLabel">National Cyber Crime Helpline — available 24×7</p>
-    <!-- Portal -->
-    <a href="https://cybercrime.gov.in" target="_blank" rel="noopener noreferrer"
-      class="flex items-center justify-center gap-2 rounded-2xl border border-red-500/40 p-3 mb-5 text-sm font-semibold text-red-300 shadow-[0_0_15px_rgba(239,68,68,0.25)]"
-      data-i18n="reportPortalLabel">
-      Report at cybercrime.gov.in
-    </a>
-    <!-- Quick language switch inside panic modal — zero friction for panicking users -->
-    <div class="border-t border-line pt-4">
-      <label for="panicLangPicker" class="block text-[11px] text-neutral-500 mb-1.5 text-center">Change language / भाषा बदलें</label>
-      <select id="panicLangPicker" class="w-full rounded-xl bg-gray-900 border border-red-500/30 text-white text-sm p-2.5">
-        <option value="English">English</option>
-        <option value="Hindi">हिन्दी — Hindi</option>
-        <option value="Bengali">বাংলা — Bengali</option>
-        <option value="Telugu">తెలుగు — Telugu</option>
-        <option value="Marathi">मराठी — Marathi</option>
-        <option value="Tamil">தமிழ் — Tamil</option>
-        <option value="Urdu">اردو — Urdu</option>
-        <option value="Gujarati">ગુજરાતી — Gujarati</option>
-        <option value="Kannada">ಕನ್ನಡ — Kannada</option>
-      </select>
-    </div>
-  </div>
-</div>
-
-<!-- ============================================================
-     ABOUT PROJECT MODAL
-============================================================ -->
-<div id="aboutModal" class="qrv-modal" hidden>
-  <div class="qrv-sheet">
-    <button class="back-btn" id="btnCloseAbout">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4"><path d="M15 18l-6-6 6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      Back
-    </button>
-    <h2 class="text-xl font-black mb-1">About QRaksha</h2>
-    <p class="text-xs text-neutral-500 mb-5">India's free, multilingual cyber safety app</p>
-
-    <div class="space-y-4 text-sm">
-      <div class="rounded-2xl bg-card border border-line p-4">
-        <p class="font-bold text-amber mb-1">🛡️ What does QRaksha do?</p>
-        <p class="text-neutral-400 text-xs leading-relaxed">QRaksha helps you check whether a QR code, URL, phone number, email address, or SMS sender is safe before you interact with it. It uses a three-tier analysis: fast offline heuristics → free threat-intel feeds → Mesh AI — and always shows the most cautious result.</p>
+  <!-- ============================================================
+       POINT 11 — Settings (theme customizer), ad-gated on open
+  ============================================================ -->
+  <div id="settingsModal" hidden class="fixed inset-0 z-50 flex items-end justify-center bg-black/70">
+    <div class="w-full max-w-[480px] bg-panel rounded-t-3xl p-6 border-t border-line">
+      <button id="btnSettingsHome" type="button" class="qrv-back-btn" aria-label="Back to home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4"><path d="M15 18l-6-6 6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Back to Home
+      </button>
+      <h2 class="font-display font-bold text-lg mb-4">Appearance</h2>
+      <div class="grid grid-cols-3 gap-3 mb-6">
+        <button class="qrv-theme-swatch" data-theme="dark">Dark</button>
+        <button class="qrv-theme-swatch" data-theme="light">Light</button>
+        <label class="qrv-theme-swatch flex items-center justify-center gap-2 cursor-pointer relative">
+          Custom
+          <input type="color" id="customAccentInput" value="#FFB020" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+        </label>
       </div>
-      <div class="rounded-2xl bg-card border border-line p-4">
-        <p class="font-bold text-amber mb-1">📷 How does QR scanning work?</p>
-        <p class="text-neutral-400 text-xs leading-relaxed">Your camera captures the QR image on-device using the Html5-QrCode library. The decoded text is analysed locally (no image is uploaded) using pattern matching and our risk engine. The camera feed never leaves your phone.</p>
+      <button id="btnCloseSettings" type="button" class="w-full py-3 rounded-2xl border border-line text-sm">Close</button>
+
+      <h2 class="font-display font-bold text-lg mt-6 mb-3">Language</h2>
+      <div id="langPickerOptions" class="grid grid-cols-3 gap-2 max-h-48 overflow-y-auto"></div>
+      <p class="text-[10px] text-neutral-500 mt-2">Languages marked "(beta)" aren't fully translated yet and will show English for untranslated text rather than a guessed translation.</p>
+
+      <h2 class="font-display font-bold text-lg mt-6 mb-3">About &amp; Transparency</h2>
+      <div class="space-y-2">
+        <button id="btnOpenFounder" type="button" class="w-full text-left py-3 px-4 rounded-xl border border-line text-sm text-neutral-200">About the Founder</button>
+        <button id="btnOpenPrivacy" type="button" class="w-full text-left py-3 px-4 rounded-xl border border-line text-sm text-neutral-200">Privacy Policy</button>
       </div>
-      <div class="rounded-2xl bg-card border border-line p-4">
-        <p class="font-bold text-amber mb-1">🔗 How are suspicious links detected?</p>
-        <p class="text-neutral-400 text-xs leading-relaxed">The risk engine checks the URL against: known phishing/malware blocklists (PhishTank, OpenPhish, URLhaus), suspicious keyword patterns, URL-shortener detection, brand impersonation checks, and mismatched domain/path signals. Each check adds a risk score — the aggregate determines the verdict.</p>
+
+      <div class="mt-4 rounded-xl bg-ink border border-line p-4">
+        <p class="text-xs font-semibold text-neutral-300 mb-1">Revenue &amp; Growth Roadmap (transparency)</p>
+        <p class="text-[11px] text-neutral-500 leading-relaxed">QRaksha is free today. To stay sustainable long-term, the roadmap may include: non-intrusive Google AdMob/AdSense placements, an optional premium tier (unlimited AI checks, ad-free), and B2B API licensing for other apps/institutions. Core safety features — offline QR check, Panic Mode, and basic scam detection — are intended to always remain free.</p>
+        <p class="text-[11px] text-amber leading-relaxed mt-2">We are actively working toward establishing direct API integrations and formal partnerships with Government Law Enforcement Authorities as soon as possible.</p>
       </div>
-      <div class="rounded-2xl bg-card border border-line p-4">
-        <p class="font-bold text-amber mb-1">💬 How is sensitive text scanned?</p>
-        <p class="text-neutral-400 text-xs leading-relaxed">Phone numbers are checked against India-specific scam number databases. Email addresses are pattern-analysed for spoofing. SMS headers are checked against TRAI sender ID patterns. All checks run offline first; AI analysis (Mesh API) is called only when needed and only through our server-side Firebase Function — your text is never sent directly to a third-party AI.</p>
+
+      <button id="btnAboutHome" type="button" class="w-full mt-4 py-3 rounded-2xl border border-line text-sm flex items-center justify-center gap-2">
+        <span>🏠</span> Back to Home
+      </button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       About Founder
+  ============================================================ -->
+  <div id="founderModal" role="dialog" aria-modal="true" hidden class="fixed inset-0 z-50 flex items-end justify-center bg-black/70">
+    <div class="w-full max-w-[480px] max-h-[86vh] overflow-y-auto bg-panel rounded-t-3xl p-6 border-t border-line">
+      <button id="btnFounderHome" type="button" aria-label="Back to home" class="flex items-center gap-1.5 text-xs text-neutral-400 mb-4">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4"><path d="M15 18l-6-6 6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Back to Home
+      </button>
+      <img src="https://i.postimg.cc/NFfYBcd1/output-onlinepngtools.png" alt="Imtiyaz Surjapuri"
+        class="w-full aspect-square object-cover rounded-2xl border border-line mb-4"
+        onerror="this.style.display='none'">
+      <!-- Premium Founder Typography Block -->
+      <div class="text-left mb-5">
+        <h3 class="text-2xl sm:text-3xl font-extrabold tracking-tight bg-gradient-to-r from-white via-neutral-200 to-neutral-400 bg-clip-text text-transparent font-sans">
+          Imtiyaz Surjapuri
+        </h3>
+        <div class="mt-1.5 flex flex-wrap items-center gap-2">
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-500/10 text-red-400 border border-red-500/20 tracking-wide uppercase">
+            Founder
+          </span>
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-neutral-800 text-neutral-300 border border-neutral-700 tracking-wide uppercase">
+            Lead Developer
+          </span>
+        </div>
       </div>
-      <div class="rounded-2xl bg-card border border-line p-4">
-        <p class="font-bold text-amber mb-1">⚙️ The three-tier risk engine</p>
-        <p class="text-neutral-400 text-xs leading-relaxed"><b>Tier 1 — Offline heuristics:</b> Instant, no network needed. Pattern matching against 500+ known scam signatures. Always available, even in airplane mode.<br><br><b>Tier 2 — Free threat intel:</b> Checks live blocklists (PhishTank, OpenPhish, URLhaus) via our GitHub-Actions-refreshed local copy. No API key needed.<br><br><b>Tier 3 — Mesh AI:</b> Deep contextual analysis for ambiguous cases. Runs through our Firebase Cloud Function — your data is proxied safely, never sent directly from the browser. The most cautious verdict from any tier always wins.</p>
+
+      <h3 class="text-sm font-semibold text-neutral-300 mb-2">Other Projects</h3>
+      <div id="founderPortfolioGrid" class="grid grid-cols-2 gap-3 mb-5"></div>
+
+      <h3 class="text-sm font-semibold text-neutral-300 mb-2">Connect</h3>
+      <div class="space-y-2 mb-5">
+        <a href="https://facebook.com/ImtiyaSurjapuri" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 rounded-xl border border-line px-4 py-2.5 text-sm text-neutral-200">
+          <span class="qrv-social-icon shrink-0" style="background:#0866FF">
+            <svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-white"><path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5 3.66 9.15 8.44 9.94v-7.03H7.9v-2.9h2.54V9.85c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.44 2.9h-2.34V22c4.78-.79 8.44-4.94 8.44-9.94z"/></svg>
+          </span>
+          Facebook — ImtiyaSurjapuri
+        </a>
+        <a href="https://instagram.com/ImtiyazSurjapuri" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 rounded-xl border border-line px-4 py-2.5 text-sm text-neutral-200">
+          <span class="qrv-social-icon shrink-0" style="background:radial-gradient(circle at 30% 110%, #fdf497 0%, #fd5949 45%, #d6249f 60%, #285AEB 90%)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-5 h-5 text-white"><rect x="3" y="3" width="18" height="18" rx="5" stroke-width="1.8"/><circle cx="12" cy="12" r="4" stroke-width="1.8"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+          </span>
+          Instagram — ImtiyazSurjapuri
+        </a>
+        <a href="https://x.com/Imtiyazkth" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 rounded-xl border border-line px-4 py-2.5 text-sm text-neutral-200">
+          <span class="qrv-social-icon shrink-0" style="background:#000000">
+            <svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 text-white"><path d="M18.9 2H22l-7.6 8.7L23 22h-6.6l-5.2-6.8L5 22H1.9l8.1-9.3L1 2h6.8l4.7 6.3L18.9 2zm-1.2 18h1.8L7.4 4H5.5l12.2 16z"/></svg>
+          </span>
+          X — Imtiyazkth
+        </a>
+        <a href="https://youtube.com/@imtiyazvedio" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 rounded-xl border border-line px-4 py-2.5 text-sm text-neutral-200">
+          <span class="qrv-social-icon shrink-0" style="background:#FF0000">
+            <svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-white"><path d="M23 12s0-3.6-.46-5.3a3 3 0 0 0-2.1-2.1C18.7 4 12 4 12 4s-6.7 0-8.44.6a3 3 0 0 0-2.1 2.1C1 8.4 1 12 1 12s0 3.6.46 5.3a3 3 0 0 0 2.1 2.1C5.3 20 12 20 12 20s6.7 0 8.44-.6a3 3 0 0 0 2.1-2.1C23 15.6 23 12 23 12z" stroke="none"/><path d="M10 15.5v-7l6 3.5-6 3.5z" fill="#FF0000" stroke="none"/></svg>
+          </span>
+          YouTube — How Political
+        </a>
       </div>
-      <div class="rounded-2xl bg-card border border-line p-4">
-        <p class="font-bold text-amber mb-1">🔐 Safety &amp; Privacy</p>
-        <p class="text-neutral-400 text-xs leading-relaxed">QRaksha never stores your scans. Camera frames are processed locally and discarded. The only data sent to our servers is the specific text/URL you explicitly ask us to check via AI — and only when you click "Analyze with AI". We do not sell your data. We do not show intrusive ads. Core safety features are permanently free.</p>
+
+      <button id="btnCloseFounder" type="button" class="w-full py-3 rounded-2xl border border-line text-sm">Close</button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       Privacy Policy
+  ============================================================ -->
+  <div id="privacyModal" role="dialog" aria-modal="true" hidden class="fixed inset-0 z-50 flex items-end justify-center bg-black/70">
+    <div class="w-full max-w-[480px] max-h-[86vh] overflow-y-auto bg-panel rounded-t-3xl p-6 border-t border-line">
+      <h2 class="font-display font-bold text-lg mb-3">Privacy Policy</h2>
+      <p class="text-sm text-neutral-300 mb-3">QR scanning and offline message checks run entirely in your browser — nothing is sent anywhere.</p>
+      <p class="text-sm text-neutral-300 mb-3">The optional AI second opinion is off by default and sends only the text/image you explicitly submit to our server, which forwards it to Mesh API. It is not stored afterward.</p>
+      <p class="text-sm text-neutral-300 mb-3">Success stories you explicitly submit and consent to publish are stored in our database (<code class="text-xs bg-ink px-1 rounded">success_stories</code>/<code class="text-xs bg-ink px-1 rounded">successStories</code>). We ask you not to include anyone else's personal identifying details (phone numbers, account numbers, full addresses of third parties) in your story text — only your own experience.</p>
+      <p class="text-sm text-neutral-300 mb-5">A human reviews each story before it is ever published publicly or on social media.</p>
+      <button id="btnClosePrivacy" type="button" class="w-full py-3 rounded-2xl border border-line text-sm">Close</button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       Consent modal (AI opt-in) — unchanged behavior from before
+  ============================================================ -->
+  <div id="consentModal" role="dialog" aria-modal="true" hidden class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-6">
+    <div class="w-full max-w-sm bg-panel rounded-3xl p-6 border border-line">
+      <h2 class="font-display font-bold text-lg mb-2">Enable AI second opinion?</h2>
+      <p class="text-sm text-neutral-300 mb-4">Offline and free threat-intel checks always run automatically. The optional AI second opinion uses <b class="text-neutral-100">Mesh API</b> — an advanced AI aggregator combining multiple world-class AI providers including <b class="text-neutral-100">ChatGPT, Claude, Gemini</b>, and more. It sends only your submitted text/image to our server, which proxies it safely. Nothing is stored afterward.</p>
+      <label class="flex items-center gap-2 text-sm mb-4">
+        <input type="checkbox" id="consentCheckbox"> I understand and want to enable AI second opinion
+      </label>
+      <div class="flex gap-2">
+        <button id="btnConsentAccept" type="button" class="flex-1 py-2.5 rounded-xl bg-amber text-ink font-semibold text-sm">Enable</button>
+        <button id="btnConsentDecline" type="button" class="flex-1 py-2.5 rounded-xl border border-line text-sm">Not now</button>
       </div>
     </div>
   </div>
-</div>
 
-<!-- ============================================================
-     FOUNDER MODAL
-============================================================ -->
-<div id="founderModal" class="qrv-modal" hidden>
-  <div class="qrv-sheet">
-    <button class="back-btn" id="btnCloseFounder">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4"><path d="M15 18l-6-6 6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      Back
-    </button>
+  <!-- ============================================================
+       Panic Mode — zero network, zero ads, always instant
+  ============================================================ -->
+  <div id="panicModal" role="dialog" aria-modal="true" hidden class="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 px-4 overflow-y-auto">
+    <div class="max-w-4xl mx-auto w-full px-0 mb-6 max-h-[92vh] overflow-y-auto">
+    <div class="w-full max-w-sm mx-auto bg-panel rounded-3xl p-6 border border-danger/40">
+      <h2 class="font-display font-bold text-xl mb-3 text-danger" data-i18n="panicTitle">Stop. Think. Act.</h2>
+      <ol class="text-sm text-neutral-200 space-y-3 mb-5 list-decimal list-inside">
+        <li><strong class="text-danger">Stop.</strong> No real police, court, or bank official asks you to stay on video call or transfer money. Hang up.</li>
+        <li><strong class="text-danger">Think.</strong> "Digital arrest" is not a real legal process in India.</li>
+        <li><strong class="text-danger">Act.</strong> Report now. Do not send more money.</li>
+      </ol>
 
-    <!-- Founder photo -->
-    <img src="https://i.postimg.cc/NFfYBcd1/output-onlinepngtools.png" alt="Imtiyaz Surjapuri"
-      class="w-full aspect-square object-cover rounded-2xl border border-line mb-4"
-      onerror="this.style.display='none'">
+      <div class="flex flex-col gap-3">
+        <!-- Official 1930 Cyber Fraud Helpline — massive, unmissable, tel: dialer intent -->
+        <a href="tel:1930"
+           class="flex flex-col items-center justify-center gap-1 bg-gray-900 border-2 border-red-500 rounded-xl p-4
+                  hover:bg-gray-800 active:scale-[0.98] transition-all duration-150">
+          <span class="text-xs sm:text-sm font-bold text-white tracking-wide text-center" data-i18n="callHelplineLabel">
+            🚨 CALL OFFICIAL HELPLINE
+          </span>
+          <span class="text-3xl font-extrabold text-red-500 leading-none">1930</span>
+        </a>
 
-    <!-- Name + badges -->
-    <h3 class="text-2xl sm:text-3xl font-extrabold tracking-tight bg-gradient-to-r from-white via-neutral-200 to-neutral-400 bg-clip-text text-transparent">
-      Imtiyaz Surjapuri
-    </h3>
-    <p class="text-sm text-neutral-500 mt-0.5 mb-2">Journalist · Analyst · Civic Tech Builder · India &amp; Qatar</p>
-    <div class="flex flex-wrap gap-2 mb-4">
-      <span class="badge bg-red-500/10 text-red-400 border border-red-500/20">Founder</span>
-      <span class="badge bg-neutral-800 text-neutral-300 border border-neutral-700">Lead Developer</span>
-      <span class="badge bg-amber/10 text-amber border border-amber/20">Journalist</span>
+        <!-- National Cyber Crime Portal — glowing crimson premium CTA -->
+        <a href="https://cybercrime.gov.in" target="_blank" rel="noopener noreferrer"
+           class="text-center py-3 rounded-2xl border border-red-500/60 text-sm font-semibold text-white
+                  bg-gradient-to-r from-red-800/40 via-red-600/30 to-red-800/40
+                  shadow-[0_0_15px_rgba(239,68,68,0.5)] hover:shadow-[0_0_22px_rgba(239,68,68,0.7)]
+                  transition-shadow duration-200"
+           data-i18n="reportPortalLabel">
+          Report at cybercrime.gov.in
+        </a>
+
+        <!-- Immediate Quick-Switch language row — zero-friction localization
+             right where a panicking user needs it, no digging through Settings -->
+        <div class="pt-3 mt-1 border-t border-white/10">
+          <label for="inlineLanguagePicker" class="block text-[11px] text-gray-400 mb-1.5 text-center">Change language / भाषा बदलें</label>
+          <select id="inlineLanguagePicker"
+            class="w-full rounded-xl bg-gray-900 border border-red-500/40 text-white text-sm p-2.5 text-center">
+            <option value="English">English</option>
+            <option value="Hindi">हिन्दी — Hindi</option>
+            <option value="Bengali">বাংলা — Bengali</option>
+            <option value="Telugu">తెలుగు — Telugu</option>
+            <option value="Marathi">मराठी — Marathi</option>
+            <option value="Tamil">தமிழ் — Tamil</option>
+            <option value="Urdu">اردو — Urdu</option>
+            <option value="Gujarati">ગુજરાતી — Gujarati</option>
+            <option value="Kannada">ಕನ್ನಡ — Kannada</option>
+          </select>
+        </div>
+
+        <!-- Compliance transparency notice -->
+        <p class="text-[11px] text-gray-400 tracking-normal block text-center mt-1 italic leading-snug">
+          हम अपने उपयोगकर्ताओं की सुरक्षा के लिए संबंधित सरकारी विनियामक प्राधिकरणों के साथ सीधे संरचनात्मक एकीकरण और आधिकारिक साझेदारी स्थापित करने के लिए सक्रिय रूप से प्रयासरत हैं।
+        </p>
+
+        <button id="btnClosePanic" type="button" class="py-2 text-sm text-neutral-400">Close</button>
+      </div>
     </div>
-
-    <!-- Bio -->
-    <div class="rounded-2xl bg-card border border-line p-4 mb-4">
-      <p class="text-xs text-neutral-400 leading-relaxed">Imtiyaz Surjapuri is an independent journalist and analyst based in India and Qatar, covering Indian constitutional affairs, electoral politics, and South Asian affairs. He built QRaksha to protect everyday Indians from digital fraud — entirely from an Android phone using Termux, with zero laptop access. QRaksha is part of his broader civic-tech mission: speaking truth without fear.</p>
-    </div>
-
-    <!-- Platform coverage -->
-    <p class="section-head">Coverage Topics</p>
-    <div class="flex flex-wrap gap-2 mb-4">
-      <span class="badge bg-blue-500/10 text-blue-300 border border-blue-500/20">Political Affairs</span>
-      <span class="badge bg-orange-500/10 text-orange-300 border border-orange-500/20">Social Affairs</span>
-      <span class="badge bg-green-500/10 text-green-300 border border-green-500/20">Economic Affairs</span>
-      <span class="badge bg-purple-500/10 text-purple-300 border border-purple-500/20">Cyber Safety</span>
-    </div>
-
-    <!-- Connect -->
-    <p class="section-head">Connect</p>
-    <div class="space-y-2 mb-4">
-      <a href="https://facebook.com/ImtiyaSurjapuri" target="_blank" rel="noopener noreferrer" class="social-row">
-        <span class="social-icon" style="background:#0866FF"><svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-white"><path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5 3.66 9.15 8.44 9.94v-7.03H7.9v-2.9h2.54V9.85c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.44 2.9h-2.34V22c4.78-.79 8.44-4.94 8.44-9.94z"/></svg></span>
-        <div><p class="font-semibold text-sm">Facebook</p><p class="text-xs text-neutral-500">ImtiyaSurjapuri</p></div>
-      </a>
-      <a href="https://instagram.com/ImtiyazSurjapuri" target="_blank" rel="noopener noreferrer" class="social-row">
-        <span class="social-icon" style="background:radial-gradient(circle at 30% 110%,#fdf497 0%,#fd5949 45%,#d6249f 60%,#285AEB 90%)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-5 h-5 text-white"><rect x="3" y="3" width="18" height="18" rx="5" stroke-width="1.8"/><circle cx="12" cy="12" r="4" stroke-width="1.8"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></span>
-        <div><p class="font-semibold text-sm">Instagram</p><p class="text-xs text-neutral-500">ImtiyazSurjapuri</p></div>
-      </a>
-      <a href="https://x.com/Imtiyazkth" target="_blank" rel="noopener noreferrer" class="social-row">
-        <span class="social-icon" style="background:#000"><svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-white"><path d="M18.9 2H22l-7.6 8.7L23 22h-6.6l-5.2-6.8L5 22H1.9l8.1-9.3L1 2h6.8l4.7 6.3L18.9 2zm-1.2 18h1.8L7.4 4H5.5l12.2 16z"/></svg></span>
-        <div><p class="font-semibold text-sm">X (Twitter)</p><p class="text-xs text-neutral-500">Imtiyazkth</p></div>
-      </a>
-      <a href="https://youtube.com/@imtiyazvedio" target="_blank" rel="noopener noreferrer" class="social-row">
-        <span class="social-icon" style="background:#FF0000"><svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-white"><path d="M23 12s0-3.6-.46-5.3a3 3 0 0 0-2.1-2.1C18.7 4 12 4 12 4s-6.7 0-8.44.6a3 3 0 0 0-2.1 2.1C1 8.4 1 12 1 12s0 3.6.46 5.3a3 3 0 0 0 2.1 2.1C5.3 20 12 20 12 20s6.7 0 8.44-.6a3 3 0 0 0 2.1-2.1C23 15.6 23 12 23 12z"/><path d="M10 15.5v-7l6 3.5-6 3.5z" fill="#FF0000"/></svg></span>
-        <div><p class="font-semibold text-sm">YouTube</p><p class="text-xs text-neutral-500">How Political</p></div>
-      </a>
-      <a href="https://ImtiyazSurjapuri.com" target="_blank" rel="noopener noreferrer" class="social-row">
-        <span class="social-icon" style="background:#1a1a2e"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-5 h-5 text-white"><circle cx="12" cy="12" r="9" stroke-width="1.6"/><path d="M3 12h18M12 3c2.5 2.7 4 6 4 9s-1.5 6.3-4 9c-2.5-2.7-4-6-4-9s1.5-6.3 4-9z" stroke-width="1.6"/></svg></span>
-        <div><p class="font-semibold text-sm">Website</p><p class="text-xs text-neutral-500">ImtiyazSurjapuri.com</p></div>
-      </a>
-    </div>
-
-    <!-- Projects -->
-    <p class="section-head">Other Projects</p>
-    <div id="founderPortfolioGrid" class="grid grid-cols-2 gap-3"></div>
-  </div>
-</div>
-
-<!-- ============================================================
-     PRIVACY POLICY MODAL
-============================================================ -->
-<div id="privacyModal" class="qrv-modal" hidden>
-  <div class="qrv-sheet">
-    <button class="back-btn" id="btnClosePrivacy">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4"><path d="M15 18l-6-6 6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      Back
-    </button>
-    <h2 class="text-xl font-black mb-4">Privacy Policy</h2>
-    <div class="text-xs text-neutral-400 leading-relaxed space-y-3">
-      <p><b class="text-neutral-200">Last updated:</b> July 2026</p>
-      <p><b class="text-neutral-200">What we collect:</b> QRaksha does not collect, store, or transmit your camera feed, scan history, or device ID. The only data ever sent to our servers is the specific URL/text you explicitly submit for AI analysis — and only when you tap "Analyze with AI".</p>
-      <p><b class="text-neutral-200">AI analysis:</b> When you use Mesh AI analysis, the text you submit is sent to our Firebase Cloud Function, which forwards it to the Mesh AI API. It is not logged, stored, or used for model training. We do not share it with any third party beyond the Mesh API call itself.</p>
-      <p><b class="text-neutral-200">Firestore (community signatures):</b> If you submit a scam report, the normalized value (URL/phone/email) and category are stored in Firestore to build a community blocklist. No personal information is stored alongside it.</p>
-      <p><b class="text-neutral-200">Firebase Analytics:</b> We do not use Firebase Analytics or any third-party tracking pixels.</p>
-      <p><b class="text-neutral-200">Local storage:</b> Your language preference and theme choice are saved to localStorage on your device only — not sent anywhere.</p>
-      <p><b class="text-neutral-200">Cookies:</b> We do not use advertising cookies. A consent notice is shown on first visit for the service worker (PWA) only.</p>
-      <p><b class="text-neutral-200">Contact:</b> For privacy concerns: imtiyazkth@gmail.com</p>
     </div>
   </div>
-</div>
 
-<!-- ============================================================
-     STORY FORM MODAL
-============================================================ -->
-<div id="storyModal" class="qrv-modal" hidden>
-  <div class="qrv-sheet">
-    <button class="back-btn" id="btnCloseStory">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4"><path d="M15 18l-6-6 6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      Back
-    </button>
-    <div id="storyFormContainer"></div>
+  <!-- ============================================================
+       Instant scan notification toast (Section 2) — appears the moment
+       a QR is decoded, before the full result card even finishes
+       rendering, so a scared/rushed user sees *something* immediately.
+  ============================================================ -->
+  <div id="qrvToast" hidden class="fixed top-4 left-1/2 -translate-x-1/2 z-[90] max-w-[90%] px-4 py-3 rounded-2xl text-sm font-semibold text-center shadow-2xl border">
+    <span id="qrvToastText"></span>
   </div>
-</div>
 
-<!-- ============================================================
-     AI CHAT MODAL
-============================================================ -->
-<div id="aiChatModal" class="qrv-modal" hidden>
-  <div class="qrv-sheet">
-    <button class="back-btn" id="btnCloseAiChat">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4"><path d="M15 18l-6-6 6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      Back
-    </button>
-    <div id="aiChatContainer"></div>
+  <!-- ============================================================
+       Success Story submission form
+  ============================================================ -->
+  <div id="storyFormModal" role="dialog" aria-modal="true" hidden class="fixed inset-0 z-50 flex items-end justify-center bg-black/70">
+    <div class="w-full max-w-[480px] max-h-[88vh] overflow-y-auto bg-panel rounded-t-3xl p-6 border-t border-line">
+      <h2 class="font-display font-bold text-lg mb-1">Share Your Success Story</h2>
+      <p class="text-xs text-neutral-400 mb-4">Aapki kahani cyber awareness badhane mein madad karegi.</p>
+
+      <form id="storyForm" class="space-y-3">
+        <div>
+          <label class="text-xs text-neutral-400" for="storyFullName">Full Name</label>
+          <input id="storyFullName" required maxlength="80" type="text" class="w-full mt-1 rounded-xl bg-ink border border-line p-3 text-sm text-neutral-100">
+        </div>
+        <div>
+          <label class="text-xs text-neutral-400" for="storyCity">Location / City</label>
+          <input id="storyCity" required maxlength="60" type="text" class="w-full mt-1 rounded-xl bg-ink border border-line p-3 text-sm text-neutral-100">
+        </div>
+        <div>
+          <label class="text-xs text-neutral-400" for="storyAmount">Estimated Amount Saved (₹)</label>
+          <input id="storyAmount" required min="0" max="100000000" type="number" class="w-full mt-1 rounded-xl bg-ink border border-line p-3 text-sm text-neutral-100">
+        </div>
+        <div>
+          <label class="text-xs text-neutral-400" for="storyFraudType">Fraud Type</label>
+          <select id="storyFraudType" required class="w-full mt-1 rounded-xl bg-ink border border-line p-3 text-sm text-neutral-100">
+            <option value="QR Code Scam">QR Code Scam</option>
+            <option value="WhatsApp Job Fraud">WhatsApp Job Fraud</option>
+            <option value="Fake Customer Care">Fake Customer Care</option>
+            <option value="Suspicious App">Suspicious App</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-xs text-neutral-400" for="storyDescription">Your Story</label>
+          <textarea id="storyDescription" required minlength="20" maxlength="3000" rows="4" placeholder="QRaksha ne kaise warning di aur aap kaise bache…" class="w-full mt-1 rounded-xl bg-ink border border-line p-3 text-sm text-neutral-100"></textarea>
+        </div>
+
+        <label class="flex items-start gap-2 text-xs text-neutral-300">
+          <input type="checkbox" id="storyAnonymous" class="mt-0.5">
+          Meri kahani bina naam ke (Anonymous) publish karein.
+        </label>
+        <label class="flex items-start gap-2 text-xs text-neutral-300">
+          <input type="checkbox" id="storyConsent" required class="mt-0.5">
+          Main sehmat hoon ki meri kahani cyber awareness badhane ke liye public platforms aur social media par publish ki jaye.
+        </label>
+
+        <p id="storyFormError" class="text-xs text-danger" hidden></p>
+
+        <div class="flex gap-2 pt-2">
+          <button type="submit" id="btnSubmitStory" class="flex-1 py-3 rounded-2xl bg-amber text-ink font-semibold text-sm">Submit</button>
+          <button type="button" id="btnCancelStoryForm" class="flex-1 py-3 rounded-2xl border border-line text-sm">Cancel</button>
+        </div>
+      </form>
+    </div>
   </div>
-</div>
 
-<!-- ============================================================
-     CONSENT BANNER
-============================================================ -->
-<div id="consentBanner" hidden
-  class="fixed bottom-20 left-4 right-4 max-w-sm mx-auto bg-card border border-line rounded-2xl p-4 z-50 shadow-2xl">
-  <p class="text-xs text-neutral-400 mb-3">QRaksha uses a service worker to work offline. No personal data is stored or shared.</p>
-  <div class="flex gap-2">
-    <button id="btnAcceptConsent" class="btn-primary text-xs py-2">Accept</button>
-    <button id="btnDeclineConsent" class="btn-outline text-xs py-2">Decline</button>
+  <!-- ============================================================
+       Viral celebration + share modal — shown only after a successful
+       story submission
+  ============================================================ -->
+  <div id="celebrationModal" role="dialog" aria-modal="true" hidden class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 px-6">
+    <div class="w-full max-w-sm bg-panel rounded-3xl p-6 border border-amber/40 text-center">
+      <h2 class="font-display font-bold text-xl mb-3">🏆 Aap Hain Asli Cyber Masiha!</h2>
+      <p class="text-sm text-neutral-300 mb-5 text-left">Badhai ho! Aapne apni samajhdari aur QRaksha app ki madad se fraudster ko hara diya aur apne paise bacha liye. Lekin ladai abhi khatam nahi hui hai! Aaj hazaron masoom log isi fraud ka shikar ho rahe hain. Ek asli masiha baniye—apni yeh jeet ki kahani aur QRaksha app ka link abhi apne WhatsApp, Facebook aur X par share karein. Aapka ek share kisi ki poori zindagi ki kamai doobne se bacha sakta hai!</p>
+
+      <img id="celebrationShareImage" alt="Shareable QRaksha success card" class="w-full rounded-2xl border border-line mb-4">
+
+      <div class="flex flex-col gap-2">
+        <button id="btnCopyShareImage" type="button" class="py-3 rounded-2xl bg-amber text-ink font-semibold text-sm">Copy text &amp; share image</button>
+        <button id="btnShareNative" type="button" class="py-3 rounded-2xl border border-line text-sm">Share Now</button>
+        <button id="btnShareWhatsapp" type="button" class="py-3 rounded-2xl border border-line text-sm">Share on WhatsApp</button>
+        <button id="btnShareX" type="button" class="py-3 rounded-2xl border border-line text-sm">Share on X</button>
+        <button id="btnShareFacebook" type="button" class="py-3 rounded-2xl border border-line text-sm">Share on Facebook</button>
+        <button id="btnCloseCelebration" type="button" class="py-2 text-sm text-neutral-400 mt-1">Maybe later</button>
+      </div>
+    </div>
   </div>
+
+  <!-- ============================================================
+       Ad-gate overlay — the ONLY place a forced ad ever shows.
+       Never used for: AI analysis results, Panic Mode, or Complain.
+  ============================================================ -->
+  <div id="adGateOverlay" hidden class="fixed inset-0 z-[70] flex flex-col items-center justify-center bg-black/90 text-center px-6">
+    <div class="w-10 h-10 border-2 border-amber border-t-transparent rounded-full animate-spin mb-4"></div>
+    <p id="adGateLabel" class="text-sm text-neutral-300"></p>
+  </div>
+
 </div>
 
-<!-- ============================================================
-     SCRIPTS
-============================================================ -->
-<script type="module" src="js/firebase-init.js"></script>
+<style>
+  .qrv-navbtn { display:flex; flex-direction:column; align-items:center; gap:2px; padding:10px 0; font-size:11px; color:#8B95A1; }
+  .qrv-navbtn span:first-child { font-size:18px; }
+  .qrv-navbtn.is-active { color:#FFB020; }
+  .qrv-navbtn--complain { color:#EF4444; }
+  .qrv-navbtn--complain span:first-child { font-size:16px; }
+  .qrv-navbtn--complain em { font-style:normal; font-size:8px; color:#8B95A1; }
+  .qrv-gen-tile { display:flex; flex-direction:column; align-items:center; gap:8px; padding:20px 8px; background:#12161B; border:1px solid #232A31; border-radius:16px; font-size:13px; color:#E5E7EB; }
+  .qrv-gen-tile.is-active { border-color: var(--qrv-accent); color: var(--qrv-accent); }
+  .qrv-theme-swatch { padding:14px 0; border-radius:14px; border:1px solid #232A31; background:#12161B; font-size:13px; color:#E5E7EB; }
+  .tab-panel:not([hidden]) { display:block; }
+  .qrv-flag { display:flex; align-items:flex-start; gap:8px; padding:10px 12px; border-radius:12px; background:#0B0E11; border:1px solid #232A31; font-size:13px; color:#E5E7EB; }
+  .qrv-flag[data-severity="critical"] { border-color:#EF4444; }
+  .qrv-flag[data-severity="high"] { border-color:#F5A524; }
+  .qrv-flag__source { flex-shrink:0; font:700 10px/1 'JetBrains Mono',monospace; text-transform:uppercase; letter-spacing:.04em; padding:2px 6px; border-radius:6px; background:#12161B; color:#8B95A1; border:1px solid #232A31; }
+</style>
+
+<!-- NOTE: pin real Subresource Integrity hashes before final submission — see docs/SECURITY.md -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
 <script src="js/sanitize.js"></script>
+<script src="js/config.js"></script>
 <script src="js/lang.js"></script>
 <script src="js/risk-engine-core.js"></script>
 <script src="js/free-intel-check.js"></script>
 <script src="js/verification-engine.js"></script>
-<script src="js/ai-scam-check.js"></script>
-<script src="js/dashboard.js"></script>
-<script src="js/mobile-scanner.js"></script>
-<script src="js/story-submit.js"></script>
 <script src="js/ad-gate.js"></script>
 <script src="js/consent.js"></script>
+<script src="js/panic-mode.js"></script>
+<script src="js/ai-scam-check.js"></script>
+<script src="js/mobile-scanner.js"></script>
+<script src="js/dashboard.js"></script>
+<script type="module" src="js/firebase-init.js"></script>
+<script src="js/story-submit.js"></script>
 <script src="js/mobile-app.js"></script>
-
 <script>
-/* =============================================================
-   INLINE BOOTSTRAP — navigation, modals, theme, lang gate
-   Isolated from mobile-app.js so it runs even if a module fails
-============================================================= */
-(function(){
-  "use strict";
-  const $ = id => document.getElementById(id);
-  const qs = sel => document.querySelector(sel);
-
-  /* ---- Language gate ---- */
-  const LANG_KEY = "qrv_lang";
-  const savedLang = localStorage.getItem(LANG_KEY);
-  const gate = $("langGate");
-
-  if (!savedLang) {
-    gate.classList.remove("hidden");
-    // Supported langs with their native names
-    const GATE_LANGS = [
-      ["English","English"],["Hindi","हिन्दी"],["Bengali","বাংলা"],
-      ["Telugu","తెలుగు"],["Marathi","मराठी"],["Tamil","தமிழ்"],
-      ["Urdu","اردو"],["Gujarati","ગુજરાતી"],["Kannada","ಕನ್ನಡ"],
-      ["Malayalam","മലയാളം"],["Odia","ଓଡ଼ିଆ"],["Punjabi","ਪੰਜਾਬੀ"],
-    ];
-    const grid = $("langGateGrid");
-    const continueBtn = $("btnLangGateContinue");
-    let picked = null;
-    GATE_LANGS.forEach(([code, label]) => {
-      const btn = document.createElement("button");
-      btn.className = "lang-pill";
-      btn.textContent = label + (["English","Hindi","Bengali","Telugu","Marathi","Tamil","Urdu","Gujarati","Kannada"].includes(code) ? "" : " (beta)");
-      btn.addEventListener("click", () => {
-        grid.querySelectorAll(".lang-pill").forEach(b => b.classList.remove("selected"));
-        btn.classList.add("selected");
-        picked = code;
-        continueBtn.classList.remove("hidden");
-      });
-      grid.appendChild(btn);
-    });
-    continueBtn.addEventListener("click", () => {
-      if (!picked) return;
-      localStorage.setItem(LANG_KEY, picked);
-      gate.classList.add("hidden");
-      if (window.QRVLang) { window.QRVLang.init(); }
-    });
-  } else {
-    gate.classList.add("hidden");
-  }
-
-  /* ---- Tab navigation ---- */
-  const navBtns = document.querySelectorAll(".qrv-navbtn[data-tab]");
-  function activateTab(tabId) {
-    document.querySelectorAll(".tab-panel").forEach(p => {
-      p.classList.remove("is-active");
-      p.hidden = true;
-    });
-    navBtns.forEach(b => b.classList.remove("is-active"));
-    const panel = $(tabId);
-    const navBtn = qs(`.qrv-navbtn[data-tab="${tabId}"]`);
-    if (panel) { panel.classList.add("is-active"); panel.hidden = false; }
-    if (navBtn) navBtn.classList.add("is-active");
-    window.scrollTo({ top: 0, behavior: "smooth" });
-    document.dispatchEvent(new CustomEvent("qrv:tab-changed", { detail: { tab: tabId } }));
-  }
-  navBtns.forEach(btn => {
-    btn.addEventListener("click", () => activateTab(btn.dataset.tab));
-  });
-  window.QRVActivateTab = activateTab;
-  // (Setup Guide tab removed — private content)
-
-  /* ---- Modal helpers ---- */
-  function openModal(id){ const m = $(id); if(m) m.hidden = false; document.body.style.overflow = "hidden"; }
-  function closeModal(id){ const m = $(id); if(m) m.hidden = true; document.body.style.overflow = ""; }
-  window.QRVModal = { open: openModal, close: closeModal };
-
-  // Panic
-  $("btnOpenPanic").addEventListener("click", () => openModal("panicModal"));
-  $("btnClosePanic").addEventListener("click", () => closeModal("panicModal"));
-  // About & Founder — open the About tab (content is inline there)
-  ["btnOpenAbout","btnOpenFounder","btnSettingsAbout"].forEach(id => {
-    const el = $(id);
-    if (el) el.addEventListener("click", () => activateTab("tabAbout"));
-  });
-  // Privacy — still a modal
-  ["btnOpenPrivacy","btnSettingsPrivacy"].forEach(id => {
-    const el = $(id); if(el) el.addEventListener("click", () => openModal("privacyModal"));
-  });
-  $("btnClosePrivacy").addEventListener("click", () => closeModal("privacyModal"));
-  // Story
-  const bStory = $("btnOpenStoryForm"); if(bStory) bStory.addEventListener("click", () => openModal("storyModal"));
-  const bCloseStory = $("btnCloseStory"); if(bCloseStory) bCloseStory.addEventListener("click", () => closeModal("storyModal"));
-  // AI Chat
-  const bCloseAi = $("btnCloseAiChat"); if(bCloseAi) bCloseAi.addEventListener("click", () => closeModal("aiChatModal"));
-  // Dismiss modals on backdrop click
-  document.querySelectorAll(".qrv-modal").forEach(modal => {
-    modal.addEventListener("click", e => { if(e.target === modal) closeModal(modal.id); });
-  });
-
-  /* ---- Theme switcher ---- */
-  function applyTheme(t) {
-    const root = document.documentElement;
-    root.classList.toggle("dark", t !== "light");
-    localStorage.setItem("qrv_theme", t);
-  }
-  applyTheme(localStorage.getItem("qrv_theme") || "dark");
-  document.querySelectorAll(".qrv-theme-swatch[data-theme]").forEach(btn => {
-    btn.addEventListener("click", () => applyTheme(btn.dataset.theme));
-  });
-  const accentInput = $("customAccentInput");
-  if (accentInput) {
-    accentInput.addEventListener("input", e => {
-      document.documentElement.style.setProperty("--qrv-accent", e.target.value);
-    });
-  }
-
-  /* ---- Inline language selectors (settings + panic modal) ---- */
-  function wireLangSelect(selId) {
-    const sel = $(selId); if (!sel) return;
-    sel.value = localStorage.getItem(LANG_KEY) || "English";
-    sel.addEventListener("change", () => {
-      localStorage.setItem(LANG_KEY, sel.value);
-      if (window.QRVLang) window.QRVLang.applyToDom();
-      document.dispatchEvent(new CustomEvent("qrv:lang-changed", { detail: { lang: sel.value } }));
-    });
-    document.addEventListener("qrv:lang-changed", e => { if (sel.value !== e.detail.lang) sel.value = e.detail.lang; });
-  }
-  wireLangSelect("inlineLanguagePicker");
-  wireLangSelect("panicLangPicker");
-
-  /* ---- Toast utility ---- */
-  let toastTimer;
-  window.QRVToast = function(msg, ms) {
-    const t = $("toast");
-    t.textContent = msg;
-    t.classList.add("show");
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => t.classList.remove("show"), ms || 2800);
-  };
-
-  /* ---- Home lang label sync ---- */
-  function updateHomeLangLabel() {
-    const el = $("homeLangLabel");
-    if (!el) return;
-    const lang = localStorage.getItem(LANG_KEY) || "English";
-    const abbr = { English:"EN", Hindi:"HI", Bengali:"BN", Telugu:"TE", Marathi:"MR",
-      Tamil:"TA", Urdu:"UR", Gujarati:"GU", Kannada:"KN", Malayalam:"ML", Odia:"OD", Punjabi:"PA" };
-    el.textContent = abbr[lang] || lang.substring(0,2).toUpperCase();
-  }
-  updateHomeLangLabel();
-  document.addEventListener("qrv:lang-changed", updateHomeLangLabel);
-  $("btnHomeLang").addEventListener("click", () => activateTab("tabSettings"));
-
-  /* ---- Service worker ---- */
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("sw.js").catch(() => {});
+      navigator.serviceWorker.register("./sw.js").catch(() => {});
     });
   }
-})();
+  // About nav button — opens the founderModal which already has full
+  // About the Founder + Connect section. Founder modal is the closest
+  // thing to an "About" page in the original structure.
+  (function(){
+    var btn = document.getElementById("btnNavAbout");
+    if (btn) {
+      btn.addEventListener("click", function(){
+        var modal = document.getElementById("founderModal");
+        if (modal) modal.hidden = false;
+      });
+    }
+    // Safety stub — mobile-app.js may look for btnGenerateComplain
+    // (the old Complain nav button we replaced). Provide a no-op so
+    // mobile-app.js doesn't throw before its DOMContentLoaded fires.
+    if (!document.getElementById("btnGenerateComplain")) {
+      var stub = document.createElement("button");
+      stub.id = "btnGenerateComplain";
+      stub.hidden = true;
+      document.body.appendChild(stub);
+    }
+  })();
 </script>
 </body>
 </html>
