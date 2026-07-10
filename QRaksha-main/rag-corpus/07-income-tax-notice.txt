@@ -1,7 +1,0 @@
-Pattern: Fake Income Tax Notice
-An SMS or WhatsApp message claims to be an official Income Tax Department
-notice citing a discrepancy or pending refund, with a link to "verify
-PAN details" or download an attachment. The link either steals banking
-credentials or delivers malware. The Income Tax Department's official
-communications come through the e-filing portal and registered email, not
-unsolicited SMS links demanding immediate action.

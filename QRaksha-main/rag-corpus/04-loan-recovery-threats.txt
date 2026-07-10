@@ -1,8 +1,0 @@
-Pattern: Loan/EMI Recovery Threats
-Victims (sometimes people who never took a loan, or who used an unlicensed
-instant-loan app) receive threatening calls or messages claiming an EMI is
-overdue and that legal action, arrest, or workplace/family shaming will
-follow unless immediate payment is made. Unlicensed loan apps sometimes
-combine this with threats to misuse photos or contacts harvested from the
-victim's phone. Legitimate lenders follow RBI-mandated recovery processes
-and do not threaten instant arrest or family shaming to recover a debt.

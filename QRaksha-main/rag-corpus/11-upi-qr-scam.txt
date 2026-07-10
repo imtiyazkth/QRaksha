@@ -1,6 +1,0 @@
-Pattern: Fake UPI QR / "Scan to Receive Money" Scam
-A supposed buyer (often on a marketplace app) claims they need to send
-money and asks the seller to scan a QR code or enter a UPI PIN to
-"receive" a payment. Scanning a QR code or entering a UPI PIN is only ever
-required to SEND money, never to receive it — any request to scan/enter a
-PIN framed as necessary for receiving a payment is itself the scam.
