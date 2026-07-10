@@ -1,105 +1,150 @@
-# QRaksha
+# 🛡️ QRaksha — QR Scam Detection & Cyber Safety App
 
-**Scan with privacy. Verify before you trust.**
+**India's free, multilingual web app to scan QR codes, check suspicious URLs, detect fraud, and report cyber crimes.**
 
-QRaksha is a privacy-first web app that helps everyday users — in India and worldwide — catch scams before they fall for them: QR codes, suspicious messages, screenshots, phone numbers, and more, with a permanent one-tap emergency panic mode built in. It runs entirely in the browser for its core checks, with Advance AI Opinion and Analysis available for deeper insight.
+Built entirely from an Android phone using Termux. No laptop required.
 
----
-
-## What it does
-
-### 🔍 QR Code Check
-Scan a QR code with your camera or upload an image. The code is decoded and risk-analyzed **entirely in your browser** — nothing is sent anywhere for the free/offline check. You get an instant risk score, a plain-language explanation, and the exact decoded content (including UPI payee/amount/VPA details when it's a payment QR) before you ever tap a link or enter a UPI PIN.
-
-### 💬 Message & Screenshot Check
-Paste a suspicious SMS or WhatsApp message, or upload a screenshot, and get a risk breakdown. Text checks run offline/free by default; Advance AI Opinion and Analysis (via Mesh API) is available with explicit user consent for a deeper, sharper verdict.
-
-### 🗂️ Check by Category
-Dedicated flows for websites/URLs, WhatsApp/Telegram handles, phone numbers, email addresses, SMS headers, and social media profiles — plus a **"Verify with Government Data"** card that routes deepfake-media and untrusted/modded mobile app (`.apk`) reports straight to the official Cyber Crime Portal, since QRaksha doesn't run its own detection engine for those yet.
-
-### 🚨 Panic Mode
-A permanent, always-visible emergency banner at the top of the screen. One tap opens a zero-network, zero-ad screen with India's **Stop → Think → Act** guidance, a direct `tel:1930` dialer link to the official Cyber Fraud Helpline, and a link to report at **cybercrime.gov.in**.
-
-### 📣 Report Directly to a Platform
-One-tap links to each platform's own official abuse/report form (Google, X, WhatsApp, Telegram, Facebook, Instagram) — QRaksha never processes these reports itself, it just gets you to the right place faster.
-
-### 🧾 QR Code Generator
-Generate your own QR codes for campaigns, review links, Maps locations, or app store links.
-
-### 🌐 Multi-language support
-The interface is available in Hindi, Bengali, Telugu, Marathi, Tamil, Urdu, Gujarati, and Kannada (with more of India's Eighth Schedule languages listed and clearly marked "beta" where translation isn't complete yet — QRaksha shows English rather than guessing at safety-critical text).
-
-### 🏆 Success Stories
-Users who avoided a scam using QRaksha can share their story for public awareness, reviewed by a human before publication.
+[![Live Site](https://img.shields.io/badge/Live_Site-imtiyazkth.github.io/QRaksha-blue)](https://imtiyazkth.github.io/QRaksha/)
+[![Firebase](https://img.shields.io/badge/Firebase-Hosting_%26_Functions-orange)](https://console.firebase.google.com)
+[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
 ---
 
-## Why it's built this way
+## What QRaksha Does
 
-- **Offline-first.** The core QR decode and risk scoring happens on-device. No network round trip stands between you and a safety verdict.
-- **Global + local threat-intel.** Offline checks combine worldwide phishing/malware feeds (OpenPhish, PhishTank, URLhaus) with an India-specific scam-keyword list, so both international and Indian users get relevant, up-to-date signals.
-- **Consent before AI.** Anything sent to a server (Advance AI Opinion and Analysis, or screenshot text extraction) requires explicit, informed opt-in — off by default.
-- **No fake authority.** QRaksha never impersonates a bank, platform, or government body, and never claims to run detection it doesn't actually have (see the Government Data card above).
-- **Transparent about the roadmap.** QRaksha is free today. Sustainability plans (non-intrusive ads, an optional premium tier, B2B API licensing) are disclosed openly in-app — core safety features (offline QR check, Panic Mode, basic scam detection) are intended to always remain free.
-
----
-
-## Tech stack
-
-| Layer | Technology |
+| Feature | Description |
 |---|---|
-| Frontend | HTML, Tailwind CSS, vanilla JavaScript (PWA, installable) |
-| QR decoding | [html5-qrcode](https://github.com/mebjas/html5-qrcode) |
-| QR generation | qrcodejs, jsPDF |
-| Backend | Firebase Cloud Functions (Node.js 20) |
-| Database | Firebase Firestore |
-| Advance AI Opinion and Analysis | Mesh API |
-| Hosting | Firebase Hosting / GitHub Pages, serving the `docs/` directory |
+| 📷 QR Scanner | Camera-based on-device QR decode — no upload |
+| 🔗 URL Risk Check | 3-tier: offline heuristics → blocklists → Mesh AI |
+| 📱 Phone Check | India-specific scam number database |
+| 💬 SMS/Email Check | Pattern + TRAI sender analysis |
+| 🌐 22 Languages | All Eighth Schedule languages (9 fully translated) |
+| 🚨 Panic Mode | Instant 1930 helpline + cybercrime.gov.in — offline |
+| 🔒 Privacy-first | Camera never leaves device. No scan history stored. |
 
-## Project structure
+---
+
+## Project Structure
 
 ```
-qr-verify-scam-shield/
-├── docs/                     ← the deployed frontend (Firebase Hosting public dir)
-│   ├── index.html            ← main app shell
-│   ├── css/                  ← styling (qr-verify-core.css, ai-mode.css)
-│   ├── js/                   ← app logic (scanner, risk engine, i18n, AI pipeline, etc.)
-│   ├── data/                 ← awareness content, blocklists, platform report links
-│   ├── icons/, manifest.json, sw.js  ← PWA assets
-│   └── SECURITY.md           ← threat model & mitigations for this project
-├── functions/                ← Firebase Cloud Functions (message/screenshot checks, phone lookup, story submission)
-├── firestore.rules, firestore.indexes.json, firebase.json
-├── rag-corpus/                ← reference material backing Advance AI Opinion and Analysis
-├── LICENSE
-└── README.md                  ← this file
+QRaksha/
+├── docs/                        ← Static site (served by GitHub Pages + Firebase Hosting)
+│   ├── index.html               ← Main app (single responsive file)
+│   ├── manifest.json            ← PWA manifest
+│   ├── sw.js                    ← Service worker (offline support)
+│   ├── icons/                   ← App icons (192px, 512px)
+│   ├── data/
+│   │   ├── global-scam-signatures.json  ← Known malicious patterns
+│   │   ├── cyber-resources.json         ← Awareness resources
+│   │   └── blocklists/                  ← Auto-updated PhishTank / OpenPhish / URLhaus
+│   └── js/
+│       ├── firebase-init.js     ← Firebase SDK init (public config — safe to commit)
+│       ├── risk-engine-core.js  ← Heuristic scorer (window.QRVEngine)
+│       ├── verification-engine.js ← Full URL/text analysis orchestrator
+│       ├── lang.js              ← 22-language translation system (window.QRVLang)
+│       ├── mobile-app.js        ← Main app logic, modals, dashboard wiring
+│       ├── mobile-scanner.js    ← QR camera scanning
+│       ├── ai-scam-check.js     ← Mesh AI integration (via Cloud Function proxy)
+│       ├── free-intel-check.js  ← Blocklist lookup
+│       ├── dashboard.js         ← Home tab category grid + resources
+│       ├── panic-mode.js        ← Panic/emergency mode
+│       ├── story-submit.js      ← Success story form
+│       ├── sanitize.js          ← Input sanitization
+│       ├── consent.js           ← Cookie/service-worker consent banner
+│       ├── ad-gate.js           ← Ad gate (blocklist-based)
+│       └── config.js            ← App config (API endpoint URLs)
+├── functions/                   ← Firebase Cloud Functions (Node.js)
+│   ├── index.js                 ← Exports all functions
+│   ├── scamCheck.js             ← POST /scamCheck — Mesh AI text analysis
+│   ├── screenshotCheck.js       ← POST /screenshotCheck — Mesh AI image analysis
+│   ├── phoneLookup.js           ← POST /phoneLookup — NumVerify proxy
+│   ├── submitStory.js           ← POST /submitStory — Firestore write
+│   ├── meshClient.js            ← Mesh API client (server-side only)
+│   ├── rateLimiter.js           ← Rate limiting middleware
+│   ├── validateInput.js         ← Input validation
+│   ├── firestore.js             ← Firestore helpers
+│   ├── aiStatus.js              ← AI service health check
+│   ├── .env.example             ← Template — copy to .env, fill real keys
+│   └── package.json
+├── rag-corpus/                  ← 15 scam scenario texts for AI context
+├── .github/
+│   ├── scripts/build-blocklist.js     ← Blocklist update script
+│   └── workflows/update-blocklists.yml ← Auto-runs daily via GitHub Actions
+├── firebase.json                ← Firebase hosting + functions config
+├── firestore.rules              ← Firestore security rules
+├── .firebaserc                  ← Firebase project alias
+└── .gitignore                   ← Excludes .env, node_modules, secrets
 ```
 
-## Getting started
+---
+
+## API Keys — Public vs Private
+
+| Key | Where it lives | Why |
+|---|---|---|
+| Firebase Web API Key (`apiKey` in `firebase-init.js`) | ✅ Committed — public file | Firebase Web keys are public by design. Security is enforced by Firestore Rules, not by hiding this key. |
+| `MESH_API_KEY` | 🔒 Firebase Secret Manager + local `.env` only | Server-side only. Never in frontend code. |
+| `NUMVERIFY_API_KEY` | 🔒 Firebase Secret Manager + local `.env` only | Phone lookup proxy. Cloud Function only. |
+| `CORS_ORIGIN` (optional env var) | Firebase environment | Adds a custom domain to the CORS allowlist |
+
+---
+
+## Quick Deploy (Termux on Android)
 
 ```bash
-# install root dependencies
-npm install
+# 1. Setup (run once)
+termux-setup-storage
+pkg update && pkg install git nodejs -y
+npm install -g firebase-tools
 
-# install Cloud Functions dependencies
-cd functions && npm install && cd ..
+# 2. Clone
+git clone https://github.com/imtiyazkth/QRaksha.git
+cd QRaksha
 
-# serve the frontend locally (any static file server works)
-npx serve docs
+# 3. Set secret keys (stays local, never committed)
+cd functions && cp .env.example .env
+nano .env   # fill MESH_API_KEY and NUMVERIFY_API_KEY
 
-# deploy (requires the Firebase CLI and project access)
+# 4. Login and deploy
+firebase login
 firebase deploy
+
+# 5. For code changes — push to GitHub Pages
+git add docs/
+git commit -m "Update"
+git push origin main
 ```
 
-Advance AI Opinion and Analysis requires a `MESH_API_KEY` configured as a Firebase secret — see `docs/SECURITY.md` for how secrets are handled. Everything else (QR check, Panic Mode, category checks against local blocklists) works with no backend configuration at all.
+---
 
-## Security & privacy
+## Security
 
-See [`docs/SECURITY.md`](docs/SECURITY.md) for the full threat model — secret handling, XSS mitigations, prompt-injection defenses, rate limiting, and known limitations, documented file-by-file rather than just claimed.
+- No secret keys in source code
+- All API keys in Firebase Secret Manager
+- Input sanitized before any analysis
+- Rate limiting on all Cloud Functions
+- Firestore Security Rules enforce write restrictions
+- CORS allowlist covers only known domains
+- See `functions/.env.example` for key names
+
+---
+
+## Founder
+
+**Imtiyaz Surjapuri** — Journalist · Analyst · Civic Tech Builder
+
+Built QRaksha entirely from an Android phone (Termux). Covers political, social, and economic affairs from India and Qatar. Speaking truth without fear.
+
+- 🌐 [ImtiyazSurjapuri.com](https://ImtiyazSurjapuri.com)
+- 📘 [Facebook](https://facebook.com/ImtiyaSurjapuri)
+- 📸 [Instagram](https://instagram.com/ImtiyazSurjapuri)  
+- 🐦 [X / Twitter](https://x.com/Imtiyazkth)
+- 📺 [YouTube — How Political](https://youtube.com/@imtiyazvedio)
+
+---
 
 ## License
 
-See [`LICENSE`](LICENSE).
+MIT License — see [LICENSE](LICENSE)
 
-## Credits
-
-Built by **Imtiyaz Surjapuri** — Founder & Lead Developer. Powered by Mesh API.
+*QRaksha is free and will always be free for core safety features.*

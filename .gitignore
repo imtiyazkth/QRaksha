@@ -1,19 +1,31 @@
-# Secrets — the real Mesh key lives only in Firebase Secret Manager,
-# never in a file, but these are blocked anyway as defense in depth
+# Secret keys — NEVER commit
 .env
-.env.local
-*.key
-functions/.runtimeconfig.json
+functions/.env
+*.env.local
+*.env.production
 
-# Firebase local artifacts
-.firebase/
-firebase-debug.log
-firestore-debug.log
-ui-debug.log
-
-# Dependencies
+# Node
 node_modules/
+functions/node_modules/
 
-# OS / editor noise
+# Firebase
+.firebase/
+.firebaserc.local
+
+# Build outputs
+dist/
+.cache/
+
+# OS junk
 .DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Editor
+.vscode/
+.idea/
+
+# Logs
 *.log
+npm-debug.log*

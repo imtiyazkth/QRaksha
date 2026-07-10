@@ -16,10 +16,16 @@ const { defineSecret } = require("firebase-functions/params");
 const { isRateLimited, getClientIp } = require("./rateLimiter");
 
 const numverifyApiKey = defineSecret("NUMVERIFY_API_KEY");
-const ALLOWED_ORIGIN = "https://imtiyazkth.github.io";
+const ALLOWED_ORIGIN = [
+  "https://imtiyazkth.github.io",
+  "https://imtiyazkth.github.io/QRaksha",
+  "https://qraksha.web.app",
+  "https://qraksha.firebaseapp.com",
+  process.env.CORS_ORIGIN,
+].filter(Boolean);
 
 exports.phoneLookup = onRequest(
-  { secrets: [numverifyApiKey], region: "asia-south1", cors: [ALLOWED_ORIGIN] },
+  { secrets: [numverifyApiKey], region: "asia-south1", cors: ALLOWED_ORIGIN },
   async (req, res) => {
     if (req.method !== "POST") {
       return res.status(405).json({ error: "Method not allowed" });
