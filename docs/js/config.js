@@ -28,7 +28,7 @@ window.QRVConfig = (function () {
   async function refreshAiStatus() {
     try {
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 4000);
+      const timeout = setTimeout(() => controller.abort(), 1500);
       const res = await fetch(`${FUNCTIONS_BASE_URL}/aiStatus`, { signal: controller.signal });
       clearTimeout(timeout);
       if (!res.ok) throw new Error("aiStatus non-200");

@@ -137,6 +137,8 @@
 
       <div id="dashboardGrid" class="grid grid-cols-2 gap-3 mb-6"></div>
       <div id="categoryInputPanel" hidden class="mb-6 rounded-2xl bg-panel border border-amber/30 p-4 transition-all"></div>
+      <!-- Verdict card rendered here by dashboard.js → QRVVerification.renderVerdictCard() -->
+      <div id="verdictCardDisplay" class="mb-4"></div>
 
       <!-- Awareness gallery -->
       <h2 class="font-display font-bold text-lg mb-2">Awareness &amp; Resources</h2>
@@ -254,6 +256,18 @@
           <button id="btnAskAiSafety" type="button" data-i18n="chatWithAi">Chat with AI</button>
         </div>
 
+        <!-- AI second opinion button (shown only in ambiguous-band results) -->
+        <button id="btnAiSecondOpinionQr" type="button" hidden
+          class="w-full mt-2 py-2.5 rounded-xl border border-amber text-amber text-sm font-medium">
+          Get AI second opinion
+        </button>
+
+        <!-- QR explanation text (updated by qr-verify-core.js / ai-scam-check.js) -->
+        <p id="qrExplanation" class="text-xs text-neutral-400 mt-3 leading-relaxed"></p>
+
+        <!-- QR code box used by mobile-app.js's genQR function -->
+        <div id="qrBox" class="mt-3 flex justify-center" hidden></div>
+
         <p class="text-[10px] leading-relaxed text-neutral-500 mt-4 pt-3 border-t border-line">
           <strong class="text-neutral-400">Important Disclaimer:</strong> This screening is based on signatures and automated metrics. AI outputs are experimental and can be incorrect. This platform does not take responsibility for financial losses, fraud, or damage. Always double-check and verify information directly via official government channels or authorities before taking any transaction decisions. Users act at their own individual discretion.
         </p>
@@ -287,6 +301,18 @@
 
       <div id="msgReportSection" hidden class="mt-4 rounded-3xl bg-panel border border-line p-5">
         <p id="msgSourceHeading" class="text-xs uppercase tracking-wide text-neutral-500 mb-1"></p>
+        <!-- AI risk gauge (filled by ai-scam-check.js) -->
+        <div class="flex items-center gap-3 mb-3">
+          <div class="relative w-14 h-14 shrink-0">
+            <svg viewBox="0 0 56 56" class="w-14 h-14 -rotate-90">
+              <circle cx="28" cy="28" r="23" fill="none" stroke="#232A31" stroke-width="5"/>
+              <circle id="msgRiskGaugeValue" cx="28" cy="28" r="23" fill="none" stroke="#22C55E"
+                stroke-width="5" stroke-linecap="round" stroke-dasharray="144.5" stroke-dashoffset="144.5"/>
+            </svg>
+            <span id="msgRiskScoreNumber" class="absolute inset-0 flex items-center justify-center font-mono text-xs font-bold">0%</span>
+          </div>
+          <span id="msgRiskVerdictChip" class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide bg-green-900/40 text-green-300"></span>
+        </div>
         <p id="msgExplanation" class="text-sm text-neutral-100 mb-3"></p>
         <div id="msgRiskFlags" class="space-y-2 mb-3"></div>
         <button id="btnAiSecondOpinionMsg" type="button" hidden class="w-full py-2.5 rounded-xl border border-amber text-amber text-sm font-medium">Get AI second opinion</button>

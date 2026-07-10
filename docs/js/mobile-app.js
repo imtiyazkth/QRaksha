@@ -552,9 +552,15 @@
   document.addEventListener("DOMContentLoaded", async () => {
     window.QRVConsent.init();
     window.QRVPanicMode.init();
-    await window.QRVConfig.refreshAiStatus();
-    $("aiUnavailableBanner").hidden = window.QRVConfig.state.aiAvailable;
 
+    // Render dashboard immediately — don't wait for AI status check.
+    // Cloud Functions may be unavailable (Spark plan), and waiting 4s
+    // for a timeout makes the home screen look broken on every load.
+    if (window.QRVDashboard) window.QRVDashboard.init(activateTab);
+    if (window.QRVLang) window.QRVLang.init();
+    if (window.QRVStorySubmit) window.QRVStorySubmit.init();
+
+    // Restore theme and accent colour from localStorage
     try {
       const savedTheme = localStorage.getItem("qrv-theme");
       if (savedTheme) document.body.setAttribute("data-theme", savedTheme);
@@ -564,9 +570,5 @@
         if ($("customAccentInput")) $("customAccentInput").value = savedAccent;
       }
     } catch (e) {}
-
-    if (window.QRVDashboard) window.QRVDashboard.init(activateTab);
-    if (window.QRVLang) window.QRVLang.init();
-    if (window.QRVStorySubmit) window.QRVStorySubmit.init();
   });
 })();
