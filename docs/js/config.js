@@ -1,22 +1,33 @@
 /* ==========================================================================
-   CONFIG.JS
-   Central place for the three-tier feature flags. This is what lets the
-   developer switch Mesh AI off (e.g. to control cost) without touching
-   any other file, and lets the frontend degrade gracefully when it does.
+   CONFIG.JS  —  QRaksha v2 Production Build
+   Central place for the three-tier feature flags and Functions URL.
+
+   READING ORDER (first value wins, then falls back):
+     1. window.QRVGitHubConfig  — injected by GitHub Actions from secrets
+     2. Hardcoded fallback below — used only in local dev / demo mode
    ========================================================================== */
 
 window.QRVConfig = (function () {
   "use strict";
 
-  // Replace with your deployed Cloud Function base URL after `firebase deploy`.
-  // Keep this as a plain URL — it is not a secret, only the Mesh key behind
-  // it is. Anyone can see this value; that is fine by design.
-  const FUNCTIONS_BASE_URL = "https://asia-south1-qraksha-india.cloudfunctions.net";
+  // Read from GitHub-Actions-injected config when available.
+  // Falls back to empty string → AI features silently disabled.
+  const gh = (window.QRVGitHubConfig && window.QRVGitHubConfig._isConfigured)
+    ? window.QRVGitHubConfig
+    : null;
+
+  // FUNCTIONS_BASE_URL is NOT a secret — it's just a URL.
+  // The real secret (MESH_API_KEY) lives server-side in functions/.env
+  // and is never exposed here.
+  const FUNCTIONS_BASE_URL = (gh && gh.functionsBaseUrl)
+    ? gh.functionsBaseUrl
+    : "https://asia-south1-qraksha-india.cloudfunctions.net"; // local-dev fallback
+
+  const AI_FEATURES_ENABLED = gh
+    ? gh.aiFeaturesEnabled
+    : false; // always off until the GH Actions config workflow runs
 
   const state = {
-    // Becomes true only after /aiStatus confirms the backend is up AND
-    // the developer has not disabled it. Never assume AI is available
-    // before this check completes.
     aiAvailable: false,
     aiStatusChecked: false,
     userConsented: (() => {
@@ -26,21 +37,24 @@ window.QRVConfig = (function () {
   };
 
   async function refreshAiStatus() {
+    // Skip the network round-trip entirely when AI is explicitly disabled.
+    if (!AI_FEATURES_ENABLED) {
+      state.aiAvailable = false;
+      state.aiStatusChecked = true;
+      document.dispatchEvent(new CustomEvent("qrv:ai-status-updated", { detail: { available: false } }));
+      return false;
+    }
+
     try {
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 1500);
+      const timeout = setTimeout(() => controller.abort(), 4000);
       const res = await fetch(`${FUNCTIONS_BASE_URL}/aiStatus`, { signal: controller.signal });
       clearTimeout(timeout);
-      if (!res.ok) throw new Error("aiStatus non-200");
+      if (!res.ok) throw new Error(`aiStatus ${res.status}`);
       const data = await res.json();
       state.aiAvailable = data && data.enabled === true;
     } catch (err) {
-      // Any failure — network down, function down, developer disabled it,
-      // timeout — is treated identically: AI is simply not available right
-      // now. This is not an error state for the app, it's an expected one.
-      // The reason IS logged to console though, so you can tell "Mesh is
-      // just down right now" apart from "I never deployed the functions."
-      console.warn("aiStatus check failed (AI features will show as unavailable):", err.message);
+      console.warn("[QRaksha] aiStatus check failed — AI features offline:", err.message);
       state.aiAvailable = false;
     }
     state.aiStatusChecked = true;
@@ -50,19 +64,12 @@ window.QRVConfig = (function () {
 
   function setConsent(value) {
     state.userConsented = !!value;
-    try { localStorage.setItem("qrv-ai-consent", String(state.userConsented)); }
-    catch (e) { /* if storage is blocked, consent just won't persist across reloads */ }
+    try { localStorage.setItem("qrv-ai-consent", String(state.userConsented)); } catch (e) {}
   }
 
   function aiUsable() {
     return state.aiAvailable && state.userConsented;
   }
 
-  return {
-    FUNCTIONS_BASE_URL,
-    state,
-    refreshAiStatus,
-    setConsent,
-    aiUsable,
-  };
+  return { FUNCTIONS_BASE_URL, state, refreshAiStatus, setConsent, aiUsable };
 })();

@@ -47,16 +47,6 @@
       "desc": "Screen profile cloning or fake giveaways",
       "route": "message",
       "supported": true
-    },
-    {
-      "id": "govt_data",
-      "icon": "🛡️",
-      "label": "Verify with Government Data",
-      "desc": "Source: Cyber Crime Portal",
-      "route": "external",
-      "url": "https://cybercrime.gov.in",
-      "supported": true,
-      "featured": true
     }
   ],
   "awareness": [

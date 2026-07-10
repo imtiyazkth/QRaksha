@@ -1,50 +1,105 @@
 name: Update free threat-intel blocklists
 
+# ┌──────────────────────────────────────────────────────────────────┐
+# │  PATH BUG FIX (was using public/data/…, correct path is docs/)  │
+# │  Runs weekly, Monday 03:00 UTC. Also triggerable from Actions tab│
+# └──────────────────────────────────────────────────────────────────┘
+
 on:
   schedule:
-    # Runs weekly, Monday 03:00 UTC. Adjust freely — this costs nothing
-    # and needs no local execution since it runs entirely on GitHub.
-    - cron: "0 3 * * 1"
-  workflow_dispatch: {} # lets you trigger it manually from the Actions tab
+    - cron: "0 3 * * 1"   # every Monday 03:00 UTC
+  workflow_dispatch: {}    # manual trigger from the Actions tab
 
 permissions:
-  contents: write
+  contents: write          # needed to git-push the refreshed JSON files
 
 jobs:
   refresh:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+    timeout-minutes: 15
 
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ── ensure the output directory exists ──
+      - name: Ensure output dirs exist
+        run: mkdir -p docs/data/blocklists
+
+      # ── OpenPhish community feed (no API key required) ──
       - name: Fetch OpenPhish community feed
         run: |
-          curl -sL "https://openphish.com/feed.txt" -o /tmp/openphish_raw.txt || touch /tmp/openphish_raw.txt
+          curl -sL --max-time 30 "https://openphish.com/feed.txt" \
+            -o /tmp/openphish_raw.txt \
+            || (echo "OpenPhish unavailable — keeping previous snapshot"; touch /tmp/openphish_raw.txt)
+
           node .github/scripts/build-blocklist.js \
-            --input /tmp/openphish_raw.txt \
-            --output public/data/blocklists/openphish.json \
+            --input  /tmp/openphish_raw.txt \
+            --output docs/data/blocklists/openphish.json \
             --source "OpenPhish community feed (free, no API key)"
 
+      # ── URLhaus active-malware feed (no API key required) ──
       - name: Fetch URLhaus feed
         run: |
-          curl -sL "https://urlhaus.abuse.ch/downloads/text_online/" -o /tmp/urlhaus_raw.txt || touch /tmp/urlhaus_raw.txt
+          curl -sL --max-time 30 \
+            "https://urlhaus.abuse.ch/downloads/text_online/" \
+            -o /tmp/urlhaus_raw.txt \
+            || (echo "URLhaus unavailable — keeping previous snapshot"; touch /tmp/urlhaus_raw.txt)
+
           node .github/scripts/build-blocklist.js \
-            --input /tmp/urlhaus_raw.txt \
-            --output public/data/blocklists/urlhaus.json \
-            --source "URLhaus (abuse.ch), free, no API key"
+            --input  /tmp/urlhaus_raw.txt \
+            --output docs/data/blocklists/urlhaus.json \
+            --source "URLhaus (abuse.ch) — free, no API key"
 
-      # PhishTank's bulk data download requires a free registered API key
-      # for reliability at scale. If you register one (still free), add
-      # it as a repo secret PHISHTANK_API_KEY and uncomment below. Until
-      # then, this step is skipped and the existing seed file is kept.
-      # - name: Fetch PhishTank feed
-      #   run: |
-      #     curl -sL "https://data.phishtank.com/data/${{ secrets.PHISHTANK_API_KEY }}/online-valid.json" -o /tmp/phishtank_raw.json
-      #     node .github/scripts/build-blocklist.js --input /tmp/phishtank_raw.json --output public/data/blocklists/phishtank.json --source "PhishTank" --format json
+      # ── PhishHunt live feed (no API key, compact JSON API) ──
+      # phishunt.io exposes a small public API endpoint that aggregates
+      # PhishTank + OpenPhish + Google Safe Browsing hits seen in the
+      # last 24 h. Use it only for the domain-level blocklist; full
+      # page details require a premium plan we don't have.
+      - name: Fetch PhishHunt (phishunt.io) live feed
+        run: |
+          curl -sL --max-time 30 \
+            "https://phishunt.io/api/suspects/" \
+            -H "Accept: application/json" \
+            -o /tmp/phishunt_raw.json \
+            || (echo "PhishHunt unavailable — keeping previous snapshot"; echo "[]" > /tmp/phishunt_raw.json)
 
+          node .github/scripts/build-blocklist.js \
+            --input  /tmp/phishunt_raw.json \
+            --output docs/data/blocklists/phishunt.json \
+            --source "phishunt.io live feed (aggregates PhishTank/OpenPhish/Google Safe Browsing)" \
+            --format json
+
+      # ── PhishTank bulk data download (requires a FREE registered API key)
+      # Register at https://www.phishtank.com/api_register.php (free, instant)
+      # then add PHISHTANK_API_KEY as a repository secret under
+      # Settings → Secrets and variables → Actions.
+      # The step is skipped (no error) if the secret is absent.
+      - name: Fetch PhishTank bulk feed (optional — needs PHISHTANK_API_KEY secret)
+        if: ${{ secrets.PHISHTANK_API_KEY != '' }}
+        run: |
+          curl -sL --max-time 60 \
+            "https://data.phishtank.com/data/${{ secrets.PHISHTANK_API_KEY }}/online-valid.json" \
+            -o /tmp/phishtank_raw.json \
+            || (echo "PhishTank unavailable — keeping previous snapshot"; exit 0)
+
+          node .github/scripts/build-blocklist.js \
+            --input  /tmp/phishtank_raw.json \
+            --output docs/data/blocklists/phishtank.json \
+            --source "PhishTank bulk data (registered API key)" \
+            --format json
+
+      # ── Commit refreshed blocklists back to the repo ──
       - name: Commit refreshed blocklists
         run: |
-          git config user.name "github-actions[bot]"
+          git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add public/data/blocklists/*.json
-          git diff --cached --quiet || git commit -m "chore: refresh free threat-intel blocklists [automated]"
-          git push
+
+          git add docs/data/blocklists/*.json
+
+          if git diff --cached --quiet; then
+            echo "No changes to blocklists — nothing to commit."
+          else
+            git commit -m "chore: refresh free threat-intel blocklists [automated $(date -u +%Y-%m-%d)]"
+            git push
+          fi
