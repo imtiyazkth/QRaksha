@@ -60,6 +60,12 @@ jobs:
           # ── Feature flags ──
           AI_FEATURES_ENABLED:        ${{ secrets.AI_FEATURES_ENABLED }}
 
+          # ── Google Safe Browsing — MUST be HTTP-referrer-restricted to
+          #    your GitHub Pages / Firebase domains in Google Cloud Console
+          #    (APIs & Services → Credentials → this key → Application
+          #    restrictions → HTTP referrers) before adding it here. ──
+          GOOGLE_SAFE_BROWSING_KEY:    ${{ secrets.GOOGLE_SAFE_BROWSING_KEY }}
+
         run: |
           cat > docs/js/runtime-config.js << 'JSEOF'
           /* ================================================================
@@ -81,6 +87,7 @@ jobs:
           printf '  firebaseAppId:           %s,\n' "\"${FIREBASE_APP_ID:-}\"" >> docs/js/runtime-config.js
           printf '  functionsBaseUrl:        %s,\n' "\"${FUNCTIONS_BASE_URL:-}\"" >> docs/js/runtime-config.js
           printf '  aiFeaturesEnabled:       %s,\n' "${AI_FEATURES_ENABLED:-false}" >> docs/js/runtime-config.js
+          printf '  googleSafeBrowsingKey:   %s,\n' "\"${GOOGLE_SAFE_BROWSING_KEY:-}\"" >> docs/js/runtime-config.js
           printf '  generatedAt:             %s,\n' "\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"" >> docs/js/runtime-config.js
           printf '};\n' >> docs/js/runtime-config.js
 

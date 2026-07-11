@@ -261,6 +261,25 @@ window.QRVVerification = (function () {
     const details = [];
     let riskScore = 0;
 
+    const isRawIp = /^(\d{1,3}\.){3}\d{1,3}$/.test(hostname);
+    if (isRawIp) {
+      riskScore += 30;
+      details.push("The link points directly to an IP address instead of a domain name — a common phishing technique.");
+
+      // AbuseIPDB — OPT-IN ONLY, unlike Google Safe Browsing above.
+      // AbuseIPDB keys cannot be restricted by domain/referrer, so
+      // shipping one in public client-side code lets anyone who views
+      // page source steal it and drain your free quota. This only
+      // activates if you've explicitly set window.QRV_ABUSEIPDB_KEY
+      // yourself (never injected by the GitHub Actions workflow, on
+      // purpose) — an informed choice you make, not a default.
+      const abuseHit = await checkAbuseIPDB(hostname);
+      if (abuseHit) {
+        riskScore += 40;
+        details.unshift(abuseHit);
+      }
+    }
+
     const tldHit = INTEL.SUSPICIOUS_TLDS.find((tld) => hostname.endsWith(tld));
     if (tldHit) {
       riskScore += 25;
@@ -298,9 +317,91 @@ window.QRVVerification = (function () {
       details.unshift(feedHit); // most important signal first
     }
 
+    // Google Safe Browsing — only runs if a referrer-restricted key has
+    // been configured (see config.js). Silently skipped otherwise.
+    const gsbHit = await checkGoogleSafeBrowsing(hostname);
+    if (gsbHit) {
+      riskScore += 60;
+      details.unshift(gsbHit);
+    }
+
     if (!details.length) details.push("No known suspicious TLD, brand-lookalike, or scam keyword pattern found in this URL, and it's not on the live phishunt.io threat feed.");
 
     return buildVerdict(riskScore, hostname, details, "URL");
+  }
+
+  /* ------------------------------------------------------------------
+     Google Safe Browsing lookup — free tier, requires an HTTP-referrer-
+     restricted API key (see config.js / runtime-config.js). If no key
+     is configured, this silently returns null so the app degrades
+     gracefully to the free offline + phishunt checks above.
+  ------------------------------------------------------------------ */
+  async function checkGoogleSafeBrowsing(hostname) {
+    const apiKey = window.QRVConfig && window.QRVConfig.GOOGLE_SAFE_BROWSING_KEY;
+    if (!apiKey) return null;
+    try {
+      const controller = new AbortController();
+      const t = setTimeout(() => controller.abort(), 3500);
+      const res = await fetch(
+        `https://safebrowsing.googleapis.com/v4/threatMatches:find?key=${encodeURIComponent(apiKey)}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          signal: controller.signal,
+          body: JSON.stringify({
+            client: { clientId: "qraksha", clientVersion: "1.0" },
+            threatInfo: {
+              threatTypes: ["MALWARE", "SOCIAL_ENGINEERING", "UNWANTED_SOFTWARE", "POTENTIALLY_HARMFUL_APPLICATION"],
+              platformTypes: ["ANY_PLATFORM"],
+              threatEntryTypes: ["URL"],
+              threatEntries: [{ url: `https://${hostname}` }, { url: `http://${hostname}` }],
+            },
+          }),
+        }
+      );
+      clearTimeout(t);
+      if (!res.ok) return null;
+      const data = await res.json();
+      if (data && Array.isArray(data.matches) && data.matches.length) {
+        const types = [...new Set(data.matches.map((m) => m.threatType))].join(", ");
+        return `Flagged by Google Safe Browsing: ${types}.`;
+      }
+      return null;
+    } catch (e) {
+      return null; // offline / timed out / not configured — other checks still apply
+    }
+  }
+
+  /* ------------------------------------------------------------------
+     AbuseIPDB — OPT-IN ONLY. See the comment at the call site for why
+     this is deliberately NOT wired into the GitHub Actions secret
+     injection pattern used for Google Safe Browsing above. To use this,
+     set window.QRV_ABUSEIPDB_KEY = "your-key" yourself in a script tag
+     you control (e.g. a local-only override, or a value you accept the
+     exposure risk for) — knowing that risk is on you, not silently
+     assumed.
+  ------------------------------------------------------------------ */
+  async function checkAbuseIPDB(ip) {
+    const apiKey = window.QRV_ABUSEIPDB_KEY;
+    if (!apiKey) return null;
+    try {
+      const controller = new AbortController();
+      const t = setTimeout(() => controller.abort(), 3500);
+      const res = await fetch(`https://api.abuseipdb.com/api/v2/check?ipAddress=${encodeURIComponent(ip)}&maxAgeInDays=90`, {
+        headers: { Key: apiKey, Accept: "application/json" },
+        signal: controller.signal,
+      });
+      clearTimeout(t);
+      if (!res.ok) return null;
+      const data = await res.json();
+      const score = data && data.data ? data.data.abuseConfidenceScore : 0;
+      if (score >= 25) {
+        return `AbuseIPDB reports a ${score}% abuse confidence score for this IP address (${data.data.totalReports || 0} reports).`;
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
   }
 
   /* ------------------------------------------------------------------

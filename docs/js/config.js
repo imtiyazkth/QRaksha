@@ -27,6 +27,11 @@ window.QRVConfig = (function () {
     ? gh.aiFeaturesEnabled
     : false; // always off until the GH Actions config workflow runs
 
+  // Restricted by HTTP referrer in Google Cloud Console — safe to read
+  // here the same way the Firebase client config is. Empty string means
+  // "not configured yet", and callers must treat that as "skip this check".
+  const GOOGLE_SAFE_BROWSING_KEY = (gh && gh.googleSafeBrowsingKey) ? gh.googleSafeBrowsingKey : "";
+
   const state = {
     aiAvailable: false,
     aiStatusChecked: false,
@@ -71,5 +76,5 @@ window.QRVConfig = (function () {
     return state.aiAvailable && state.userConsented;
   }
 
-  return { FUNCTIONS_BASE_URL, state, refreshAiStatus, setConsent, aiUsable };
+  return { FUNCTIONS_BASE_URL, GOOGLE_SAFE_BROWSING_KEY, state, refreshAiStatus, setConsent, aiUsable };
 })();

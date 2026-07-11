@@ -53,6 +53,7 @@
     },
     functionsBaseUrl:    raw.functionsBaseUrl         || "",
     aiFeaturesEnabled:   raw.aiFeaturesEnabled === true || raw.aiFeaturesEnabled === "true",
+    googleSafeBrowsingKey: raw.googleSafeBrowsingKey   || "",
     generatedAt:         raw.generatedAt              || null,
     _isConfigured:       Boolean(raw.firebaseProjectId),
   };
