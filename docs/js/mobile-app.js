@@ -688,7 +688,7 @@
   /* ====================================================================
      SHARE QRAKSHA MODAL — Web Share API + copy link + socials
   ==================================================================== */
-  const SHARE_TEXT = "Protect yourself from online scams with QRaksha — Scan, Verify and Stay Safe.";
+  function shareText() { return window.QRVLang ? window.QRVLang.t("shareAppText") : "Protect yourself from online scams with QRaksha — Scan, Verify and Stay Safe."; }
   const SHARE_URL  = "https://imtiyazkth.github.io/QRaksha/";
 
   function openShareApp() { $("shareAppModal").hidden = false; }
@@ -703,7 +703,7 @@
         await navigator.clipboard.writeText(SHARE_URL);
         const btn = $("btnCopyShareAppLink");
         const original = btn.textContent;
-        btn.textContent = "Copied!";
+        btn.textContent = window.QRVLang ? window.QRVLang.t("copiedLink") : "Copied!";
         setTimeout(() => { btn.textContent = original; }, 1500);
       } catch (e) {
         $("shareAppUrlInput").select();
@@ -715,7 +715,7 @@
     $("btnShareAppNative").addEventListener("click", async () => {
       if (navigator.share) {
         try {
-          await navigator.share({ title: "QRaksha", text: SHARE_TEXT, url: SHARE_URL });
+          await navigator.share({ title: "QRaksha", text: shareText(), url: SHARE_URL });
         } catch (e) { /* user cancelled — ignore */ }
       } else {
         openShareApp();
@@ -724,12 +724,12 @@
   }
   if ($("btnShareAppWhatsapp")) {
     $("btnShareAppWhatsapp").addEventListener("click", () => {
-      window.open(`https://wa.me/?text=${encodeURIComponent(SHARE_TEXT + " " + SHARE_URL)}`, "_blank", "noopener,noreferrer");
+      window.open(`https://wa.me/?text=${encodeURIComponent(shareText() + " " + SHARE_URL)}`, "_blank", "noopener,noreferrer");
     });
   }
   if ($("btnShareAppX")) {
     $("btnShareAppX").addEventListener("click", () => {
-      window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(SHARE_TEXT)}&url=${encodeURIComponent(SHARE_URL)}`, "_blank", "noopener,noreferrer");
+      window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText())}&url=${encodeURIComponent(SHARE_URL)}`, "_blank", "noopener,noreferrer");
     });
   }
   if ($("btnShareAppFacebook")) {

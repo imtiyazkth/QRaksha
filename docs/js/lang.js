@@ -79,6 +79,37 @@ window.QRVLang = (function () {
       /* Settings */
       langTitle: "Language",
       scammedRightNow: "Being scammed right now? Tap here for immediate help",
+
+      /* Scam Shield modal */
+      scamShieldTagline: "Learn. Protect. Stay Safe.",
+      scamShieldIntro: "Aapki suraksha ke liye — sarkari salaah aur jaankari ek jagah.",
+      scamShieldTipsHeading: "How to Avoid Scams",
+      scamShieldStatsHeading: "Indian Cyber Fraud Statistics",
+      scamShieldStepsHeading: "How to Save Your Money From Scammers",
+      scamShieldEmergencyHeading: "If You Have Already Lost Money",
+      scamShieldEmergencyIntro: "Turant karein — agar aapke saath dhokhadhadi ho chuki hai:",
+      scamShieldCallBtn: "Call 1930",
+      scamShieldReportBtn: "Report Online ↗",
+      scamShieldClose: "Close",
+      backToHome: "Back to Home",
+
+      /* Founder */
+      founderBio: "Building privacy-first security tools for India's 800M+ mobile users. BA student, content creator, and self-taught developer.",
+      founderTitleLead: "Lead Developer",
+      founderTitleFounder: "Founder",
+      otherProjects: "Other Projects",
+      connect: "Connect",
+
+      /* Share QRaksha */
+      shareAppTitle: "Share QRaksha",
+      shareAppText: "Protect yourself from online scams with QRaksha — Scan, Verify and Stay Safe.",
+      shareNow: "Share Now",
+      copyLink: "Copy",
+      copiedLink: "Copied!",
+
+      /* Settings */
+      shareQRaksha: "Share QRaksha",
+      howQRakshaProtects: "How QRaksha Protects You",
     },
 
     /* ------------------------------------------------------------------ */
@@ -125,6 +156,33 @@ window.QRVLang = (function () {
 
       langTitle: "भाषा",
       scammedRightNow: "अभी धोखाधड़ी हो रही है? तुरंत मदद के लिए यहाँ टैप करें",
+
+      scamShieldTagline: "जानें। सुरक्षित रहें। बचे रहें।",
+      scamShieldIntro: "आपकी सुरक्षा के लिए — सरकारी सलाह और जानकारी एक जगह।",
+      scamShieldTipsHeading: "स्कैम से कैसे बचें",
+      scamShieldStatsHeading: "भारतीय साइबर धोखाधड़ी आंकड़े",
+      scamShieldStepsHeading: "स्कैमर्स से अपना पैसा कैसे बचाएं",
+      scamShieldEmergencyHeading: "अगर आपका पैसा पहले ही जा चुका है",
+      scamShieldEmergencyIntro: "तुरंत करें — अगर आपके साथ धोखाधड़ी हो चुकी है:",
+      scamShieldCallBtn: "1930 पर कॉल करें",
+      scamShieldReportBtn: "ऑनलाइन रिपोर्ट करें ↗",
+      scamShieldClose: "बंद करें",
+      backToHome: "होम पर वापस जाएं",
+
+      founderBio: "भारत के 800M+ मोबाइल उपयोगकर्ताओं के लिए प्राइवेसी-फर्स्ट सुरक्षा टूल्स बना रहे हैं। BA छात्र, कंटेंट क्रिएटर और सेल्फ-टॉट डेवलपर।",
+      founderTitleLead: "लीड डेवलपर",
+      founderTitleFounder: "फाउंडर",
+      otherProjects: "अन्य प्रोजेक्ट्स",
+      connect: "जुड़ें",
+
+      shareAppTitle: "QRaksha शेयर करें",
+      shareAppText: "QRaksha के साथ ऑनलाइन धोखाधड़ी से सुरक्षित रहें — स्कैन करें, सत्यापित करें और सुरक्षित रहें।",
+      shareNow: "अभी शेयर करें",
+      copyLink: "कॉपी करें",
+      copiedLink: "कॉपी हो गया!",
+
+      shareQRaksha: "QRaksha शेयर करें",
+      howQRakshaProtects: "QRaksha आपकी सुरक्षा कैसे करता है",
     },
 
     /* ------------------------------------------------------------------ */

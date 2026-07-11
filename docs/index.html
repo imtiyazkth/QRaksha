@@ -217,7 +217,7 @@
 
       <!-- How QRaksha Protects You -->
       <div class="rounded-2xl bg-panel border border-line p-4 mb-6">
-        <h2 class="font-display font-bold text-lg mb-1 flex items-center gap-2">🛡️ <span>How QRaksha Protects You</span></h2>
+        <h2 class="font-display font-bold text-lg mb-1 flex items-center gap-2">🛡️ <span data-i18n="howQRakshaProtects">How QRaksha Protects You</span></h2>
         <p class="text-xs text-neutral-500 mb-3">Aapki suraksha, hamari zimmedari.</p>
         <div class="grid grid-cols-2 gap-2">
           <div class="rounded-xl bg-ink border border-line p-3">
@@ -253,7 +253,7 @@
         <span class="w-11 h-11 rounded-xl bg-amber/10 border border-amber/30 flex items-center justify-center text-xl flex-shrink-0">🛡️</span>
         <span class="flex-1">
           <span class="block font-display font-bold text-sm text-neutral-100">Scam Shield</span>
-          <span class="block text-[11px] text-neutral-500">Learn. Protect. Stay Safe.</span>
+          <span class="block text-[11px] text-neutral-500" data-i18n="scamShieldTagline">Learn. Protect. Stay Safe.</span>
         </span>
         <span class="text-neutral-500">→</span>
       </button>
@@ -569,7 +569,7 @@
           class="w-full text-left py-3 px-4 rounded-xl border border-line text-sm text-neutral-200 bg-transparent">Privacy Policy</button>
         <button id="btnOpenShareApp" type="button"
           class="w-full text-left py-3 px-4 rounded-xl border border-line text-sm text-neutral-200 bg-transparent flex items-center justify-between">
-          <span>Share QRaksha</span>
+          <span data-i18n="shareQRaksha">Share QRaksha</span>
           <span aria-hidden="true">📤</span>
         </button>
       </div>
@@ -605,36 +605,36 @@
       <button id="btnCloseScamShield" type="button"
         class="flex items-center gap-1.5 text-xs text-neutral-400 mb-4 bg-transparent border-none cursor-pointer">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4"><path d="M15 18l-6-6 6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Back to Home
+        <span data-i18n="backToHome">Back to Home</span>
       </button>
 
       <div class="flex items-center gap-3 mb-1">
         <span class="w-12 h-12 rounded-2xl bg-amber/10 border border-amber/30 flex items-center justify-center text-2xl flex-shrink-0">🛡️</span>
         <div>
           <h2 class="font-display font-bold text-xl leading-tight">Scam Shield</h2>
-          <p class="text-xs text-neutral-500">Learn. Protect. Stay Safe.</p>
+          <p class="text-xs text-neutral-500" data-i18n="scamShieldTagline">Learn. Protect. Stay Safe.</p>
         </div>
       </div>
-      <p class="text-xs text-neutral-500 mb-5">Aapki suraksha ke liye — sarkari salaah aur jaankari ek jagah.</p>
+      <p class="text-xs text-neutral-500 mb-5" data-i18n="scamShieldIntro">Aapki suraksha ke liye — sarkari salaah aur jaankari ek jagah.</p>
 
       <!-- A: How Indians Can Avoid Scams -->
-      <h3 class="font-display font-bold text-sm text-amber mb-2 mt-4">🔒 How to Avoid Scams</h3>
+      <h3 class="font-display font-bold text-sm text-amber mb-2 mt-4">🔒 <span data-i18n="scamShieldTipsHeading">How to Avoid Scams</span></h3>
       <div id="scamShieldTipsGrid" class="space-y-2 mb-6"></div>
 
       <!-- B: Cyber Fraud Statistics -->
-      <h3 class="font-display font-bold text-sm text-amber mb-2">📊 Indian Cyber Fraud Statistics</h3>
+      <h3 class="font-display font-bold text-sm text-amber mb-2">📊 <span data-i18n="scamShieldStatsHeading">Indian Cyber Fraud Statistics</span></h3>
       <div id="scamShieldStatsGrid" class="grid grid-cols-2 gap-2 mb-3"></div>
       <div id="scamShieldCategoryList" class="space-y-1.5 mb-2"></div>
       <p class="text-[10px] text-neutral-500 mb-6" id="scamShieldStatsSource"></p>
 
       <!-- C: How to Save Your Money -->
-      <h3 class="font-display font-bold text-sm text-amber mb-2">💰 How to Save Your Money From Scammers</h3>
+      <h3 class="font-display font-bold text-sm text-amber mb-2">💰 <span data-i18n="scamShieldStepsHeading">How to Save Your Money From Scammers</span></h3>
       <div id="scamShieldStepsList" class="space-y-2 mb-6"></div>
 
       <!-- D: Emergency Scam Response -->
       <div class="rounded-2xl bg-gradient-to-br from-red-950/40 to-panel border border-red-500/25 p-4 mb-6">
-        <h3 class="font-display font-bold text-sm text-red-400 mb-1">🚨 If You Have Already Lost Money</h3>
-        <p class="text-[11px] text-neutral-400 mb-3">Turant karein — agar aapke saath dhokhadhadi ho chuki hai:</p>
+        <h3 class="font-display font-bold text-sm text-red-400 mb-1">🚨 <span data-i18n="scamShieldEmergencyHeading">If You Have Already Lost Money</span></h3>
+        <p class="text-[11px] text-neutral-400 mb-3" data-i18n="scamShieldEmergencyIntro">Turant karein — agar aapke saath dhokhadhadi ho chuki hai:</p>
         <ol class="space-y-2 mb-3 text-xs text-neutral-200 list-decimal list-inside">
           <li>Immediately call the <strong class="text-red-400">1930</strong> Cyber Fraud Helpline.</li>
           <li>Report at <strong>cybercrime.gov.in</strong>.</li>
@@ -643,17 +643,17 @@
         </ol>
         <div class="grid grid-cols-2 gap-2">
           <a href="tel:1930" class="flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-red-600 text-white text-xs font-bold">
-            📞 Call 1930
+            📞 <span data-i18n="scamShieldCallBtn">Call 1930</span>
           </a>
           <a href="https://cybercrime.gov.in" target="_blank" rel="noopener noreferrer"
              class="flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-red-500/40 text-red-300 text-xs font-bold">
-            Report Online ↗
+            <span data-i18n="scamShieldReportBtn">Report Online ↗</span>
           </a>
         </div>
       </div>
 
       <button id="btnScamShieldClose2" type="button"
-        class="w-full py-3 rounded-2xl border border-line text-sm">Close</button>
+        class="w-full py-3 rounded-2xl border border-line text-sm" data-i18n="scamShieldClose">Close</button>
     </div>
   </div>
 
@@ -663,24 +663,24 @@
   <div id="shareAppModal" role="dialog" aria-modal="true" hidden
        class="fixed inset-0 z-50 flex items-end justify-center bg-black/70">
     <div class="w-full max-w-[480px] bg-panel rounded-t-3xl p-6 border-t border-line">
-      <h2 class="font-display font-bold text-lg mb-1">Share QRaksha</h2>
+      <h2 class="font-display font-bold text-lg mb-1" data-i18n="shareAppTitle">Share QRaksha</h2>
       <p class="text-xs text-neutral-500 mb-4">Protect yourself from online scams with QRaksha — Scan, Verify and Stay Safe.</p>
 
       <div class="flex items-center gap-2 rounded-xl border border-line bg-ink px-3 py-2.5 mb-4">
         <input id="shareAppUrlInput" type="text" readonly value="https://imtiyazkth.github.io/QRaksha/"
                class="flex-1 bg-transparent text-xs text-neutral-300 outline-none">
-        <button id="btnCopyShareAppLink" type="button" class="text-[11px] font-semibold text-amber flex-shrink-0">Copy</button>
+        <button id="btnCopyShareAppLink" type="button" class="text-[11px] font-semibold text-amber flex-shrink-0" data-i18n="copyLink">Copy</button>
       </div>
 
       <div class="grid grid-cols-2 gap-2 mb-3">
-        <button id="btnShareAppNative" type="button" class="py-3 rounded-2xl bg-amber text-ink font-semibold text-sm">Share Now</button>
+        <button id="btnShareAppNative" type="button" class="py-3 rounded-2xl bg-amber text-ink font-semibold text-sm" data-i18n="shareNow">Share Now</button>
         <button id="btnShareAppWhatsapp" type="button" class="py-3 rounded-2xl border border-line text-sm">WhatsApp</button>
         <button id="btnShareAppX" type="button" class="py-3 rounded-2xl border border-line text-sm">Share on X</button>
         <button id="btnShareAppFacebook" type="button" class="py-3 rounded-2xl border border-line text-sm">Facebook</button>
       </div>
 
       <button id="btnCloseShareApp" type="button"
-        class="w-full py-3 rounded-2xl border border-line text-sm">Close</button>
+        class="w-full py-3 rounded-2xl border border-line text-sm" data-i18n="scamShieldClose">Close</button>
     </div>
   </div>
 
@@ -699,30 +699,32 @@
 
       <!-- Premium founder header -->
       <div class="flex flex-col items-center text-center mb-6 pb-5 border-b border-line">
-        <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-gray-900 via-red-950 to-gray-900
-                    border border-red-500/25 flex items-center justify-center text-4xl mb-4
-                    shadow-[0_0_20px_rgba(239,68,68,0.12)]">
-          🧑‍💻
+        <div class="w-24 h-24 rounded-full overflow-hidden bg-gradient-to-br from-gray-900 via-red-950 to-gray-900
+                    border-2 border-red-500/30 mb-4
+                    shadow-[0_0_20px_rgba(239,68,68,0.18)]">
+          <img src="assets/Imtiyaz-Surjapuri.png" alt="Imtiyaz Surjapuri - Founder of QRaksha"
+               class="w-full h-full object-cover" loading="lazy"
+               onerror="this.parentElement.innerHTML='🧑‍💻';this.parentElement.classList.add('flex','items-center','justify-center','text-4xl');">
         </div>
         <h3 class="text-2xl sm:text-3xl font-extrabold tracking-tight founder-name-gradient">
           Imtiyaz Surjapuri
         </h3>
         <div class="mt-2 flex flex-wrap items-center gap-2 justify-center">
           <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold
-                       bg-red-500/10 text-red-400 border border-red-500/20 uppercase tracking-wide">Founder</span>
+                       bg-red-500/10 text-red-400 border border-red-500/20 uppercase tracking-wide" data-i18n="founderTitleFounder">Founder</span>
           <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold
-                       bg-neutral-800 text-neutral-300 border border-neutral-700 uppercase tracking-wide">Lead Developer</span>
+                       bg-neutral-800 text-neutral-300 border border-neutral-700 uppercase tracking-wide" data-i18n="founderTitleLead">Lead Developer</span>
         </div>
         <p class="text-xs text-neutral-500 mt-3 max-w-xs leading-relaxed">
-          Building privacy-first security tools for India's 800M+ mobile users. BA student, content creator, and self-taught developer.
+          <span data-i18n="founderBio">Building privacy-first security tools for India's 800M+ mobile users. BA student, content creator, and self-taught developer.</span>
         </p>
       </div>
 
-      <h3 class="text-sm font-semibold text-neutral-300 mb-2">Other Projects</h3>
+      <h3 class="text-sm font-semibold text-neutral-300 mb-2" data-i18n="otherProjects">Other Projects</h3>
       <div id="founderPortfolioGrid" class="grid grid-cols-2 gap-3 mb-5"></div>
 
       <!-- Premium social tiles — large, high-contrast -->
-      <h3 class="text-sm font-semibold text-neutral-300 mb-3">Connect</h3>
+      <h3 class="text-sm font-semibold text-neutral-300 mb-3" data-i18n="connect">Connect</h3>
       <div class="grid grid-cols-2 gap-3 mb-5">
         <a href="https://facebook.com/ImtiyaSurjapuri" target="_blank" rel="noopener noreferrer" class="qrv-social-link-premium">
           <span class="qrv-social-icon-wrap" style="background:#0866FF;">
