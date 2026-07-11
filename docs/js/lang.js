@@ -30,7 +30,7 @@ window.QRVLang = (function () {
     English: {
       /* Navigation */
       home: "Home", scan: "Scan", generate: "Generate",
-      complain: "Complain", settings: "Settings",
+      complain: "Scam Shield", scamShield: "Scam Shield", settings: "Settings",
 
       /* Home tab */
       whatToCheck: "What do you want to check?",
@@ -84,7 +84,7 @@ window.QRVLang = (function () {
     /* ------------------------------------------------------------------ */
     Hindi: {
       home: "होम", scan: "स्कैन", generate: "जनरेट करें",
-      complain: "शिकायत", settings: "सेटिंग्स",
+      complain: "स्कैम शील्ड", scamShield: "स्कैम शील्ड", settings: "सेटिंग्स",
 
       whatToCheck: "आप क्या जाँचना चाहेंगे?",
       pickCategory: "एक श्रेणी चुनें — सामान्य आइकन, कोई आधिकारिक ब्रांडिंग नहीं।",
@@ -130,7 +130,7 @@ window.QRVLang = (function () {
     /* ------------------------------------------------------------------ */
     Bengali: {
       home: "হোম", scan: "স্ক্যান", generate: "তৈরি করুন",
-      complain: "অভিযোগ", settings: "সেটিংস",
+      complain: "স্ক্যাম শিল্ড", scamShield: "স্ক্যাম শিল্ড", settings: "সেটিংস",
 
       whatToCheck: "আপনি কী পরীক্ষা করতে চান?",
       pickCategory: "একটি বিভাগ বেছে নিন — সাধারণ আইকন, কোনো অফিসিয়াল ব্র্যান্ডিং নেই।",
@@ -176,7 +176,7 @@ window.QRVLang = (function () {
     /* ------------------------------------------------------------------ */
     Telugu: {
       home: "హోమ్", scan: "స్కాన్", generate: "జనరేట్",
-      complain: "ఫిర్యాదు", settings: "సెట్టింగులు",
+      complain: "స్కామ్ షీల్డ్", scamShield: "స్కామ్ షీల్డ్", settings: "సెట్టింగులు",
 
       whatToCheck: "మీరు ఏమి తనిఖీ చేయాలనుకుంటున్నారు?",
       pickCategory: "ఒక వర్గాన్ని ఎంచుకోండి — సాధారణ ఐకాన్లు, అధికారిక బ్రాండింగ్ లేదు.",
@@ -222,7 +222,7 @@ window.QRVLang = (function () {
     /* ------------------------------------------------------------------ */
     Marathi: {
       home: "होम", scan: "स्कॅन", generate: "तयार करा",
-      complain: "तक्रार", settings: "सेटिंग्ज",
+      complain: "स्कॅम शील्ड", scamShield: "स्कॅम शील्ड", settings: "सेटिंग्ज",
 
       whatToCheck: "तुम्हाला काय तपासायचे आहे?",
       pickCategory: "एक श्रेणी निवडा — सामान्य आयकॉन, कोणतीही अधिकृत ब्रँडिंग नाही.",
@@ -268,7 +268,7 @@ window.QRVLang = (function () {
     /* ------------------------------------------------------------------ */
     Tamil: {
       home: "முகப்பு", scan: "ஸ்கேன்", generate: "உருவாக்கு",
-      complain: "புகார்", settings: "அமைப்புகள்",
+      complain: "ஸ்கேம் ஷீல்ட்", scamShield: "ஸ்கேம் ஷீல்ட்", settings: "அமைப்புகள்",
 
       whatToCheck: "நீங்கள் எதை சரிபார்க்க விரும்புகிறீர்கள்?",
       pickCategory: "ஒரு வகையைத் தேர்ந்தெடுக்கவும் — பொதுவான ஐகான்கள் மட்டும், அதிகாரப்பூர்வ பிராண்டிங் இல்லை.",
@@ -314,7 +314,7 @@ window.QRVLang = (function () {
     /* ------------------------------------------------------------------ */
     Urdu: {
       home: "ہوم", scan: "اسکین", generate: "بنائیں",
-      complain: "شکایت", settings: "ترتیبات",
+      complain: "اسکیم شیلڈ", scamShield: "اسکیم شیلڈ", settings: "ترتیبات",
 
       whatToCheck: "آپ کیا چیک کرنا چاہتے ہیں؟",
       pickCategory: "ایک زمرہ منتخب کریں — عام آئیکنز، کوئی سرکاری برانڈنگ نہیں۔",
@@ -360,7 +360,7 @@ window.QRVLang = (function () {
     /* ------------------------------------------------------------------ */
     Gujarati: {
       home: "હોમ", scan: "સ્કેન", generate: "જનરેટ કરો",
-      complain: "ફરિયાદ", settings: "સેટિંગ્સ",
+      complain: "સ્કેમ શીલ્ડ", scamShield: "સ્કેમ શીલ્ડ", settings: "સેટિંગ્સ",
 
       whatToCheck: "તમે શું ચકાસવા માંગો છો?",
       pickCategory: "એક શ્રેણી પસંદ કરો — સામાન્ય આઇકોન્સ, કોઈ સત્તાવાર બ્રાન્ડિંગ નથી.",
@@ -406,7 +406,7 @@ window.QRVLang = (function () {
     /* ------------------------------------------------------------------ */
     Kannada: {
       home: "ಮುಖಪುಟ", scan: "ಸ್ಕ್ಯಾನ್", generate: "ರಚಿಸಿ",
-      complain: "ದೂರು", settings: "ಸೆಟ್ಟಿಂಗ್‌ಗಳು",
+      complain: "ಸ್ಕ್ಯಾಮ್ ಶೀಲ್ಡ್", scamShield: "ಸ್ಕ್ಯಾಮ್ ಶೀಲ್ಡ್", settings: "ಸೆಟ್ಟಿಂಗ್‌ಗಳು",
 
       whatToCheck: "ನೀವು ಏನನ್ನು ಪರಿಶೀಲಿಸಲು ಬಯಸುತ್ತೀರಿ?",
       pickCategory: "ಒಂದು ವರ್ಗವನ್ನು ಆರಿಸಿ — ಸಾಮಾನ್ಯ ಐಕಾನ್‌ಗಳು, ಯಾವುದೇ ಅಧಿಕೃತ ಬ್ರಾಂಡಿಂಗ್ ಇಲ್ಲ.",

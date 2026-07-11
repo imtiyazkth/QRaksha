@@ -672,11 +672,71 @@
   }
 
   /* ====================================================================
-     COMPLAIN NAV BUTTON — opens cybercrime.gov.in, no ad gate ever.
+     SCAM SHIELD MODAL — awareness center (replaces old Complain nav btn)
   ==================================================================== */
-  $("btnGenerateComplain").addEventListener("click", () => {
-    window.open("https://cybercrime.gov.in", "_blank", "noopener,noreferrer");
-  });
+  function openScamShield() {
+    $("scamShieldModal").hidden = false;
+    if (window.QRVScamShield) window.QRVScamShield.init();
+  }
+  function closeScamShield() { $("scamShieldModal").hidden = true; }
+
+  if ($("btnOpenScamShield")) $("btnOpenScamShield").addEventListener("click", openScamShield);
+  if ($("btnOpenScamShieldHome")) $("btnOpenScamShieldHome").addEventListener("click", openScamShield);
+  if ($("btnCloseScamShield")) $("btnCloseScamShield").addEventListener("click", closeScamShield);
+  if ($("btnScamShieldClose2")) $("btnScamShieldClose2").addEventListener("click", closeScamShield);
+
+  /* ====================================================================
+     SHARE QRAKSHA MODAL — Web Share API + copy link + socials
+  ==================================================================== */
+  const SHARE_TEXT = "Protect yourself from online scams with QRaksha — Scan, Verify and Stay Safe.";
+  const SHARE_URL  = "https://imtiyazkth.github.io/QRaksha/";
+
+  function openShareApp() { $("shareAppModal").hidden = false; }
+  function closeShareApp() { $("shareAppModal").hidden = true; }
+
+  if ($("btnOpenShareApp")) $("btnOpenShareApp").addEventListener("click", openShareApp);
+  if ($("btnCloseShareApp")) $("btnCloseShareApp").addEventListener("click", closeShareApp);
+
+  if ($("btnCopyShareAppLink")) {
+    $("btnCopyShareAppLink").addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(SHARE_URL);
+        const btn = $("btnCopyShareAppLink");
+        const original = btn.textContent;
+        btn.textContent = "Copied!";
+        setTimeout(() => { btn.textContent = original; }, 1500);
+      } catch (e) {
+        $("shareAppUrlInput").select();
+      }
+    });
+  }
+
+  if ($("btnShareAppNative")) {
+    $("btnShareAppNative").addEventListener("click", async () => {
+      if (navigator.share) {
+        try {
+          await navigator.share({ title: "QRaksha", text: SHARE_TEXT, url: SHARE_URL });
+        } catch (e) { /* user cancelled — ignore */ }
+      } else {
+        openShareApp();
+      }
+    });
+  }
+  if ($("btnShareAppWhatsapp")) {
+    $("btnShareAppWhatsapp").addEventListener("click", () => {
+      window.open(`https://wa.me/?text=${encodeURIComponent(SHARE_TEXT + " " + SHARE_URL)}`, "_blank", "noopener,noreferrer");
+    });
+  }
+  if ($("btnShareAppX")) {
+    $("btnShareAppX").addEventListener("click", () => {
+      window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(SHARE_TEXT)}&url=${encodeURIComponent(SHARE_URL)}`, "_blank", "noopener,noreferrer");
+    });
+  }
+  if ($("btnShareAppFacebook")) {
+    $("btnShareAppFacebook").addEventListener("click", () => {
+      window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(SHARE_URL)}`, "_blank", "noopener,noreferrer");
+    });
+  }
 
   /* ====================================================================
      SETTINGS MODAL

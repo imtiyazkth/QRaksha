@@ -215,6 +215,49 @@
       <h2 class="font-display font-bold text-lg mb-2">Awareness &amp; Resources</h2>
       <div id="awarenessGallery" class="flex gap-3 overflow-x-auto pb-2 mb-6 snap-x"></div>
 
+      <!-- How QRaksha Protects You -->
+      <div class="rounded-2xl bg-panel border border-line p-4 mb-6">
+        <h2 class="font-display font-bold text-lg mb-1 flex items-center gap-2">🛡️ <span>How QRaksha Protects You</span></h2>
+        <p class="text-xs text-neutral-500 mb-3">Aapki suraksha, hamari zimmedari.</p>
+        <div class="grid grid-cols-2 gap-2">
+          <div class="rounded-xl bg-ink border border-line p-3">
+            <p class="text-sm mb-1">🔎</p>
+            <p class="text-xs font-semibold text-neutral-200 leading-snug">Checking suspicious QR codes</p>
+          </div>
+          <div class="rounded-xl bg-ink border border-line p-3">
+            <p class="text-sm mb-1">🧩</p>
+            <p class="text-xs font-semibold text-neutral-200 leading-snug">Detecting scam patterns</p>
+          </div>
+          <div class="rounded-xl bg-ink border border-line p-3">
+            <p class="text-sm mb-1">💬</p>
+            <p class="text-xs font-semibold text-neutral-200 leading-snug">Analysing suspicious messages</p>
+          </div>
+          <div class="rounded-xl bg-ink border border-line p-3">
+            <p class="text-sm mb-1">⚠️</p>
+            <p class="text-xs font-semibold text-neutral-200 leading-snug">Warning before risky actions</p>
+          </div>
+          <div class="rounded-xl bg-ink border border-line p-3">
+            <p class="text-sm mb-1">🤖</p>
+            <p class="text-xs font-semibold text-neutral-200 leading-snug">AI-powered scam opinions</p>
+          </div>
+          <div class="rounded-xl bg-ink border border-line p-3">
+            <p class="text-sm mb-1">📚</p>
+            <p class="text-xs font-semibold text-neutral-200 leading-snug">Helping you understand threats</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scam Shield promo card -->
+      <button id="btnOpenScamShieldHome" type="button"
+        class="w-full text-left rounded-2xl bg-gradient-to-br from-panel to-ink border border-amber/25 p-4 mb-6 flex items-center gap-3">
+        <span class="w-11 h-11 rounded-xl bg-amber/10 border border-amber/30 flex items-center justify-center text-xl flex-shrink-0">🛡️</span>
+        <span class="flex-1">
+          <span class="block font-display font-bold text-sm text-neutral-100">Scam Shield</span>
+          <span class="block text-[11px] text-neutral-500">Learn. Protect. Stay Safe.</span>
+        </span>
+        <span class="text-neutral-500">→</span>
+      </button>
+
       <!-- Platform complaint router -->
       <h2 class="font-display font-bold text-lg mb-2">Report Directly to a Platform</h2>
       <p class="text-xs text-neutral-500 mb-3">
@@ -472,9 +515,9 @@
     <button class="qrv-navbtn" data-tab="tabGenerate">
       <span>➕</span><span data-i18n="generate">Generate</span>
     </button>
-    <button id="btnGenerateComplain" class="qrv-navbtn" style="color:#EF4444;">
-      <span>🛡️⚖️</span><span data-i18n="complain">Complain</span>
-      <em style="font-style:normal;font-size:8px;color:#8B95A1;">Official portal ↗</em>
+    <button id="btnOpenScamShield" class="qrv-navbtn" style="color:var(--qrv-accent);">
+      <span>🛡️</span><span data-i18n="scamShield">Scam Shield</span>
+      <em style="font-style:normal;font-size:8px;color:#8B95A1;">Learn. Protect.</em>
     </button>
     <button id="btnOpenSettings" class="qrv-navbtn">
       <span>⚙️</span><span data-i18n="settings">Settings</span>
@@ -524,6 +567,11 @@
           class="w-full text-left py-3 px-4 rounded-xl border border-line text-sm text-neutral-200 bg-transparent">About the Founder</button>
         <button id="btnOpenPrivacy" type="button"
           class="w-full text-left py-3 px-4 rounded-xl border border-line text-sm text-neutral-200 bg-transparent">Privacy Policy</button>
+        <button id="btnOpenShareApp" type="button"
+          class="w-full text-left py-3 px-4 rounded-xl border border-line text-sm text-neutral-200 bg-transparent flex items-center justify-between">
+          <span>Share QRaksha</span>
+          <span aria-hidden="true">📤</span>
+        </button>
       </div>
 
       <div class="rounded-xl bg-ink border border-line p-4 mb-4">
@@ -547,6 +595,96 @@
   </div>
 
   <!-- ═══════════════════════════════════════════════════════
+       SCAM SHIELD MODAL — awareness center
+  ═══════════════════════════════════════════════════════ -->
+  <div id="scamShieldModal" role="dialog" aria-modal="true" hidden
+       class="fixed inset-0 z-50 flex items-end justify-center bg-black/70">
+    <div class="w-full max-w-[480px] max-h-[90vh] overflow-y-auto bg-panel rounded-t-3xl p-6 border-t border-line"
+         style="-webkit-overflow-scrolling:touch;">
+
+      <button id="btnCloseScamShield" type="button"
+        class="flex items-center gap-1.5 text-xs text-neutral-400 mb-4 bg-transparent border-none cursor-pointer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4"><path d="M15 18l-6-6 6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Back to Home
+      </button>
+
+      <div class="flex items-center gap-3 mb-1">
+        <span class="w-12 h-12 rounded-2xl bg-amber/10 border border-amber/30 flex items-center justify-center text-2xl flex-shrink-0">🛡️</span>
+        <div>
+          <h2 class="font-display font-bold text-xl leading-tight">Scam Shield</h2>
+          <p class="text-xs text-neutral-500">Learn. Protect. Stay Safe.</p>
+        </div>
+      </div>
+      <p class="text-xs text-neutral-500 mb-5">Aapki suraksha ke liye — sarkari salaah aur jaankari ek jagah.</p>
+
+      <!-- A: How Indians Can Avoid Scams -->
+      <h3 class="font-display font-bold text-sm text-amber mb-2 mt-4">🔒 How to Avoid Scams</h3>
+      <div id="scamShieldTipsGrid" class="space-y-2 mb-6"></div>
+
+      <!-- B: Cyber Fraud Statistics -->
+      <h3 class="font-display font-bold text-sm text-amber mb-2">📊 Indian Cyber Fraud Statistics</h3>
+      <div id="scamShieldStatsGrid" class="grid grid-cols-2 gap-2 mb-3"></div>
+      <div id="scamShieldCategoryList" class="space-y-1.5 mb-2"></div>
+      <p class="text-[10px] text-neutral-500 mb-6" id="scamShieldStatsSource"></p>
+
+      <!-- C: How to Save Your Money -->
+      <h3 class="font-display font-bold text-sm text-amber mb-2">💰 How to Save Your Money From Scammers</h3>
+      <div id="scamShieldStepsList" class="space-y-2 mb-6"></div>
+
+      <!-- D: Emergency Scam Response -->
+      <div class="rounded-2xl bg-gradient-to-br from-red-950/40 to-panel border border-red-500/25 p-4 mb-6">
+        <h3 class="font-display font-bold text-sm text-red-400 mb-1">🚨 If You Have Already Lost Money</h3>
+        <p class="text-[11px] text-neutral-400 mb-3">Turant karein — agar aapke saath dhokhadhadi ho chuki hai:</p>
+        <ol class="space-y-2 mb-3 text-xs text-neutral-200 list-decimal list-inside">
+          <li>Immediately call the <strong class="text-red-400">1930</strong> Cyber Fraud Helpline.</li>
+          <li>Report at <strong>cybercrime.gov.in</strong>.</li>
+          <li>Contact your bank / payment provider right away.</li>
+          <li>Save screenshots and transaction details as proof.</li>
+        </ol>
+        <div class="grid grid-cols-2 gap-2">
+          <a href="tel:1930" class="flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-red-600 text-white text-xs font-bold">
+            📞 Call 1930
+          </a>
+          <a href="https://cybercrime.gov.in" target="_blank" rel="noopener noreferrer"
+             class="flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-red-500/40 text-red-300 text-xs font-bold">
+            Report Online ↗
+          </a>
+        </div>
+      </div>
+
+      <button id="btnScamShieldClose2" type="button"
+        class="w-full py-3 rounded-2xl border border-line text-sm">Close</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       SHARE QRAKSHA MODAL
+  ═══════════════════════════════════════════════════════ -->
+  <div id="shareAppModal" role="dialog" aria-modal="true" hidden
+       class="fixed inset-0 z-50 flex items-end justify-center bg-black/70">
+    <div class="w-full max-w-[480px] bg-panel rounded-t-3xl p-6 border-t border-line">
+      <h2 class="font-display font-bold text-lg mb-1">Share QRaksha</h2>
+      <p class="text-xs text-neutral-500 mb-4">Protect yourself from online scams with QRaksha — Scan, Verify and Stay Safe.</p>
+
+      <div class="flex items-center gap-2 rounded-xl border border-line bg-ink px-3 py-2.5 mb-4">
+        <input id="shareAppUrlInput" type="text" readonly value="https://imtiyazkth.github.io/QRaksha/"
+               class="flex-1 bg-transparent text-xs text-neutral-300 outline-none">
+        <button id="btnCopyShareAppLink" type="button" class="text-[11px] font-semibold text-amber flex-shrink-0">Copy</button>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2 mb-3">
+        <button id="btnShareAppNative" type="button" class="py-3 rounded-2xl bg-amber text-ink font-semibold text-sm">Share Now</button>
+        <button id="btnShareAppWhatsapp" type="button" class="py-3 rounded-2xl border border-line text-sm">WhatsApp</button>
+        <button id="btnShareAppX" type="button" class="py-3 rounded-2xl border border-line text-sm">Share on X</button>
+        <button id="btnShareAppFacebook" type="button" class="py-3 rounded-2xl border border-line text-sm">Facebook</button>
+      </div>
+
+      <button id="btnCloseShareApp" type="button"
+        class="w-full py-3 rounded-2xl border border-line text-sm">Close</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
        FOUNDER MODAL
   ═══════════════════════════════════════════════════════ -->
   <div id="founderModal" role="dialog" aria-modal="true" hidden
@@ -561,11 +699,11 @@
 
       <!-- Premium founder header -->
       <div class="flex flex-col items-center text-center mb-6 pb-5 border-b border-line">
-     <img
-  src="assets/Imtiyaz-Surjapuri.png"
-  alt="Imtiyaz Surjapuri"
-  class="w-20 h-20 rounded-2xl object-cover mb-4 border border-red-500/25 shadow-[0_0_20px_rgba(239,68,68,0.12)]"
-/>
+        <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-gray-900 via-red-950 to-gray-900
+                    border border-red-500/25 flex items-center justify-center text-4xl mb-4
+                    shadow-[0_0_20px_rgba(239,68,68,0.12)]">
+          🧑‍💻
+        </div>
         <h3 class="text-2xl sm:text-3xl font-extrabold tracking-tight founder-name-gradient">
           Imtiyaz Surjapuri
         </h3>
@@ -820,6 +958,7 @@
 <script src="js/ai-scam-check.js"></script>
 <script src="js/mobile-scanner.js"></script>
 <script src="js/dashboard.js"></script>
+<script src="js/scam-shield.js"></script>
 <script type="module" src="js/firebase-init.js"></script>
 <script src="js/story-submit.js"></script>
 <script src="js/mobile-app.js"></script>

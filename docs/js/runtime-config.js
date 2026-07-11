@@ -13,5 +13,5 @@ window.QRV_RUNTIME_CONFIG = {
   firebaseAppId:           "",
   functionsBaseUrl:        "",
   aiFeaturesEnabled:       false,
-  generatedAt:             "2026-07-11T10:55:28Z",
+  generatedAt:             "2026-07-10T17:59:17Z",
 };
