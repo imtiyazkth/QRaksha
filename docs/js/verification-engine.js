@@ -319,11 +319,24 @@ window.QRVVerification = (function () {
       clearTimeout(t);
       if (!res.ok) return null;
       const data = await res.json();
-      if (data && data.count > 0) {
-        const hit = data.results[0];
-        return `Listed on the live phishunt.io threat feed (aggregates PhishTank/OpenPhish/Google Safe Browsing/urlscan.io) — first seen ${hit.first_seen ? hit.first_seen.slice(0, 10) : "recently"}${hit.company ? `, impersonating "${hit.company}"` : ""}.`;
-      }
-      return null;
+      if (!data || !data.count || !Array.isArray(data.results)) return null;
+
+      // CRITICAL: the API's `q` search can be loose/fuzzy or, in some
+      // response shapes, may return unrelated "recent" entries rather
+      // than a true match. Never trust results[0] blindly — only treat
+      // this as a hit if a returned entry's own URL/domain field
+      // genuinely contains (or is contained by) the hostname we asked
+      // about. This is what previously caused false positives like
+      // "console.cloud.google.com" being flagged via an unrelated
+      // "facebook" entry that happened to be first in the response.
+      const hit = data.results.find((r) => {
+        const candidate = ((r.url || r.domain || "") + "").toLowerCase();
+        if (!candidate) return false;
+        return candidate.includes(hostname) || hostname.includes(candidate.replace(/^https?:\/\//, "").split("/")[0]);
+      });
+      if (!hit) return null;
+
+      return `Listed on the live phishunt.io threat feed (aggregates PhishTank/OpenPhish/Google Safe Browsing/urlscan.io) — first seen ${hit.first_seen ? hit.first_seen.slice(0, 10) : "recently"}${hit.company ? `, impersonating "${hit.company}"` : ""}.`;
     } catch (e) {
       return null; // offline / timed out — local checks above still apply
     }
