@@ -17,6 +17,20 @@
     { "phrase": "sim card will be blocked", "severity": "medium", "explanation": "Urgent SIM-block threats are commonly used to pressure victims into sharing personal details." },
     { "phrase": "income tax notice", "severity": "medium", "explanation": "Fake income-tax notices sent via SMS/WhatsApp with a payment link are a known phishing tactic." },
     { "phrase": "your account will be suspended", "severity": "medium", "explanation": "Generic urgent account-suspension threats are a broad phishing pattern across many scam scripts." },
-    { "phrase": "cbi", "severity": "high", "explanation": "Claims of contact from CBI over phone/video call, especially demanding money, are a hallmark of digital-arrest scams." }
+    { "phrase": "cbi", "severity": "high", "explanation": "Claims of contact from CBI over phone/video call, especially demanding money, are a hallmark of digital-arrest scams." },
+    { "phrase": "rbi guidelines", "severity": "high", "explanation": "Scammers falsely invoke \u2018RBI guidelines\u2019 or \u2018RBI order\u2019 to pressure victims into moving money to a \u2018safe/verification\u2019 account \u2014 RBI never contacts individuals this way." },
+    { "phrase": "safe account", "severity": "critical", "explanation": "Being told to transfer money to a \u2018safe account\u2019 for verification is a core digital-arrest and money-laundering-scam script \u2014 no real authority ever asks for this." },
+    { "phrase": "narcotics parcel", "severity": "high", "explanation": "Fake claims that a parcel in your name contains narcotics, used to frighten victims into cooperating with a fraudulent \u2018investigation\u2019." },
+    { "phrase": "fedex customs", "severity": "high", "explanation": "Fake courier/customs-hold messages citing FedEx, DHL, or similar international carriers are a common phishing/vishing opener worldwide, not just in India." },
+    { "phrase": "irs", "severity": "high", "explanation": "Messages claiming to be from the IRS (US tax authority) demanding immediate payment or threatening arrest are a well-documented scam pattern targeting NRIs and international users." },
+    { "phrase": "social security number suspended", "severity": "critical", "explanation": "US Social Security Administration never suspends or deactivates SSNs by phone/message \u2014 this is a scripted scam opener." },
+    { "phrase": "gift card payment", "severity": "critical", "explanation": "Any request to pay a debt, fine, or bail using gift cards (Amazon, Google Play, iTunes, etc.) is universally a scam \u2014 no legitimate authority accepts gift cards as payment." },
+    { "phrase": "you have won a lottery", "severity": "high", "explanation": "Unsolicited lottery/prize winnings requiring an upfront \u2018processing fee\u2019 or personal/bank details are a classic advance-fee fraud pattern." },
+    { "phrase": "double your investment", "severity": "critical", "explanation": "Guaranteed or doubled returns on crypto/forex/stock investment schemes are a hallmark of Ponzi and pump-and-dump scams." },
+    { "phrase": "task will unlock", "severity": "high", "explanation": "Fake job-scam pattern: paying a small fee to \u2018unlock\u2019 further paid tasks \u2014 legitimate employers never charge candidates." },
+    { "phrase": "electricity bill will be disconnected", "severity": "medium", "explanation": "Fake urgent electricity-disconnection SMS with a payment link is a widespread utility-impersonation scam pattern in India." },
+    { "phrase": "click to update pan", "severity": "high", "explanation": "PAN card update/linking requests via SMS link are a common phishing pattern \u2014 official PAN updates never happen through unsolicited links." },
+    { "phrase": "border security force", "severity": "high", "explanation": "Impersonation of army/BSF personnel (often paired with a romance-scam or online-marketplace-seller persona asking for advance payment) is a well-documented fraud pattern." },
+    { "phrase": "customer id has been blocked", "severity": "medium", "explanation": "Generic \u2018your customer ID/account has been blocked\u2019 urgency messages are a broad phishing template used across many fake-bank scam scripts." }
   ]
 }

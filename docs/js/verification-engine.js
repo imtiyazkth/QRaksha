@@ -26,7 +26,7 @@ window.QRVVerification = (function () {
     // TLDs disproportionately used for throwaway phishing domains.
     // (Not a blanket ban — a .xyz site isn't automatically a scam, this
     // only raises the risk score when combined with other signals.)
-    SUSPICIOUS_TLDS: [".xyz", ".top", ".click", ".win", ".bit", ".bet", ".loan", ".gq", ".tk", ".ml", ".cf", ".rest", ".icu"],
+    SUSPICIOUS_TLDS: [".xyz", ".top", ".click", ".win", ".bit", ".bet", ".loan", ".gq", ".tk", ".ml", ".cf", ".rest", ".icu", ".cam", ".surf", ".cyou", ".buzz", ".sbs", ".cfd", ".party", ".date", ".stream", ".download", ".zip", ".mov"],
 
     // Reported keyword patterns from the National Cyber Crime Portal's
     // public awareness advisories.
@@ -88,6 +88,22 @@ window.QRVVerification = (function () {
       { name: "incometax",real: ["incometax.gov.in"] },
       { name: "rbi",      real: ["rbi.org.in"] },
       { name: "kbc",      real: [] }, // "KBC lottery" is always a scam pattern, no legitimate KBC domain exists
+      { name: "phonepe",  real: ["phonepe.com"] },
+      { name: "kotak",    real: ["kotak.com"] },
+      { name: "pnb",      real: ["pnbindia.in"] },
+      { name: "airtel",   real: ["airtel.in"] },
+      { name: "jio",      real: ["jio.com"] },
+      { name: "netflix",  real: ["netflix.com"] },
+      { name: "apple",    real: ["apple.com"] },
+      { name: "paypal",   real: ["paypal.com"] },
+      { name: "fedex",    real: ["fedex.com"] },
+      { name: "dhl",      real: ["dhl.com"] },
+      { name: "indiapost",real: ["indiapost.gov.in"] },
+      { name: "uidai",    real: ["uidai.gov.in"] },
+      { name: "epfo",     real: ["epfindia.gov.in"] },
+      { name: "irs",      real: ["irs.gov"] },
+      { name: "coinbase", real: ["coinbase.com"] },
+      { name: "binance",  real: ["binance.com"] },
     ],
 
     // Words that, combined with a brand-lookalike domain, strongly signal
