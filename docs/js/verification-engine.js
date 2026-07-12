@@ -275,21 +275,12 @@ window.QRVVerification = (function () {
       // activates if you've explicitly set window.QRV_ABUSEIPDB_KEY
       // yourself (never injected by the GitHub Actions workflow, on
       // purpose) — an informed choice you make, not a default.
-      const abuseHit = await checkAbuseIPDB(hostname);
-      if (abuseHit) {
+      const abuseResult = await checkAbuseIPDB(hostname);
+      if (abuseResult.message) {
         riskScore += 40;
-        details.unshift(abuseHit);
+        details.unshift(abuseResult.message);
       }
-      // Visible debug line — same reasoning as the Safe Browsing one
-      // below. Remove once confirmed working.
-      const abuseConfigured = Boolean(window.QRV_ABUSEIPDB_KEY);
-      details.push(
-        !abuseConfigured
-          ? "[Debug] AbuseIPDB: no key loaded — skipped."
-          : abuseHit
-            ? "[Debug] AbuseIPDB: key loaded, checked live, hit above threshold."
-            : "[Debug] AbuseIPDB: key loaded, checked live, no result (score below 25% or lookup failed)."
-      );
+      details.push(`[Debug] AbuseIPDB: ${abuseResult.debug}`);
     }
 
     const tldHit = INTEL.SUSPICIOUS_TLDS.find((tld) => hostname.endsWith(tld));
@@ -404,7 +395,7 @@ window.QRVVerification = (function () {
   ------------------------------------------------------------------ */
   async function checkAbuseIPDB(ip) {
     const apiKey = window.QRV_ABUSEIPDB_KEY;
-    if (!apiKey) return null;
+    if (!apiKey) return { message: null, debug: "no key loaded — skipped" };
     try {
       const controller = new AbortController();
       const t = setTimeout(() => controller.abort(), 3500);
@@ -413,15 +404,20 @@ window.QRVVerification = (function () {
         signal: controller.signal,
       });
       clearTimeout(t);
-      if (!res.ok) return null;
-      const data = await res.json();
-      const score = data && data.data ? data.data.abuseConfidenceScore : 0;
-      if (score >= 25) {
-        return `AbuseIPDB reports a ${score}% abuse confidence score for this IP address (${data.data.totalReports || 0} reports).`;
+      if (!res.ok) {
+        return { message: null, debug: `HTTP ${res.status} from AbuseIPDB — likely bad/expired key, or a CORS block if status is 0/opaque` };
       }
-      return null;
+      const data = await res.json();
+      const score = data && data.data ? data.data.abuseConfidenceScore : null;
+      if (score === null) {
+        return { message: null, debug: `unexpected response shape: ${JSON.stringify(data).slice(0, 120)}` };
+      }
+      if (score >= 25) {
+        return { message: `AbuseIPDB reports a ${score}% abuse confidence score for this IP address (${data.data.totalReports || 0} reports).`, debug: `checked live, score=${score}%` };
+      }
+      return { message: null, debug: `checked live, score=${score}% (below 25% threshold)` };
     } catch (e) {
-      return null;
+      return { message: null, debug: `fetch failed — ${e.name === "AbortError" ? "timed out" : "likely CORS-blocked by the browser, since AbuseIPDB's API may not allow direct browser calls"} (${e.message || e})` };
     }
   }
 
