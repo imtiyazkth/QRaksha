@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "qraksha-india"
-  }
+    "default": "qraksha-india",
+    "production": "qraksha-india"
+  },
+  "targets": {},
+  "etags": {}
 }
