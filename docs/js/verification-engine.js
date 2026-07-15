@@ -209,9 +209,10 @@ window.QRVVerification = (function () {
   }
 
   async function handleVerificationCheck(category, userInput) {
+    const T = (key, vars) => (window.QRVLang ? window.QRVLang.t(key, vars) : key);
     const input = (userInput || "").trim();
     if (!input) {
-      return { level: "warn", title: "Please enter something to check", details: [], raw: "" };
+      return { level: "warn", title: T("errPleaseEnterSomething"), details: [], raw: "" };
     }
 
     try {
@@ -226,12 +227,15 @@ window.QRVVerification = (function () {
       if (window.QRVFirebase && window.QRVFirebase.checkScamSignature) {
         const communityHit = await window.QRVFirebase.checkScamSignature(input);
         if (communityHit) {
+          const categoryLabel = category.replace("_", " ").toLowerCase();
           return {
             level: "danger",
-            title: "Already reported by other QRaksha users as a scam",
+            title: T("titleCommunityReported"),
             details: [
-              `This exact ${category.replace("_", " ").toLowerCase()} was flagged by the community` + (communityHit.note ? `: "${communityHit.note}"` : "."),
-              "Community reports are unverified crowd-sourced signals — still confirm independently before acting.",
+              communityHit.note
+                ? T("communityFlaggedWithNote", { category: categoryLabel, note: communityHit.note })
+                : T("communityFlaggedNoNote", { category: categoryLabel }),
+              T("communityUnverifiedNotice"),
             ],
             raw: input,
             riskScore: 100,
@@ -248,15 +252,15 @@ window.QRVVerification = (function () {
         case "SMS_HEADER": return verifySMSHeader(input);
         case "SOCIAL_MEDIA": return verifySocialMediaProfile(input);
         default:
-          return { level: "warn", title: "Unknown category", details: [], raw: input };
+          return { level: "warn", title: T("errUnknownCategory"), details: [], raw: input };
       }
     } catch (err) {
       // A bug in one checker must never break the scanner/app around it.
       console.warn("QRVVerification: check failed, returning safe fallback", err);
       return {
         level: "warn",
-        title: "Couldn't complete an automated check",
-        details: ["Something went wrong running this check locally. Please verify manually via official channels before trusting this."],
+        title: T("errCheckFailed"),
+        details: [T("checkFailedDetail")],
         raw: input,
       };
     }
@@ -266,6 +270,7 @@ window.QRVVerification = (function () {
      3A. WEBSITE URL ENGINE
   ------------------------------------------------------------------ */
   async function verifyWebsiteLink(input) {
+    const T = (key, vars) => (window.QRVLang ? window.QRVLang.t(key, vars) : key);
     let hostname = input;
     let fullUrl = input;
     try {
@@ -273,7 +278,7 @@ window.QRVVerification = (function () {
       hostname = new URL(withProto).hostname.toLowerCase();
       fullUrl = withProto;
     } catch (e) {
-      return { level: "warn", title: "That doesn't look like a valid URL", details: ["Double-check the link and try again."], raw: input };
+      return { level: "warn", title: T("errInvalidUrl"), details: [T("errDoubleCheckLink")], raw: input };
     }
 
     const details = [];
@@ -282,7 +287,7 @@ window.QRVVerification = (function () {
     const isRawIp = /^(\d{1,3}\.){3}\d{1,3}$/.test(hostname);
     if (isRawIp) {
       riskScore += 30;
-      details.push("The link points directly to an IP address instead of a domain name — a common phishing technique.");
+      details.push(T("linkIsRawIp"));
 
       // AbuseIPDB — OPT-IN ONLY, unlike Google Safe Browsing above.
       // AbuseIPDB keys cannot be restricted by domain/referrer, so
@@ -296,19 +301,18 @@ window.QRVVerification = (function () {
         riskScore += 40;
         details.unshift(abuseResult.message);
       }
-      details.push(`[Debug] AbuseIPDB: ${abuseResult.debug}`);
     }
 
     const tldHit = INTEL.SUSPICIOUS_TLDS.find((tld) => hostname.endsWith(tld));
     if (tldHit) {
       riskScore += 25;
-      details.push(`Uses "${tldHit}" — a top-level domain frequently abused for short-lived phishing sites (not proof alone, but raises risk).`);
+      details.push(T("suspiciousTld", { tld: tldHit }));
     }
 
     const keywordHits = containsAny(input, INTEL.SCAM_KEYWORDS);
     if (keywordHits.length) {
       riskScore += 35;
-      details.push(`Contains reported scam-pattern wording: "${keywordHits[0]}".`);
+      details.push(T("containsScamPatternWording", { keyword: keywordHits[0] }));
     }
 
     // Lookalike-brand detection: brand name present (leetspeak-aware) but not the real domain.
@@ -317,8 +321,8 @@ window.QRVVerification = (function () {
       riskScore += brandHit.boosted ? 55 : 30;
       details.push(
         brandHit.boosted
-          ? `Domain imitates "${brandHit.brand}" and pairs it with urgency wording (security/alert/verify/etc.) — a strong phishing pattern. This is not ${brandHit.brand}'s real domain.`
-          : `Domain mentions "${brandHit.brand}" but isn't that brand's real domain — a classic lookalike-brand phishing pattern.`
+          ? T("brandImpersonationBoosted", { brand: brandHit.brand })
+          : T("brandImpersonation", { brand: brandHit.brand })
       );
     }
 
@@ -326,7 +330,7 @@ window.QRVVerification = (function () {
     const subdomainCount = hostname.split(".").length - 2;
     if (subdomainCount >= 2 || (hostname.match(/-/g) || []).length >= 3) {
       riskScore += 15;
-      details.push("Unusually long/hyphenated hostname structure, often seen in auto-generated phishing subdomains.");
+      details.push(T("unusualHostnameStructure"));
     }
 
     // Live free threat-feed cross-check (phishunt.io — no key needed).
@@ -343,15 +347,10 @@ window.QRVVerification = (function () {
       riskScore += 60;
       details.unshift(gsbHit);
     }
-    // Visible confirmation of whether the key loaded at all — helps
-    // debugging from the UI alone without needing devtools on mobile.
-    // Safe to remove once you've confirmed it's working.
-    const gsbConfigured = Boolean(window.QRVConfig && window.QRVConfig.GOOGLE_SAFE_BROWSING_KEY);
-    details.push(gsbConfigured ? "[Debug] Google Safe Browsing: key loaded, checked live." : "[Debug] Google Safe Browsing: no key loaded — skipped.");
 
-    if (!details.length) details.push("No known suspicious TLD, brand-lookalike, or scam keyword pattern found in this URL, and it's not on the live phishunt.io threat feed.");
+    if (!details.length) details.push(T("urlNoKnownRisk"));
 
-    return buildVerdict(riskScore, hostname, details, "URL");
+    return buildVerdict(riskScore, hostname, details, T("subjectTypeUrl"));
   }
 
   /* ------------------------------------------------------------------
@@ -361,6 +360,7 @@ window.QRVVerification = (function () {
      gracefully to the free offline + phishunt checks above.
   ------------------------------------------------------------------ */
   async function checkGoogleSafeBrowsing(fullUrl, hostname) {
+    const T = (key, vars) => (window.QRVLang ? window.QRVLang.t(key, vars) : key);
     const apiKey = window.QRVConfig && window.QRVConfig.GOOGLE_SAFE_BROWSING_KEY;
     if (!apiKey) return null;
     try {
@@ -392,7 +392,7 @@ window.QRVVerification = (function () {
       const data = await res.json();
       if (data && Array.isArray(data.matches) && data.matches.length) {
         const types = [...new Set(data.matches.map((m) => m.threatType))].join(", ");
-        return `Flagged by Google Safe Browsing: ${types}.`;
+        return T("flaggedByGsb", { types });
       }
       return null;
     } catch (e) {
@@ -410,6 +410,7 @@ window.QRVVerification = (function () {
      assumed.
   ------------------------------------------------------------------ */
   async function checkAbuseIPDB(ip) {
+    const T = (key, vars) => (window.QRVLang ? window.QRVLang.t(key, vars) : key);
     const apiKey = window.QRV_ABUSEIPDB_KEY;
     if (!apiKey) return { message: null, debug: "no key loaded — skipped" };
     try {
@@ -429,7 +430,7 @@ window.QRVVerification = (function () {
         return { message: null, debug: `unexpected response shape: ${JSON.stringify(data).slice(0, 120)}` };
       }
       if (score >= 25) {
-        return { message: `AbuseIPDB reports a ${score}% abuse confidence score for this IP address (${data.data.totalReports || 0} reports).`, debug: `checked live, score=${score}%` };
+        return { message: T("abuseIpdbScore", { score, reports: data.data.totalReports || 0 }), debug: `checked live, score=${score}%` };
       }
       return { message: null, debug: `checked live, score=${score}% (below 25% threshold)` };
     } catch (e) {
@@ -446,6 +447,7 @@ window.QRVVerification = (function () {
      old PhishTank-only lookup would have.
   ------------------------------------------------------------------ */
   async function checkPhishuntFeed(hostname) {
+    const T = (key, vars) => (window.QRVLang ? window.QRVLang.t(key, vars) : key);
     try {
       const controller = new AbortController();
       const t = setTimeout(() => controller.abort(), 3500);
@@ -470,7 +472,8 @@ window.QRVVerification = (function () {
       });
       if (!hit) return null;
 
-      return `Listed on the live phishunt.io threat feed (aggregates PhishTank/OpenPhish/Google Safe Browsing/urlscan.io) — first seen ${hit.first_seen ? hit.first_seen.slice(0, 10) : "recently"}${hit.company ? `, impersonating "${hit.company}"` : ""}.`;
+      const date = hit.first_seen ? hit.first_seen.slice(0, 10) : "recently";
+      return hit.company ? T("phishuntListedBrand", { date, brand: hit.company }) : T("phishuntListed", { date });
     } catch (e) {
       return null; // offline / timed out — local checks above still apply
     }
@@ -480,42 +483,44 @@ window.QRVVerification = (function () {
      3B. WHATSAPP / TELEGRAM ENGINE
   ------------------------------------------------------------------ */
   function verifyChatLink(input) {
+    const T = (key, vars) => (window.QRVLang ? window.QRVLang.t(key, vars) : key);
     const details = [];
     let riskScore = 0;
 
     const isInvite = /(t\.me\/|wa\.me\/|chat\.whatsapp\.com\/)/i.test(input);
     if (isInvite) {
       riskScore += 10;
-      details.push("This is a group/channel invite link — invite links bypass normal contact checks, so verify the group's purpose independently before joining.");
+      details.push(T("chatInviteLink"));
     }
 
     const keywordHits = containsAny(input, INTEL.SCAM_KEYWORDS);
     if (keywordHits.length) {
       riskScore += 40;
-      details.push(`Matches a reported task-scam / investment-scam pattern: "${keywordHits[0]}".`);
+      details.push(T("chatTaskScamPattern", { keyword: keywordHits[0] }));
     }
 
     const supportHits = containsAny(input, INTEL.SUPPORT_IMPERSONATION_TERMS);
     if (supportHits.length) {
       riskScore += 25;
-      details.push(`Uses a generic "official support"-style name ("${supportHits[0]}") — impersonation of customs/police/bank officials in group admin names is a widely reported pattern (per Chakshu/Sanchar Saathi advisories).`);
+      details.push(T("chatOfficialSupportName", { word: supportHits[0] }));
     }
 
-    if (!details.length) details.push("No known scam-recruitment or impersonation keyword pattern detected in this text.");
+    if (!details.length) details.push(T("chatNoKnownRisk"));
 
-    return buildVerdict(riskScore, input, details, "chat handle/link");
+    return buildVerdict(riskScore, input, details, T("subjectTypeChatHandle"));
   }
 
   /* ------------------------------------------------------------------
      3C. PHONE NUMBER ENGINE (async, with local fallback)
   ------------------------------------------------------------------ */
   async function verifyPhoneNumberRemote(input) {
+    const T = (key, vars) => (window.QRVLang ? window.QRVLang.t(key, vars) : key);
     const digits = input.replace(/[^\d]/g, "");
     const details = [];
     let riskScore = 0;
 
     if (digits.length < 10) {
-      return { level: "warn", title: "That doesn't look like a complete phone number", details: [], raw: input };
+      return { level: "warn", title: T("errInvalidPhone"), details: [], raw: input };
     }
 
     // Real carrier/line-type lookup, via our own Cloud Function proxy —
@@ -536,10 +541,10 @@ window.QRVVerification = (function () {
         if (res.ok) {
           const data = await res.json();
           if (data && data.valid) {
-            details.push(`Carrier: ${data.carrier || "Unknown"}, Location: ${data.location || "Unknown"}, Line type: ${data.line_type || "Unknown"}.`);
+            details.push(T("phoneCarrierInfo", { carrier: data.carrier || "Unknown", location: data.location || "Unknown", lineType: data.line_type || "Unknown" }));
             if (data.line_type === "voip" || data.line_type === "tollfree") {
               riskScore += 35;
-              details.push("Registered as a VoIP/toll-free virtual line — frequently used to mask a scammer's real identity and location.");
+              details.push(T("phoneVoipLine"));
             }
           }
         }
@@ -547,7 +552,7 @@ window.QRVVerification = (function () {
         // issue) is silently absorbed here — the local fallback below always
         // runs regardless, so the user still gets a useful answer.
       } catch (e) {
-        details.push("Live carrier lookup unavailable right now — showing local pattern analysis only.");
+        details.push(T("phoneLookupUnavailable"));
       }
     }
 
@@ -555,69 +560,73 @@ window.QRVVerification = (function () {
     const isRepeatingSeries = /^(\d)\1{9}$/.test(digits.slice(-10));
     if (isRepeatingSeries) {
       riskScore += 20;
-      details.push("Number is a suspicious repeating-digit series, uncommon for genuine personal or business lines.");
+      details.push(T("phoneRepeatingDigits"));
     }
     const looksLikeVoipPrefix = /^(140|160|180)/.test(digits.slice(-10));
     if (looksLikeVoipPrefix) {
       riskScore += 15;
-      details.push("Prefix pattern is commonly associated with automated telemarketing/bulk-dialer series.");
+      details.push(T("phoneTelemarketingPrefix"));
     }
 
-    if (!details.length) details.push("No known high-risk pattern found for this number via local analysis. Live carrier lookup was not run (no API key configured) — this does not confirm the number is safe.");
+    if (!details.length) details.push(T("phoneNoKnownRiskNoLookup"));
 
-    return buildVerdict(riskScore, digits, details, "phone number");
+    return buildVerdict(riskScore, digits, details, T("subjectTypePhone"));
   }
 
   /* ------------------------------------------------------------------
      3D. EMAIL ID ENGINE
   ------------------------------------------------------------------ */
   function verifyEmailAddress(input) {
+    const T = (key, vars) => (window.QRVLang ? window.QRVLang.t(key, vars) : key);
     const details = [];
     let riskScore = 0;
     const email = input.trim().toLowerCase();
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      return { level: "warn", title: "That doesn't look like a valid email address", details: [], raw: input };
+      return { level: "warn", title: T("errInvalidEmail"), details: [], raw: input };
     }
 
     const [localPart, domain] = email.split("@");
 
     if (INTEL.DISPOSABLE_MAIL_DOMAINS.some((d) => domain.endsWith(d))) {
       riskScore += 30;
-      details.push("Uses a disposable/temporary email provider — legitimate businesses don't use throwaway addresses.");
+      details.push(T("emailDisposableProvider"));
     }
 
     if (INTEL.FREE_MAIL_DOMAINS.some((d) => domain === d)) {
       const spoofHit = INTEL.SPOOF_SUPPORT_PREFIXES.find((p) => localPart.includes(p));
       if (spoofHit) {
         riskScore += 40;
-        details.push(`Local part ("${localPart}") mimics an official support address but is hosted on a free public mail provider (${domain}) — no genuine bank/courier/tax authority uses Gmail/Yahoo for official support.`);
+        details.push(T("emailSpoofedSupportOnFreemail", { localPart, domain }));
       } else {
-        details.push(`Hosted on a free public mail provider (${domain}) — not inherently unsafe, but be cautious if this claims to be an "official" address.`);
+        details.push(T("emailFreemailCaution", { domain }));
       }
     }
 
     // Brand-lookalike domain detection (catches leetspeak tricks like
     // "amaz0n-security-alert.com" that plain substring matching misses).
+    // Uses the same shared keys as the URL checker above — previously
+    // this had its own near-duplicate wording, now merged into one.
     const brandHit = detectBrandImpersonation(domain);
     if (brandHit) {
       riskScore += brandHit.boosted ? 55 : 35;
       details.push(
         brandHit.boosted
-          ? `Domain ("${domain}") imitates "${brandHit.brand}" and pairs it with urgency wording (security/alert/verify/etc.) — a strong phishing pattern. This is not ${brandHit.brand}'s real domain.`
-          : `Domain ("${domain}") mentions "${brandHit.brand}" but is not that brand's real domain — a lookalike-brand pattern.`
+          ? T("brandImpersonationBoosted", { brand: brandHit.brand })
+          : T("brandImpersonation", { brand: brandHit.brand })
       );
     }
 
-    if (!details.length) details.push("No known disposable-domain or support-impersonation pattern found.");
+    if (!details.length) details.push(T("emailNoKnownRisk"));
 
-    return buildVerdict(riskScore, email, details, "email address");
+    return buildVerdict(riskScore, email, details, T("subjectTypeEmail"));
   }
 
   /* ------------------------------------------------------------------
      3E. SMS SENDER HEADER ENGINE
   ------------------------------------------------------------------ */
   function verifySMSHeader(input) {
+    const T = (key, vars) => (window.QRVLang ? window.QRVLang.t(key, vars) : key);
     const details = [];
     let riskScore = 0;
     const raw = input.trim().toUpperCase();
@@ -630,31 +639,32 @@ window.QRVVerification = (function () {
       const suffix = headerMatch[2];
       if (suffix.length !== 6) {
         riskScore += 20;
-        details.push(`Header suffix "${suffix}" is ${suffix.length} characters — genuine TRAI-registered bank headers are exactly 6 characters. Non-standard length is a spoofing signal.`);
+        details.push(T("smsHeaderWrongLength", { suffix, len: suffix.length }));
       }
       const looksLikeBank = /BK|BNK|SBI|HDFC|ICICI|AXIS|PNB|BANK/.test(suffix);
       if (looksLikeBank && !INTEL.VERIFIED_BANK_HEADERS.includes(suffix)) {
         riskScore += 30;
-        details.push(`"${suffix}" looks like it's impersonating a bank header but isn't in the known verified list — treat any "urgent account action" SMS from it with suspicion.`);
+        details.push(T("smsHeaderUnverified", { suffix }));
       } else if (INTEL.VERIFIED_BANK_HEADERS.includes(suffix)) {
-        details.push(`"${suffix}" matches a known verified bank SMS header pattern.`);
+        details.push(T("smsHeaderVerified", { suffix }));
       }
     } else if (isPlainNumber) {
       riskScore += 35;
-      details.push("This is a plain 10-digit personal mobile number, not a registered alphanumeric header. If the message content claims to be an automated bank alert, electricity disconnection notice, or similar official communication, that is a strong SMS-spoofing red flag — genuine automated alerts always come from registered alphanumeric headers, never a personal mobile number.");
+      details.push(T("smsPersonalNumberWarning"));
     } else {
-      details.push("Couldn't parse this as a standard TRAI header (XX-XXXXXX) or a 10-digit number — double-check the format.");
+      details.push(T("smsUnparseable"));
     }
 
-    if (!details.length) details.push("No spoofing pattern detected.");
+    if (!details.length) details.push(T("smsNoKnownRisk"));
 
-    return buildVerdict(riskScore, raw, details, "SMS header");
+    return buildVerdict(riskScore, raw, details, T("subjectTypeSms"));
   }
 
   /* ------------------------------------------------------------------
      3F. SOCIAL MEDIA PROFILE ENGINE
   ------------------------------------------------------------------ */
   function verifySocialMediaProfile(input) {
+    const T = (key, vars) => (window.QRVLang ? window.QRVLang.t(key, vars) : key);
     const details = [];
     let riskScore = 0;
     const lower = input.toLowerCase();
@@ -662,14 +672,14 @@ window.QRVVerification = (function () {
     const keywordHits = containsAny(input, INTEL.SCAM_KEYWORDS);
     if (keywordHits.length) {
       riskScore += 30;
-      details.push(`Matches a reported scam-pattern keyword: "${keywordHits[0]}".`);
+      details.push(T("socialScamKeyword", { keyword: keywordHits[0] }));
     }
 
     const GIVEAWAY_TERMS = ["giveaway", "airdrop", "double your", "claim now", "verified winner", "elonmusk", "official_", "_official"];
     const giveawayHits = containsAny(input, GIVEAWAY_TERMS);
     if (giveawayHits.length) {
       riskScore += 25;
-      details.push(`Contains a pattern common to fake-giveaway/crypto-doubling or celebrity-impersonation profiles: "${giveawayHits[0]}".`);
+      details.push(T("socialGiveawayPattern", { keyword: giveawayHits[0] }));
     }
 
     // Excess digits/underscores in a handle is a common clone-account signal.
@@ -679,24 +689,25 @@ window.QRVVerification = (function () {
       const digitCount = (handle.match(/\d/g) || []).length;
       if (digitCount >= 4) {
         riskScore += 15;
-        details.push(`Handle "${handle}" contains an unusually high number of digits — often seen in mass-produced clone/bot accounts impersonating real profiles.`);
+        details.push(T("socialManyDigitsHandle", { handle }));
       }
     }
 
-    if (!details.length) details.push("No known clone-account or fake-giveaway pattern found in this link.");
+    if (!details.length) details.push(T("socialNoKnownRisk"));
 
-    return buildVerdict(riskScore, input, details, "social profile");
+    return buildVerdict(riskScore, input, details, T("subjectTypeSocial"));
   }
 
   /* ------------------------------------------------------------------
      Shared verdict builder
   ------------------------------------------------------------------ */
   function buildVerdict(riskScore, subject, details, subjectType) {
+    const T = (key, vars) => (window.QRVLang ? window.QRVLang.t(key, vars) : key);
     let level = "safe";
-    let title = `No known risk pattern found for this ${subjectType}`;
-    if (riskScore >= 60) { level = "danger"; title = `High-risk ${subjectType} — treat as likely fraud`; }
-    else if (riskScore >= 30) { level = "warn"; title = `Suspicious ${subjectType} — proceed with caution`; }
-    else if (riskScore > 0) { level = "info"; title = `Minor caution flags found for this ${subjectType}`; }
+    let title = T("verdictTitleSafe", { subjectType });
+    if (riskScore >= 60) { level = "danger"; title = T("verdictTitleDanger", { subjectType }); }
+    else if (riskScore >= 30) { level = "warn"; title = T("verdictTitleWarn", { subjectType }); }
+    else if (riskScore > 0) { level = "info"; title = T("verdictTitleInfo", { subjectType }); }
 
     return { level, title, details, raw: subject, riskScore };
   }

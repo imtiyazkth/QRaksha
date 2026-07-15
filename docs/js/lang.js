@@ -170,6 +170,8 @@ window.QRVLang = (function () {
       flaggedByGsb: "Flagged by Google Safe Browsing: {types}.",
       abuseIpdbScore: "AbuseIPDB reports a {score}% abuse confidence score for this IP address ({reports} reports).",
       urlNoKnownRisk: "No known suspicious TLD, brand-lookalike, or scam keyword pattern found in this URL, and it's not on the live phishunt.io threat feed.",
+      phishuntListed: "Listed on the live phishunt.io threat feed (aggregates PhishTank/OpenPhish/Google Safe Browsing/urlscan.io) — first seen {date}.",
+      phishuntListedBrand: "Listed on the live phishunt.io threat feed (aggregates PhishTank/OpenPhish/Google Safe Browsing/urlscan.io) — first seen {date}, impersonating \"{brand}\".",
       chatInviteLink: "This is a group/channel invite link — invite links bypass normal contact checks, so verify the group's purpose independently before joining.",
       chatTaskScamPattern: "Matches a reported task-scam / investment-scam pattern: \"{keyword}\".",
       chatOfficialSupportName: "Uses a generic \"official support\"-style name (\"{word}\") — impersonation of customs/police/bank officials in group admin names is a widely reported pattern (per Chakshu/Sanchar Saathi advisories).",
@@ -214,6 +216,10 @@ window.QRVLang = (function () {
       titleCommunityReported: "Already reported by other QRaksha users as a scam",
       errUnknownCategory: "Unknown category",
       errCheckFailed: "Couldn't complete an automated check",
+      communityFlaggedWithNote: "This exact {category} was flagged by the community: \"{note}\".",
+      communityFlaggedNoNote: "This exact {category} was flagged by the community.",
+      communityUnverifiedNotice: "Community reports are unverified crowd-sourced signals — still confirm independently before acting.",
+      checkFailedDetail: "Something went wrong running this check locally. Please verify manually via official channels before trusting this.",
     },
 
     /* ------------------------------------------------------------------ */
@@ -340,6 +346,8 @@ window.QRVLang = (function () {
       flaggedByGsb: "Google Safe Browsing ने इसे फ़्लैग किया: {types}।",
       abuseIpdbScore: "AbuseIPDB के अनुसार इस IP एड्रेस का abuse confidence score {score}% है ({reports} रिपोर्ट्स)।",
       urlNoKnownRisk: "इस URL में कोई संदिग्ध TLD, ब्रांड-नकल, या स्कैम कीवर्ड पैटर्न नहीं मिला, और यह लाइव phishunt.io थ्रेट फ़ीड में भी नहीं है।",
+      phishuntListed: "लाइव phishunt.io थ्रेट फ़ीड में सूचीबद्ध (PhishTank/OpenPhish/Google Safe Browsing/urlscan.io को शामिल करता है) — पहली बार {date} को देखा गया।",
+      phishuntListedBrand: "लाइव phishunt.io थ्रेट फ़ीड में सूचीबद्ध (PhishTank/OpenPhish/Google Safe Browsing/urlscan.io को शामिल करता है) — पहली बार {date} को देखा गया, \"{brand}\" की नकल करते हुए।",
       chatInviteLink: "यह एक ग्रुप/चैनल इनवाइट लिंक है — इनवाइट लिंक सामान्य कॉन्टैक्ट जांच को बायपास कर देते हैं, इसलिए जुड़ने से पहले ग्रुप का उद्देश्य स्वतंत्र रूप से जांच लें।",
       chatTaskScamPattern: "एक रिपोर्ट किए गए टास्क-स्कैम/निवेश-स्कैम पैटर्न से मेल खाता है: \"{keyword}\"।",
       chatOfficialSupportName: "एक सामान्य \"आधिकारिक सपोर्ट\"-जैसा नाम इस्तेमाल करता है (\"{word}\") — ग्रुप एडमिन नामों में कस्टम्स/पुलिस/बैंक अधिकारियों की नकल एक व्यापक रूप से रिपोर्ट किया गया पैटर्न है (Chakshu/Sanchar Saathi सलाह के अनुसार)।",
@@ -383,6 +391,10 @@ window.QRVLang = (function () {
       titleCommunityReported: "अन्य QRaksha उपयोगकर्ताओं द्वारा पहले ही स्कैम के रूप में रिपोर्ट किया गया",
       errUnknownCategory: "अज्ञात श्रेणी",
       errCheckFailed: "स्वचालित जांच पूरी नहीं हो सकी",
+      communityFlaggedWithNote: "इस बिल्कुल एक जैसे {category} को community द्वारा फ़्लैग किया गया: \"{note}\"।",
+      communityFlaggedNoNote: "इस बिल्कुल एक जैसे {category} को community द्वारा फ़्लैग किया गया।",
+      communityUnverifiedNotice: "Community reports असत्यापित crowd-sourced संकेत हैं — भरोसा करने से पहले स्वतंत्र रूप से पुष्टि ज़रूर करें।",
+      checkFailedDetail: "यह जांच local रूप से चलाने में कुछ गड़बड़ हुई। भरोसा करने से पहले कृपया आधिकारिक माध्यमों से खुद जांच लें।",
     },
 
     /* ------------------------------------------------------------------ */
