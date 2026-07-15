@@ -161,6 +161,13 @@
         window.QRVScanner.resumeScanning();
       }
     }
+    // Voice accessibility: briefly announce what this screen is for,
+    // so a user who can't read still knows where they landed.
+    if (window.QRVVoice) {
+      const TAB_VOICE_KEYS = { tabHome: "voiceHome", tabScan: "voiceScan", tabGenerate: "voiceGenerate" };
+      const key = TAB_VOICE_KEYS[tabId];
+      if (key) window.QRVVoice.speakKey(key);
+    }
   }
 
   document.querySelectorAll(".qrv-navbtn[data-tab]").forEach((btn) => {
@@ -371,6 +378,22 @@
     // Show the card and scroll to it.
     $("resultCard").hidden = false;
     $("resultCard").scrollIntoView({ behavior: "smooth", block: "nearest" });
+
+    // Voice accessibility: auto-speak a warning for risky QR results,
+    // same as the category-check verdict cards.
+    if (window.QRVVoice) {
+      if (risk.level === "critical" || risk.level === "high") window.QRVVoice.speakDangerAlert();
+      else if (risk.level === "medium") window.QRVVoice.speakWarnAlert();
+      else window.QRVVoice.speakSafeAlert();
+
+      const replayBtn = $("btnReplayScanResult");
+      if (replayBtn) {
+        replayBtn.onclick = () => {
+          const flagTexts = (risk.flags || []).map((f) => f.message || f).join(". ");
+          window.QRVVoice.speak([contextLine, explanation, flagTexts].filter(Boolean).join(". "));
+        };
+      }
+    }
   }
 
   /* ====================================================================
@@ -677,6 +700,7 @@
   function openScamShield() {
     $("scamShieldModal").hidden = false;
     if (window.QRVScamShield) window.QRVScamShield.init();
+    if (window.QRVVoice) window.QRVVoice.speakKey("voiceScamShield");
   }
   function closeScamShield() { $("scamShieldModal").hidden = true; }
 
@@ -758,6 +782,7 @@
     if (completed) {
       $("settingsModal").hidden = false;
       enforceSettingsScroll();
+      if (window.QRVVoice) window.QRVVoice.speakKey("voiceSettings");
     }
   });
 
@@ -765,6 +790,7 @@
     $("btnHomeLanguage").addEventListener("click", () => {
       $("settingsModal").hidden = false;
       enforceSettingsScroll();
+      if (window.QRVVoice) window.QRVVoice.speakKey("voiceLanguage");
       setTimeout(() => {
         const langSection = $("langPickerOptions");
         if (langSection) langSection.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -898,7 +924,30 @@
 
     if (window.QRVDashboard) window.QRVDashboard.init(activateTab);
     if (window.QRVLang)      window.QRVLang.init();
+    if (window.QRVVoice)     window.QRVVoice.init();
     if (window.QRVStorySubmit) window.QRVStorySubmit.init();
+
+    // First-visit language onboarding — shown once, only if the user
+    // has never picked a language before. Sits above everything else
+    // (including the panic banner) via its own z-index, but never
+    // blocks the panic banner's own tap target underneath from working
+    // once this closes.
+    if (window.QRVLang && !window.QRVLang.hasSavedLanguage()) {
+      const onboarding = $("langOnboardingModal");
+      if (onboarding) {
+        onboarding.hidden = false;
+        window.QRVLang.renderPickerInto("langOnboardingOptions");
+        // Best-effort — some mobile browsers block speech until the
+        // very first user gesture on the page, so this may silently
+        // no-op until then. Not a bug, just a platform limitation.
+        if (window.QRVVoice) window.QRVVoice.speakKey("voiceChooseLanguageFirst");
+        $("btnLangOnboardingContinue").addEventListener("click", () => {
+          onboarding.hidden = true;
+          // activateTab("tabHome") below will announce Home in
+          // whichever language was just chosen — no need to speak here too.
+        });
+      }
+    }
 
     // Ensure default tab is Home.
     activateTab("tabHome");

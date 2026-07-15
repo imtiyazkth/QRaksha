@@ -110,6 +110,110 @@ window.QRVLang = (function () {
       /* Settings */
       shareQRaksha: "Share QRaksha",
       howQRakshaProtects: "How QRaksha Protects You",
+
+      /* Voice / Text-to-Speech spoken phrases — deliberately more
+         conversational than the button-label text above, since these
+         are meant to be heard, not read. */
+      voiceWebsiteUrl: "Please paste the suspicious link here.",
+      voiceWhatsapp: "Please paste the WhatsApp or Telegram link or handle here.",
+      voicePhone: "Please enter the suspicious phone number here.",
+      voiceEmail: "Please paste the suspicious email address here.",
+      voiceSms: "Please paste the SMS sender name or number here.",
+      voiceSocial: "Please paste the social media profile link here.",
+      voiceGenerate: "Create your own QR code here.",
+      voiceScan: "Point your camera at a QR code, or upload an image.",
+      voiceScamShield: "Learn how to protect yourself from scams here.",
+      voiceSettings: "Change your language, theme, or other app settings here.",
+      voiceLanguage: "Choose your preferred language here.",
+      voiceHome: "Go to the home screen.",
+      voiceDangerAlert: "This is very dangerous. Please do not proceed. Please stay safe.",
+      voiceWarnAlert: "Please be careful. This looks suspicious.",
+      voiceSafeAlert: "No known danger was found. Still, always stay careful.",
+      voicePlatformReport: "Do you want to file a complaint about this on {platform}?",
+      voiceChooseLanguageFirst: "Welcome to QRaksha. Please choose your language to continue.",
+      voiceMuteToggle: "Turn voice guidance on or off.",
+
+      /* ---- Scan/check result strings — risk-engine-core.js (QR flow) ---- */
+      httpNotHttps: "Uses unencrypted HTTP instead of HTTPS — data sent to this site isn't protected in transit.",
+      httpsConfirmed: "Connection is encrypted with HTTPS.",
+      linkIsRawIp: "The link points directly to an IP address instead of a domain name — a common phishing technique.",
+      urlHasAtSymbol: "The URL contains an \"@\" symbol — browsers ignore everything before it, a classic disguised-link trick.",
+      urlVeryLong: "The URL is very long ({len} characters), which can be used to hide the real destination.",
+      urlLongerThanTypical: "The URL is longer than typical ({len} characters).",
+      urlManyParams: "The link carries an unusually high number of parameters ({count}).",
+      urlIsShortened: "This is a shortened link — the real destination is hidden until you open it.",
+      domainPunycode: "The domain uses Punycode encoding, sometimes used to mimic a trusted brand with look-alike characters.",
+      domainDeepSubdomain: "The domain has an unusually deep subdomain chain.",
+      containsScamKeywords: "Contains scam-associated keyword(s): {keywords}.",
+      domainBrandMismatch: "The domain references a well-known brand name but does not match that brand's official domain — a strong sign of impersonation.",
+      socialOrgImpersonation: "This profile's username impersonates \"{org}\" with official-sounding wording (\"{word}\") — real banks/authorities do not run support accounts through personal social profiles or QR-shared handles.",
+      romanceScamPattern: "Profile name pattern (military rank + deployed-overseas persona) matches a well-documented romance-scam template — proceed with extreme caution, especially if this contact asks for money, gifts, or personal details.",
+      noDangerInLinkStructure: "No obvious danger was detected in this link's structure.",
+      upiCheckPayeeName: "Always check the payee name shown in your UPI app before approving any payment.",
+      upiPrefilledAmount: "This QR requests a pre-filled amount — confirm it matches what you expect to pay.",
+      upiDeceptiveVpa: "The payee address (\"{vpa}\") contains a deceptive term commonly used in refund/support-impersonation scams — legitimate businesses rarely use these words in their actual VPA.",
+      upiRefundScamPattern: "A high pre-filled amount (₹{amount}) combined with a \"customer support\"-style payee name is a well-documented refund-scam pattern — real refunds are never collected by scanning a QR and paying money.",
+      upiUrgentNote: "The payment note contains urgent/panic-inducing language (\"{note}\") — this pressure tactic is common in KYC and account-block scam QR codes.",
+      wifiOpenNetwork: "This connects to an open WiFi network with no password — traffic on open networks can be intercepted.",
+      cryptoIrreversible: "Cryptocurrency transfers can't be reversed — verify the wallet address character-by-character before sending funds.",
+      plainTextLowRisk: "This is plain text with no link or action — generally low risk.",
+      contentFormatUnrecognized: "The content format wasn't recognized, so it couldn't be fully analyzed.",
+
+      /* ---- Category-check strings — verification-engine.js ---- */
+      suspiciousTld: "Uses \"{tld}\" — a top-level domain frequently abused for short-lived phishing sites (not proof alone, but raises risk).",
+      containsScamPatternWording: "Contains reported scam-pattern wording: \"{keyword}\".",
+      /* Merged: same brand-impersonation message previously duplicated
+         in two places in the code — now driven by one shared key. */
+      brandImpersonationBoosted: "Domain imitates \"{brand}\" and pairs it with urgency wording (security/alert/verify/etc.) — a strong phishing pattern. This is not {brand}'s real domain.",
+      brandImpersonation: "Domain mentions \"{brand}\" but isn't that brand's real domain — a classic lookalike-brand phishing pattern.",
+      unusualHostnameStructure: "Unusually long/hyphenated hostname structure, often seen in auto-generated phishing subdomains.",
+      flaggedByGsb: "Flagged by Google Safe Browsing: {types}.",
+      abuseIpdbScore: "AbuseIPDB reports a {score}% abuse confidence score for this IP address ({reports} reports).",
+      urlNoKnownRisk: "No known suspicious TLD, brand-lookalike, or scam keyword pattern found in this URL, and it's not on the live phishunt.io threat feed.",
+      chatInviteLink: "This is a group/channel invite link — invite links bypass normal contact checks, so verify the group's purpose independently before joining.",
+      chatTaskScamPattern: "Matches a reported task-scam / investment-scam pattern: \"{keyword}\".",
+      chatOfficialSupportName: "Uses a generic \"official support\"-style name (\"{word}\") — impersonation of customs/police/bank officials in group admin names is a widely reported pattern (per Chakshu/Sanchar Saathi advisories).",
+      chatNoKnownRisk: "No known scam-recruitment or impersonation keyword pattern detected in this text.",
+      phoneCarrierInfo: "Carrier: {carrier}, Location: {location}, Line type: {lineType}.",
+      phoneVoipLine: "Registered as a VoIP/toll-free virtual line — frequently used to mask a scammer's real identity and location.",
+      phoneLookupUnavailable: "Live carrier lookup unavailable right now — showing local pattern analysis only.",
+      phoneRepeatingDigits: "Number is a suspicious repeating-digit series, uncommon for genuine personal or business lines.",
+      phoneTelemarketingPrefix: "Prefix pattern is commonly associated with automated telemarketing/bulk-dialer series.",
+      phoneNoKnownRiskNoLookup: "No known high-risk pattern found for this number via local analysis. Live carrier lookup was not run (no API key configured) — this does not confirm the number is safe.",
+      emailDisposableProvider: "Uses a disposable/temporary email provider — legitimate businesses don't use throwaway addresses.",
+      emailSpoofedSupportOnFreemail: "Local part (\"{localPart}\") mimics an official support address but is hosted on a free public mail provider ({domain}) — no genuine bank/courier/tax authority uses Gmail/Yahoo for official support.",
+      emailFreemailCaution: "Hosted on a free public mail provider ({domain}) — not inherently unsafe, but be cautious if this claims to be an \"official\" address.",
+      emailNoKnownRisk: "No known disposable-domain or support-impersonation pattern found.",
+      smsHeaderWrongLength: "Header suffix \"{suffix}\" is {len} characters — genuine TRAI-registered bank headers are exactly 6 characters. Non-standard length is a spoofing signal.",
+      smsHeaderUnverified: "\"{suffix}\" looks like it's impersonating a bank header but isn't in the known verified list — treat any \"urgent account action\" SMS from it with suspicion.",
+      smsHeaderVerified: "\"{suffix}\" matches a known verified bank SMS header pattern.",
+      smsPersonalNumberWarning: "This is a plain 10-digit personal mobile number, not a registered alphanumeric header. If the message content claims to be an automated bank alert, electricity disconnection notice, or similar official communication, that is a strong SMS-spoofing red flag — genuine automated alerts always come from registered alphanumeric headers, never a personal mobile number.",
+      smsUnparseable: "Couldn't parse this as a standard TRAI header (XX-XXXXXX) or a 10-digit number — double-check the format.",
+      smsNoKnownRisk: "No spoofing pattern detected.",
+      socialScamKeyword: "Matches a reported scam-pattern keyword: \"{keyword}\".",
+      socialGiveawayPattern: "Contains a pattern common to fake-giveaway/crypto-doubling or celebrity-impersonation profiles: \"{keyword}\".",
+      socialManyDigitsHandle: "Handle \"{handle}\" contains an unusually high number of digits — often seen in mass-produced clone/bot accounts impersonating real profiles.",
+      socialNoKnownRisk: "No known clone-account or fake-giveaway pattern found in this link.",
+      errInvalidUrl: "That doesn't look like a valid URL",
+      errDoubleCheckLink: "Double-check the link and try again.",
+      errInvalidPhone: "That doesn't look like a complete phone number",
+      errInvalidEmail: "That doesn't look like a valid email address",
+
+      /* ---- Shared verdict-title templates — used by every category check ---- */
+      verdictTitleSafe: "No known risk pattern found for this {subjectType}",
+      verdictTitleDanger: "High-risk {subjectType} — treat as likely fraud",
+      verdictTitleWarn: "Suspicious {subjectType} — proceed with caution",
+      verdictTitleInfo: "Minor caution flags found for this {subjectType}",
+      subjectTypeUrl: "URL",
+      subjectTypeChatHandle: "chat handle/link",
+      subjectTypePhone: "phone number",
+      subjectTypeEmail: "email address",
+      subjectTypeSms: "SMS header",
+      subjectTypeSocial: "social profile",
+      errPleaseEnterSomething: "Please enter something to check",
+      titleCommunityReported: "Already reported by other QRaksha users as a scam",
+      errUnknownCategory: "Unknown category",
+      errCheckFailed: "Couldn't complete an automated check",
     },
 
     /* ------------------------------------------------------------------ */
@@ -183,6 +287,102 @@ window.QRVLang = (function () {
 
       shareQRaksha: "QRaksha शेयर करें",
       howQRakshaProtects: "QRaksha आपकी सुरक्षा कैसे करता है",
+
+      voiceWebsiteUrl: "कृपया लिंक यहाँ पेस्ट करें।",
+      voiceWhatsapp: "कृपया WhatsApp या Telegram लिंक या हैंडल यहाँ पेस्ट करें।",
+      voicePhone: "कृपया संदिग्ध फ़ोन नंबर यहाँ डालें।",
+      voiceEmail: "कृपया संदिग्ध ईमेल पता यहाँ पेस्ट करें।",
+      voiceSms: "कृपया SMS भेजने वाले का नाम या नंबर यहाँ पेस्ट करें।",
+      voiceSocial: "कृपया सोशल मीडिया प्रोफ़ाइल का लिंक यहाँ पेस्ट करें।",
+      voiceGenerate: "यहाँ अपना खुद का QR कोड बनाएं।",
+      voiceScan: "QR कोड पर कैमरा लगाएं, या इमेज अपलोड करें।",
+      voiceScamShield: "यहाँ स्कैम से खुद को बचाना सीखें।",
+      voiceSettings: "यहाँ भाषा, थीम या अन्य सेटिंग्स बदलें।",
+      voiceLanguage: "यहाँ अपनी पसंदीदा भाषा चुनें।",
+      voiceHome: "होम स्क्रीन पर जाएं।",
+      voiceDangerAlert: "यह बहुत ही खतरनाक है। कृपया इससे बचें। कृपया आगे न बढ़ें।",
+      voiceWarnAlert: "कृपया सावधान रहें। यह संदिग्ध लग रहा है।",
+      voiceSafeAlert: "कोई ज्ञात खतरा नहीं मिला। फिर भी हमेशा सावधान रहें।",
+      voicePlatformReport: "क्या आप {platform} पर इसकी शिकायत दर्ज करना चाहते हैं?",
+      voiceChooseLanguageFirst: "QRaksha में आपका स्वागत है। जारी रखने के लिए कृपया अपनी भाषा चुनें।",
+      voiceMuteToggle: "आवाज़ सहायता चालू या बंद करें।",
+
+      httpNotHttps: "असुरक्षित HTTP इस्तेमाल हो रहा है, HTTPS नहीं — इस साइट पर भेजा गया डेटा सुरक्षित नहीं है।",
+      httpsConfirmed: "कनेक्शन HTTPS से एन्क्रिप्टेड है।",
+      linkIsRawIp: "लिंक सीधे एक IP एड्रेस पर जाता है, डोमेन नेम पर नहीं — यह एक आम फिशिंग तरीका है।",
+      urlHasAtSymbol: "URL में \"@\" चिह्न है — ब्राउज़र इससे पहले की हर चीज़ को नज़रअंदाज़ कर देते हैं, यह एक क्लासिक छुपे-हुए-लिंक वाला तरीका है।",
+      urlVeryLong: "URL बहुत लंबा है ({len} अक्षर), जिसका इस्तेमाल असली मंज़िल छुपाने के लिए किया जा सकता है।",
+      urlLongerThanTypical: "URL सामान्य से लंबा है ({len} अक्षर)।",
+      urlManyParams: "लिंक में असामान्य रूप से ज़्यादा पैरामीटर हैं ({count})।",
+      urlIsShortened: "यह एक छोटा किया हुआ (shortened) लिंक है — असली मंज़िल तब तक छुपी रहती है जब तक आप इसे खोलते नहीं।",
+      domainPunycode: "डोमेन Punycode एन्कोडिंग इस्तेमाल करता है, जो कभी-कभी भरोसेमंद ब्रांड की नकल करने के लिए इस्तेमाल होती है।",
+      domainDeepSubdomain: "डोमेन में असामान्य रूप से गहरी सबडोमेन चेन है।",
+      containsScamKeywords: "स्कैम से जुड़े कीवर्ड मिले: {keywords}।",
+      domainBrandMismatch: "डोमेन एक जाने-माने ब्रांड का नाम इस्तेमाल करता है लेकिन उस ब्रांड के असली डोमेन से मेल नहीं खाता — नकल का मज़बूत संकेत।",
+      socialOrgImpersonation: "इस प्रोफ़ाइल का यूज़रनेम \"{org}\" की नकल करता है और आधिकारिक जैसा शब्द (\"{word}\") इस्तेमाल करता है — असली बैंक/प्राधिकरण कभी निजी सोशल प्रोफ़ाइल या QR-शेयर्ड हैंडल से सपोर्ट अकाउंट नहीं चलाते।",
+      romanceScamPattern: "प्रोफ़ाइल नाम का पैटर्न (सैन्य रैंक + विदेश में तैनाती वाला व्यक्तित्व) एक जाना-पहचाना रोमांस-स्कैम टेम्पलेट है — बेहद सावधानी बरतें, खासकर अगर यह संपर्क पैसे, तोहफे या निजी जानकारी मांगे।",
+      noDangerInLinkStructure: "इस लिंक की बनावट में कोई स्पष्ट खतरा नहीं मिला।",
+      upiCheckPayeeName: "कोई भी भुगतान स्वीकार करने से पहले हमेशा अपने UPI ऐप में दिख रहा payee नाम जांचें।",
+      upiPrefilledAmount: "इस QR में पहले से भरी हुई राशि है — पुष्टि करें कि यह उतनी ही है जितनी आप देना चाहते हैं।",
+      upiDeceptiveVpa: "Payee का पता (\"{vpa}\") एक भ्रामक शब्द रखता है जो रिफंड/सपोर्ट-नकल स्कैम में आम है — असली व्यवसाय अपने VPA में ऐसे शब्द शायद ही इस्तेमाल करते हैं।",
+      upiRefundScamPattern: "बड़ी पहले से भरी राशि (₹{amount}) + \"customer support\" जैसा payee नाम — यह एक जाना-पहचाना रिफंड-स्कैम पैटर्न है। असली रिफंड कभी QR स्कैन करके पैसे देने से नहीं मिलता।",
+      upiUrgentNote: "पेमेंट नोट में जल्दबाज़ी/घबराहट भरी भाषा है (\"{note}\") — यह दबाव बनाने का तरीका KYC और अकाउंट-ब्लॉक स्कैम QR कोड में आम है।",
+      wifiOpenNetwork: "यह बिना पासवर्ड वाले खुले WiFi नेटवर्क से जुड़ता है — खुले नेटवर्क पर ट्रैफ़िक चोरी हो सकता है।",
+      cryptoIrreversible: "क्रिप्टोकरेंसी ट्रांसफर वापस नहीं हो सकते — पैसे भेजने से पहले wallet एड्रेस को अक्षर-दर-अक्षर जांच लें।",
+      plainTextLowRisk: "यह बिना किसी लिंक या एक्शन वाला सादा टेक्स्ट है — आमतौर पर कम जोखिम।",
+      contentFormatUnrecognized: "यह कंटेंट फॉर्मेट पहचाना नहीं जा सका, इसलिए पूरी तरह जांचा नहीं जा सका।",
+
+      suspiciousTld: "\"{tld}\" इस्तेमाल हो रहा है — यह टॉप-लेवल डोमेन अक्सर छोटी अवधि की फिशिंग साइट्स के लिए इस्तेमाल होता है (अकेले यह सबूत नहीं, पर जोखिम बढ़ाता है)।",
+      containsScamPatternWording: "रिपोर्ट की गई स्कैम-पैटर्न भाषा मिली: \"{keyword}\"।",
+      brandImpersonationBoosted: "डोमेन \"{brand}\" की नकल करता है और साथ में जल्दबाज़ी वाले शब्द (security/alert/verify) भी हैं — यह मज़बूत फिशिंग पैटर्न है। यह {brand} का असली डोमेन नहीं है।",
+      brandImpersonation: "डोमेन \"{brand}\" का ज़िक्र करता है लेकिन यह उस ब्रांड का असली डोमेन नहीं है — एक क्लासिक नकली-ब्रांड फिशिंग पैटर्न।",
+      unusualHostnameStructure: "असामान्य रूप से लंबी/हाइफ़न वाली hostname बनावट, जो अक्सर ऑटो-जनरेटेड फिशिंग सबडोमेन में दिखती है।",
+      flaggedByGsb: "Google Safe Browsing ने इसे फ़्लैग किया: {types}।",
+      abuseIpdbScore: "AbuseIPDB के अनुसार इस IP एड्रेस का abuse confidence score {score}% है ({reports} रिपोर्ट्स)।",
+      urlNoKnownRisk: "इस URL में कोई संदिग्ध TLD, ब्रांड-नकल, या स्कैम कीवर्ड पैटर्न नहीं मिला, और यह लाइव phishunt.io थ्रेट फ़ीड में भी नहीं है।",
+      chatInviteLink: "यह एक ग्रुप/चैनल इनवाइट लिंक है — इनवाइट लिंक सामान्य कॉन्टैक्ट जांच को बायपास कर देते हैं, इसलिए जुड़ने से पहले ग्रुप का उद्देश्य स्वतंत्र रूप से जांच लें।",
+      chatTaskScamPattern: "एक रिपोर्ट किए गए टास्क-स्कैम/निवेश-स्कैम पैटर्न से मेल खाता है: \"{keyword}\"।",
+      chatOfficialSupportName: "एक सामान्य \"आधिकारिक सपोर्ट\"-जैसा नाम इस्तेमाल करता है (\"{word}\") — ग्रुप एडमिन नामों में कस्टम्स/पुलिस/बैंक अधिकारियों की नकल एक व्यापक रूप से रिपोर्ट किया गया पैटर्न है (Chakshu/Sanchar Saathi सलाह के अनुसार)।",
+      chatNoKnownRisk: "इस टेक्स्ट में कोई ज्ञात स्कैम-भर्ती या नकल कीवर्ड पैटर्न नहीं मिला।",
+      phoneCarrierInfo: "कैरियर: {carrier}, लोकेशन: {location}, लाइन प्रकार: {lineType}।",
+      phoneVoipLine: "VoIP/टोल-फ़्री वर्चुअल लाइन के रूप में रजिस्टर्ड — अक्सर स्कैमर की असली पहचान और स्थान छुपाने के लिए इस्तेमाल होता है।",
+      phoneLookupUnavailable: "अभी लाइव कैरियर लुकअप उपलब्ध नहीं है — सिर्फ लोकल पैटर्न विश्लेषण दिखाया जा रहा है।",
+      phoneRepeatingDigits: "नंबर एक संदिग्ध दोहराए जाने वाले अंकों की श्रृंखला है, जो असली निजी या व्यावसायिक लाइनों में असामान्य है।",
+      phoneTelemarketingPrefix: "यह प्रीफ़िक्स पैटर्न आमतौर पर ऑटोमेटेड टेलीमार्केटिंग/बल्क-डायलर सीरीज़ से जुड़ा होता है।",
+      phoneNoKnownRiskNoLookup: "लोकल विश्लेषण से इस नंबर के लिए कोई ज्ञात उच्च-जोखिम पैटर्न नहीं मिला। लाइव कैरियर लुकअप नहीं चलाया गया (कोई API key कॉन्फ़िगर नहीं) — यह नंबर के सुरक्षित होने की पुष्टि नहीं करता।",
+      emailDisposableProvider: "एक डिस्पोज़ेबल/अस्थायी ईमेल प्रोवाइडर इस्तेमाल करता है — असली व्यवसाय ऐसे इस्तेमाल-और-फेंक पते इस्तेमाल नहीं करते।",
+      emailSpoofedSupportOnFreemail: "लोकल भाग (\"{localPart}\") एक आधिकारिक सपोर्ट पते जैसा दिखता है लेकिन यह एक फ्री पब्लिक मेल प्रोवाइडर ({domain}) पर होस्ट है — कोई असली बैंक/कूरियर/टैक्स प्राधिकरण आधिकारिक सपोर्ट के लिए Gmail/Yahoo इस्तेमाल नहीं करता।",
+      emailFreemailCaution: "एक फ्री पब्लिक मेल प्रोवाइडर ({domain}) पर होस्ट है — यह अपने आप में असुरक्षित नहीं, लेकिन अगर यह खुद को \"आधिकारिक\" पता बताए तो सावधान रहें।",
+      emailNoKnownRisk: "कोई ज्ञात डिस्पोज़ेबल-डोमेन या सपोर्ट-नकल पैटर्न नहीं मिला।",
+      smsHeaderWrongLength: "हेडर सफ़िक्स \"{suffix}\" {len} अक्षरों का है — असली TRAI-रजिस्टर्ड बैंक हेडर ठीक 6 अक्षरों के होते हैं। गलत लंबाई एक स्पूफ़िंग संकेत है।",
+      smsHeaderUnverified: "\"{suffix}\" किसी बैंक हेडर की नकल जैसा लगता है लेकिन यह जाने-पहचाने वेरिफ़ाइड लिस्ट में नहीं है — इससे आने वाले किसी भी \"तुरंत अकाउंट एक्शन\" SMS को शक की नज़र से देखें।",
+      smsHeaderVerified: "\"{suffix}\" एक जाने-पहचाने वेरिफ़ाइड बैंक SMS हेडर पैटर्न से मेल खाता है।",
+      smsPersonalNumberWarning: "यह एक सादा 10-अंकों वाला निजी मोबाइल नंबर है, कोई रजिस्टर्ड अल्फ़ान्यूमेरिक हेडर नहीं। अगर मैसेज खुद को ऑटोमेटेड बैंक अलर्ट, बिजली कटने का नोटिस, या ऐसी किसी आधिकारिक सूचना जैसा बताए, तो यह एक मज़बूत SMS-स्पूफ़िंग संकेत है — असली ऑटोमेटेड अलर्ट हमेशा रजिस्टर्ड अल्फ़ान्यूमेरिक हेडर से आते हैं, कभी निजी मोबाइल नंबर से नहीं।",
+      smsUnparseable: "इसे मानक TRAI हेडर (XX-XXXXXX) या 10-अंकों वाले नंबर के रूप में समझा नहीं जा सका — फ़ॉर्मेट दोबारा जांचें।",
+      smsNoKnownRisk: "कोई स्पूफ़िंग पैटर्न नहीं मिला।",
+      socialScamKeyword: "एक रिपोर्ट किए गए स्कैम-पैटर्न कीवर्ड से मेल खाता है: \"{keyword}\"।",
+      socialGiveawayPattern: "फर्ज़ी-गिवअवे/क्रिप्टो-डबलिंग या सेलिब्रिटी-नकल प्रोफ़ाइल में आम एक पैटर्न मिला: \"{keyword}\"।",
+      socialManyDigitsHandle: "हैंडल \"{handle}\" में असामान्य रूप से ज़्यादा अंक हैं — यह अक्सर बड़ी संख्या में बनाए गए क्लोन/बॉट अकाउंट में दिखता है जो असली प्रोफ़ाइल की नकल करते हैं।",
+      socialNoKnownRisk: "इस लिंक में कोई ज्ञात क्लोन-अकाउंट या फर्ज़ी-गिवअवे पैटर्न नहीं मिला।",
+      errInvalidUrl: "यह एक मान्य URL नहीं लगता",
+      errDoubleCheckLink: "लिंक दोबारा जांचें और फिर कोशिश करें।",
+      errInvalidPhone: "यह पूरा फ़ोन नंबर नहीं लगता",
+      errInvalidEmail: "यह मान्य ईमेल पता नहीं लगता",
+
+      verdictTitleSafe: "इस {subjectType} के लिए कोई ज्ञात जोखिम पैटर्न नहीं मिला",
+      verdictTitleDanger: "उच्च-जोखिम वाला {subjectType} — संभावित धोखाधड़ी मानें",
+      verdictTitleWarn: "संदिग्ध {subjectType} — सावधानी से आगे बढ़ें",
+      verdictTitleInfo: "इस {subjectType} के लिए मामूली सावधानी वाले संकेत मिले",
+      subjectTypeUrl: "URL",
+      subjectTypeChatHandle: "चैट हैंडल/लिंक",
+      subjectTypePhone: "फ़ोन नंबर",
+      subjectTypeEmail: "ईमेल पता",
+      subjectTypeSms: "SMS हेडर",
+      subjectTypeSocial: "सोशल प्रोफ़ाइल",
+      errPleaseEnterSomething: "कृपया जांचने के लिए कुछ दर्ज करें",
+      titleCommunityReported: "अन्य QRaksha उपयोगकर्ताओं द्वारा पहले ही स्कैम के रूप में रिपोर्ट किया गया",
+      errUnknownCategory: "अज्ञात श्रेणी",
+      errCheckFailed: "स्वचालित जांच पूरी नहीं हो सकी",
     },
 
     /* ------------------------------------------------------------------ */
@@ -520,10 +720,25 @@ window.QRVLang = (function () {
     try { localStorage.setItem("qrv-lang", lang); } catch (e) {}
   }
 
-  function t(key) {
+  /**
+   * t(key) behaves exactly as before — unchanged for every existing
+   * caller. t(key, vars) additionally substitutes {placeholderName}
+   * tokens in the translated string with values from vars, e.g.
+   * t("brandImpersonation", {brand: "sbi"}) replaces "{brand}" in the
+   * translated text. If a key or its vars are missing, this degrades
+   * gracefully — never throws, never shows a raw "{token}" if it can
+   * help it (falls back to English, then to the key name itself).
+   */
+  function t(key, vars) {
     const lang = getSaved();
     const dict = DICTIONARIES[lang] || DICTIONARIES.English;
-    return dict[key] || DICTIONARIES.English[key] || key;
+    let text = dict[key] || DICTIONARIES.English[key] || key;
+    if (vars && typeof text === "string") {
+      Object.keys(vars).forEach((k) => {
+        text = text.replace(new RegExp(`\\{${k}\\}`, "g"), vars[k]);
+      });
+    }
+    return text;
   }
 
   function isTranslated(lang) {
@@ -583,6 +798,45 @@ window.QRVLang = (function () {
     });
   }
 
+  /**
+   * Same as renderPicker() but targets any container id, and accepts
+   * an optional onSelect callback — used by the first-visit onboarding
+   * modal, kept separate from renderPicker() so the existing Settings
+   * picker behavior is never touched/risked.
+   */
+  function renderPickerInto(containerId, onSelect) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    container.innerHTML = "";
+    const current = getSaved();
+    LANGUAGES.forEach((lang) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className =
+        "qrv-theme-swatch" + (lang === current ? " ring-2 ring-amber" : "");
+      btn.textContent = lang + (isTranslated(lang) ? "" : " (beta)");
+      btn.title = isTranslated(lang)
+        ? ""
+        : "Not fully translated yet — shows English for untranslated text";
+      btn.addEventListener("click", () => {
+        save(lang);
+        applyToDom();
+        renderPicker();
+        renderPickerInto(containerId, onSelect);
+        document.dispatchEvent(
+          new CustomEvent("qrv:lang-changed", { detail: { lang } })
+        );
+        if (typeof onSelect === "function") onSelect(lang);
+      });
+      container.appendChild(btn);
+    });
+  }
+
+  function hasSavedLanguage() {
+    try { return localStorage.getItem("qrv-lang") !== null; }
+    catch (e) { return true; } // if storage is inaccessible, don't force onboarding repeatedly
+  }
+
   function init() {
     applyToDom();
     renderPicker();
@@ -594,5 +848,5 @@ window.QRVLang = (function () {
     return getSaved();
   }
 
-  return { init, t, applyToDom, renderPicker, currentLangForAi, LANGUAGES };
+  return { init, t, applyToDom, renderPicker, renderPickerInto, hasSavedLanguage, currentLangForAi, LANGUAGES };
 })();

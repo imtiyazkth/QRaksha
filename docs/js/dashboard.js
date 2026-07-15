@@ -23,22 +23,31 @@ window.QRVDashboard = (function () {
   }
 
   const CATEGORY_PROMPTS = {
-    url: { labelKey: "pasteUrlPrompt", label: "Paste the suspicious URL below", placeholder: "https://example.com/…", engineKey: "WEBSITE_URL" },
-    whatsapp: { labelKey: "pasteHandlePrompt", label: "Paste the WhatsApp / Telegram link or handle", placeholder: "https://wa.me/91… or @handle", engineKey: "WHATSAPP_TELEGRAM" },
-    phone: { labelKey: "pastePhonePrompt", label: "Enter the suspicious phone number", placeholder: "+91XXXXXXXXXX", engineKey: "PHONE_NUMBER" },
-    email: { label: "Paste the suspicious sender's email address", placeholder: "someone@example.com", engineKey: "EMAIL_ID" },
-    sms: { label: "Paste the SMS header / sender number", placeholder: "e.g. VM-AXISBK or +91XXXXXXXXXX", engineKey: "SMS_HEADER" },
-    social: { label: "Paste the social media profile URL", placeholder: "https://instagram.com/…", engineKey: "SOCIAL_MEDIA" },
+    url: { labelKey: "pasteUrlPrompt", label: "Paste the suspicious URL below", placeholder: "https://example.com/…", engineKey: "WEBSITE_URL", voiceKey: "voiceWebsiteUrl" },
+    whatsapp: { labelKey: "pasteHandlePrompt", label: "Paste the WhatsApp / Telegram link or handle", placeholder: "https://wa.me/91… or @handle", engineKey: "WHATSAPP_TELEGRAM", voiceKey: "voiceWhatsapp" },
+    phone: { labelKey: "pastePhonePrompt", label: "Enter the suspicious phone number", placeholder: "+91XXXXXXXXXX", engineKey: "PHONE_NUMBER", voiceKey: "voicePhone" },
+    email: { label: "Paste the suspicious sender's email address", placeholder: "someone@example.com", engineKey: "EMAIL_ID", voiceKey: "voiceEmail" },
+    sms: { label: "Paste the SMS header / sender number", placeholder: "e.g. VM-AXISBK or +91XXXXXXXXXX", engineKey: "SMS_HEADER", voiceKey: "voiceSms" },
+    social: { label: "Paste the social media profile URL", placeholder: "https://instagram.com/…", engineKey: "SOCIAL_MEDIA", voiceKey: "voiceSocial" },
   };
 
   function renderCategoryGrid(categories, onNavigate) {
     const grid = $("dashboardGrid");
     grid.innerHTML = "";
     categories.forEach((cat) => {
-      const btn = document.createElement("button");
-      btn.type = "button";
+      // Deliberately a <div role="button"> rather than a real <button> —
+      // this card needs to contain its own nested speaker <button>, and
+      // a <button> cannot legally contain another <button> (browsers
+      // handle that inconsistently, sometimes swallowing clicks
+      // entirely). role="button" + tabindex + keydown handling keeps
+      // it fully keyboard/screen-reader accessible without that problem.
+      const btn = document.createElement("div");
+      btn.setAttribute("role", "button");
+      btn.setAttribute("tabindex", "0");
+      const voiceKey = (CATEGORY_PROMPTS[cat.id] && CATEGORY_PROMPTS[cat.id].voiceKey) || null;
+      if (voiceKey) btn.setAttribute("data-voice-key", voiceKey);
       if (cat.featured) {
-        btn.className = "col-span-2 flex items-center gap-3 rounded-2xl p-4 text-left bg-gradient-to-r from-[#0B2E6B] to-[#123a82] border border-blue-400/30 shadow-[0_0_16px_rgba(29,78,216,0.35)]";
+        btn.className = "relative col-span-2 flex items-center gap-3 rounded-2xl p-4 text-left bg-gradient-to-r from-[#0B2E6B] to-[#123a82] border border-blue-400/30 shadow-[0_0_16px_rgba(29,78,216,0.35)] cursor-pointer";
         btn.innerHTML = `
           <span class="text-2xl shrink-0" aria-hidden="true">${cat.icon}</span>
           <span class="flex-1 min-w-0">
@@ -48,7 +57,7 @@ window.QRVDashboard = (function () {
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4 text-blue-200 shrink-0"><path d="M7 17L17 7M9 7h8v8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
         `;
       } else {
-        btn.className = "flex flex-col items-start gap-1 rounded-2xl bg-panel border border-line p-4 text-left";
+        btn.className = "relative flex flex-col items-start gap-1 rounded-2xl bg-panel border border-line p-4 text-left cursor-pointer";
         btn.innerHTML = `
           <span class="text-2xl" aria-hidden="true">${cat.icon}</span>
           <span class="font-medium text-sm text-neutral-100">${cat.label}</span>
@@ -56,7 +65,7 @@ window.QRVDashboard = (function () {
           ${cat.supported === false ? '<span class="text-[10px] text-warn mt-1">Coming soon — routes to official report portal</span>' : ""}
         `;
       }
-      btn.addEventListener("click", () => {
+      const activate = () => {
         if (cat.route === "external" && cat.url) {
           window.open(cat.url, "_blank", "noopener,noreferrer");
         } else if (CATEGORY_PROMPTS[cat.id]) {
@@ -64,9 +73,14 @@ window.QRVDashboard = (function () {
         } else {
           onNavigate("tabMessage");
         }
+      };
+      btn.addEventListener("click", activate);
+      btn.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); activate(); }
       });
       grid.appendChild(btn);
     });
+    if (window.QRVVoice) window.QRVVoice.attachSpeakerButtons(grid);
   }
 
   function openCategoryInputPanel(cat, onNavigate) {
@@ -148,19 +162,28 @@ window.QRVDashboard = (function () {
     grid.innerHTML = "";
     platforms.forEach((p) => {
       const icon = PLATFORM_ICONS[p.id] || null;
+      // Wrapper div, not the <a> itself, is the grid cell — an <a> may
+      // not legally contain a nested <button> (the speaker icon), so
+      // they sit as siblings inside this wrapper instead.
+      const wrap = document.createElement("div");
+      wrap.className = "relative";
       const a = document.createElement("a");
       a.href = p.url;
       a.target = "_blank";
       a.rel = "noopener noreferrer";
       a.className = "qrv-platform-logo-btn";
+      a.setAttribute("data-voice-key", "voicePlatformReport");
+      a.setAttribute("data-voice-vars", JSON.stringify({ platform: p.label }));
       a.innerHTML = `
         <span class="w-11 h-11 rounded-xl flex items-center justify-center" style="background:${icon ? icon.color : "#333"}">
           ${icon ? icon.svg : ""}
         </span>
         <span class="text-[11px] font-medium text-neutral-200">${escapeHtml(p.label)}</span>
       `;
-      grid.appendChild(a);
+      wrap.appendChild(a);
+      grid.appendChild(wrap);
     });
+    if (window.QRVVoice) window.QRVVoice.attachSpeakerButtons(grid);
   }
 
   function escapeHtml(str) {

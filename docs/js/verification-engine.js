@@ -718,11 +718,22 @@ window.QRVVerification = (function () {
     const showGovtLink = options && options.showGovtRegistryLink;
     const bold = verdict.level === "danger" || verdict.level === "safe";
 
+    // Voice accessibility: automatically speak a warning for dangerous
+    // results, so a user who can't read the screen still hears it
+    // immediately without needing to find a button first.
+    if (window.QRVVoice) {
+      if (verdict.level === "danger") window.QRVVoice.speakDangerAlert();
+      else if (verdict.level === "warn") window.QRVVoice.speakWarnAlert();
+      else if (verdict.level === "safe") window.QRVVoice.speakSafeAlert();
+    }
+
     container.innerHTML = `
       <div class="rounded-2xl border ${style.border} ${style.bg} p-4 transition-all duration-300 ease-out animate-[fadeIn_.25s_ease-out] ${bold ? "shadow-lg" : ""}">
         <div class="flex items-start gap-2 mb-2">
           <span class="text-lg" aria-hidden="true">${style.icon}</span>
-          <p class="font-semibold text-sm ${style.text}">${escapeHtml(verdict.title)}</p>
+          <p class="font-semibold text-sm ${style.text} flex-1">${escapeHtml(verdict.title)}</p>
+          <button type="button" data-verdict-replay aria-label="Listen to this result"
+            class="qrv-voice-btn" style="position:static; flex-shrink:0;">🔊</button>
         </div>
         ${verdict.raw ? `<p class="text-[11px] font-mono ${bold ? style.subtext : "text-neutral-400"} break-all mb-2 opacity-90">${escapeHtml(verdict.raw)}</p>` : ""}
         <ul class="space-y-1.5 mb-3">
@@ -760,6 +771,13 @@ window.QRVVerification = (function () {
     const askBtn = container.querySelector("[data-verdict-ask-ai]");
     if (askBtn && typeof onAskAi === "function") {
       askBtn.addEventListener("click", () => onAskAi(verdict));
+    }
+    const replayBtn = container.querySelector("[data-verdict-replay]");
+    if (replayBtn && window.QRVVoice) {
+      replayBtn.addEventListener("click", () => {
+        const fullText = [verdict.title, ...verdict.details].join(". ");
+        window.QRVVoice.speak(fullText);
+      });
     }
     const reportBtn = container.querySelector("[data-verdict-report-scam]");
     if (reportBtn) {

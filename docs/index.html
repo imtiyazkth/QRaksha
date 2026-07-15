@@ -349,10 +349,12 @@
             <span id="riskMeterNumber"
               class="absolute inset-0 flex items-center justify-center font-mono text-sm font-semibold">0%</span>
           </div>
-          <div>
+          <div class="flex-1">
             <p id="riskMeterLabel" class="font-display font-bold text-lg" data-i18n="lowRisk">Low Risk</p>
             <p id="historicalAudit" class="text-xs text-neutral-400 mt-0.5"></p>
           </div>
+          <button type="button" id="btnReplayScanResult" aria-label="Listen to this result"
+            class="qrv-voice-btn" style="position:static; flex-shrink:0;">🔊</button>
         </div>
 
         <!-- Raw content console -->
@@ -562,6 +564,16 @@
       <div id="langPickerOptions"></div>
       <p class="text-[10px] text-neutral-500 mt-2 mb-6">Languages marked "(beta)" aren't fully translated yet — they fall back to English.</p>
 
+      <h2 class="font-display font-bold text-lg mb-3 flex items-center gap-2">
+        🔊 <span>Voice Guidance</span>
+      </h2>
+      <button id="btnToggleVoice" type="button"
+        class="w-full flex items-center justify-between py-3 px-4 rounded-xl border border-line text-sm text-neutral-200 bg-transparent mb-1">
+        <span>Read screens and results aloud</span>
+        <span id="voiceToggleState" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-amber/15 text-amber">ON</span>
+      </button>
+      <p class="text-[10px] text-neutral-500 mb-6">Uses your device's own text-to-speech engine — works offline, no data is sent anywhere. Speaks in whichever language you select above.</p>
+
       <h2 class="font-display font-bold text-lg mb-3">About &amp; Transparency</h2>
       <div class="space-y-2 mb-4">
         <button id="btnOpenFounder" type="button"
@@ -592,6 +604,23 @@
         class="w-full mt-2 py-3 rounded-2xl border border-line text-sm flex items-center justify-center gap-2">
         🏠 Back to Home
       </button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       FIRST-VISIT LANGUAGE ONBOARDING
+       Shown once, only if no language preference is saved yet.
+  ═══════════════════════════════════════════════════════ -->
+  <div id="langOnboardingModal" role="dialog" aria-modal="true" hidden
+       class="fixed inset-0 z-[70] flex items-center justify-center bg-black/85 px-5">
+    <div class="w-full max-w-[420px] bg-panel rounded-3xl p-6 border border-line text-center">
+      <span class="text-4xl block mb-3" aria-hidden="true">🌐</span>
+      <h2 class="font-display font-bold text-xl mb-1">Choose your language</h2>
+      <p class="text-sm text-neutral-400 mb-1">अपनी भाषा चुनें</p>
+      <p class="text-xs text-neutral-500 mb-5">The whole app — and spoken results — will follow your choice. You can change this anytime in Settings.</p>
+      <div id="langOnboardingOptions" style="display:grid; grid-template-columns:repeat(2,1fr); gap:8px; max-height:280px; overflow-y:auto;"></div>
+      <button id="btnLangOnboardingContinue" type="button"
+        class="w-full mt-5 py-3 rounded-2xl bg-amber text-ink font-semibold text-sm">Continue</button>
     </div>
   </div>
 
@@ -947,24 +976,25 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"          crossorigin="anonymous"></script>
 
 <!-- App modules — ORDER MATTERS -->
-<script src="js/sanitize.js?v=20260712i"></script>
-<script src="js/runtime-config.js?v=20260712i"></script>
-<script src="js/github-config.js?v=20260712i"></script>
-<script src="js/config.js?v=20260712i"></script>
-<script src="js/lang.js?v=20260712i"></script>
-<script src="js/risk-engine-core.js?v=20260712i"></script>
-<script src="js/free-intel-check.js?v=20260712i"></script>
-<script src="js/verification-engine.js?v=20260712i"></script>
-<script src="js/ad-gate.js?v=20260712i"></script>
-<script src="js/consent.js?v=20260712i"></script>
-<script src="js/panic-mode.js?v=20260712i"></script>
-<script src="js/ai-scam-check.js?v=20260712i"></script>
-<script src="js/mobile-scanner.js?v=20260712i"></script>
-<script src="js/dashboard.js?v=20260712i"></script>
-<script src="js/scam-shield.js?v=20260712i"></script>
+<script src="js/sanitize.js?v=20260713b"></script>
+<script src="js/runtime-config.js?v=20260713b"></script>
+<script src="js/github-config.js?v=20260713b"></script>
+<script src="js/config.js?v=20260713b"></script>
+<script src="js/lang.js?v=20260713b"></script>
+<script src="js/risk-engine-core.js?v=20260713b"></script>
+<script src="js/free-intel-check.js?v=20260713b"></script>
+<script src="js/verification-engine.js?v=20260713b"></script>
+<script src="js/ad-gate.js?v=20260713b"></script>
+<script src="js/consent.js?v=20260713b"></script>
+<script src="js/panic-mode.js?v=20260713b"></script>
+<script src="js/ai-scam-check.js?v=20260713b"></script>
+<script src="js/mobile-scanner.js?v=20260713b"></script>
+<script src="js/dashboard.js?v=20260713b"></script>
+<script src="js/voice.js?v=20260713b"></script>
+<script src="js/scam-shield.js?v=20260713b"></script>
 <script type="module" src="js/firebase-init.js"></script>
-<script src="js/story-submit.js?v=20260712i"></script>
-<script src="js/mobile-app.js?v=20260712i"></script>
+<script src="js/story-submit.js?v=20260713b"></script>
+<script src="js/mobile-app.js?v=20260713b"></script>
 
 <script>
   /* Inline language picker in panic modal — wired here to keep panic-mode.js dependency-free */

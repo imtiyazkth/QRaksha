@@ -324,39 +324,44 @@ window.QRVEngine = (function () {
       flags.push({ severity, message });
     };
 
+    // Falls back to the raw key name if QRVLang isn't loaded for some
+    // reason — defensive only, should never actually happen since
+    // lang.js loads before this file.
+    const T = (key, vars) => (window.QRVLang ? window.QRVLang.t(key, vars) : key);
+
     if (parsed.type === "url") {
       if (!parsed.isHttps) {
-        addFlag("high", 25, "Uses unencrypted HTTP instead of HTTPS — data sent to this site isn't protected in transit.");
+        addFlag("high", 25, T("httpNotHttps"));
       } else {
-        addFlag("info", 0, "Connection is encrypted with HTTPS.");
+        addFlag("info", 0, T("httpsConfirmed"));
       }
 
       if (parsed.isIp) {
-        addFlag("critical", 30, "The link points directly to an IP address instead of a domain name — a common phishing technique.");
+        addFlag("critical", 30, T("linkIsRawIp"));
       }
 
       if (/@/.test(parsed.url.replace(/^https?:\/\//i, ""))) {
-        addFlag("critical", 30, "The URL contains an \"@\" symbol — browsers ignore everything before it, a classic disguised-link trick.");
+        addFlag("critical", 30, T("urlHasAtSymbol"));
       }
 
       const len = parsed.raw.length;
-      if (len > 150) addFlag("medium", 20, `The URL is very long (${len} characters), which can be used to hide the real destination.`);
-      else if (len > 90) addFlag("low", 10, `The URL is longer than typical (${len} characters).`);
+      if (len > 150) addFlag("medium", 20, T("urlVeryLong", { len }));
+      else if (len > 90) addFlag("low", 10, T("urlLongerThanTypical", { len }));
 
       if (parsed.paramCount > 6) {
-        addFlag("medium", 10, `The link carries an unusually high number of parameters (${parsed.paramCount}).`);
+        addFlag("medium", 10, T("urlManyParams", { count: parsed.paramCount }));
       }
 
       if (parsed.isShortener) {
-        addFlag("medium", 15, "This is a shortened link — the real destination is hidden until you open it.");
+        addFlag("medium", 15, T("urlIsShortened"));
       }
 
       if (parsed.domain && /xn--/i.test(parsed.domain)) {
-        addFlag("high", 20, "The domain uses Punycode encoding, sometimes used to mimic a trusted brand with look-alike characters.");
+        addFlag("high", 20, T("domainPunycode"));
       }
 
       if (parsed.subdomain && parsed.subdomain.split(".").length >= 3) {
-        addFlag("medium", 10, "The domain has an unusually deep subdomain chain.");
+        addFlag("medium", 10, T("domainDeepSubdomain"));
       }
 
       const hostForKeywords = (parsed.domain || "") + " " + parsed.raw;
@@ -364,7 +369,7 @@ window.QRVEngine = (function () {
       if (foundKeywords.length) {
         const pts = Math.min(foundKeywords.length * 8, 32);
         addFlag(foundKeywords.length >= 3 ? "high" : "medium", pts,
-          `Contains scam-associated keyword${foundKeywords.length > 1 ? "s" : ""}: ${foundKeywords.slice(0, 5).join(", ")}.`);
+          T("containsScamKeywords", { keywords: foundKeywords.slice(0, 5).join(", ") }));
       }
 
       // brand impersonation heuristic: known brand word appears in domain, but domain isn't the official one
@@ -373,7 +378,7 @@ window.QRVEngine = (function () {
       const isOfficial = OFFICIAL_BRANDS.some((b) => domainLower === b || domainLower.endsWith("." + b));
       const mentionsBrand = brandWords.some((w) => domainLower.includes(w));
       if (mentionsBrand && !isOfficial) {
-        addFlag("critical", 35, "The domain references a well-known brand name but does not match that brand's official domain — a strong sign of impersonation.");
+        addFlag("critical", 35, T("domainBrandMismatch"));
       }
 
       // Social-platform username/path impersonation — a legitimate platform
@@ -392,7 +397,7 @@ window.QRVEngine = (function () {
         const orgHit = ORG_NAMES.find((o) => pathNormalized.includes(o));
         const supportHit = SUPPORT_WORDS.find((s) => pathNormalized.includes(s));
         if (orgHit && supportHit) {
-          addFlag("critical", 40, `This profile's username impersonates "${orgHit}" with official-sounding wording ("${supportHit}") — real banks/authorities do not run support accounts through personal social profiles or QR-shared handles.`);
+          addFlag("critical", 40, T("socialOrgImpersonation", { org: orgHit, word: supportHit }));
         }
 
         const MILITARY_RANKS = ["capt", "captain", "major", "colonel", "general", "lieutenant", "sergeant"];
@@ -400,58 +405,58 @@ window.QRVEngine = (function () {
         const rankHit = MILITARY_RANKS.find((r) => pathNormalized.includes(r));
         const orgMilHit = MILITARY_ORGS.find((o) => pathNormalized.includes(o));
         if (rankHit && orgMilHit) {
-          addFlag("critical", 35, "Profile name pattern (military rank + deployed-overseas persona) matches a well-documented romance-scam template — proceed with extreme caution, especially if this contact asks for money, gifts, or personal details.");
+          addFlag("critical", 35, T("romanceScamPattern"));
         }
       }
 
       if (!flags.some((f) => f.severity !== "info")) {
-        addFlag("info", 0, "No obvious danger was detected in this link's structure.");
+        addFlag("info", 0, T("noDangerInLinkStructure"));
       }
     }
 
     if (parsed.type === "upi") {
-      addFlag("info", 5, "Always check the payee name shown in your UPI app before approving any payment.");
+      addFlag("info", 5, T("upiCheckPayeeName"));
       if (parsed.fields["Amount"] && parsed.fields["Amount"] !== "Not fixed (you'll be asked)") {
-        addFlag("low", 5, "This QR requests a pre-filled amount — confirm it matches what you expect to pay.");
+        addFlag("low", 5, T("upiPrefilledAmount"));
       }
 
       // --- Strict risk-tuning rules (deceptive VPA / support-name / urgency combos) ---
       const DECEPTIVE_VPA_TERMS = ["refund", "support", "helpline", "customercare", "kyc", "verify", "cashback", "reward"];
       const vpaLower = (parsed.upiHandle || "").toLowerCase();
       if (DECEPTIVE_VPA_TERMS.some((term) => vpaLower.includes(term))) {
-        addFlag("critical", 30, `The payee address ("${parsed.upiHandle}") contains a deceptive term commonly used in refund/support-impersonation scams — legitimate businesses rarely use these words in their actual VPA.`);
+        addFlag("critical", 30, T("upiDeceptiveVpa", { vpa: parsed.upiHandle }));
       }
 
       const payeeNameLower = (parsed.upiPayeeName || "").toLowerCase();
       const looksLikeSupportName = /customer\s*care|support\s*team|help\s*desk|refund\s*team/i.test(payeeNameLower);
       if (parsed.upiAmount && parsed.upiAmount >= 5000 && looksLikeSupportName) {
-        addFlag("critical", 35, `A high pre-filled amount (₹${parsed.upiAmount}) combined with a "customer support"-style payee name is a well-documented refund-scam pattern — real refunds are never collected by scanning a QR and paying money.`);
+        addFlag("critical", 35, T("upiRefundScamPattern", { amount: parsed.upiAmount }));
       }
 
       const URGENT_NOTE_TERMS = ["immediate kyc", "urgent", "blocked", "will be blocked", "account suspend", "verify now"];
       const noteLower = (parsed.upiNote || "").toLowerCase();
       if (URGENT_NOTE_TERMS.some((term) => noteLower.includes(term))) {
-        addFlag("high", 25, `The payment note contains urgent/panic-inducing language ("${parsed.upiNote}") — this pressure tactic is common in KYC and account-block scam QR codes.`);
+        addFlag("high", 25, T("upiUrgentNote", { note: parsed.upiNote }));
       }
     }
 
     if (parsed.type === "wifi") {
       const security = (parsed.fields["Security"] || "").toLowerCase();
       if (!security || security === "nopass") {
-        addFlag("medium", 20, "This connects to an open WiFi network with no password — traffic on open networks can be intercepted.");
+        addFlag("medium", 20, T("wifiOpenNetwork"));
       }
     }
 
     if (parsed.type === "crypto") {
-      addFlag("medium", 15, "Cryptocurrency transfers can't be reversed — verify the wallet address character-by-character before sending funds.");
+      addFlag("medium", 15, T("cryptoIrreversible"));
     }
 
     if (parsed.type === "text") {
-      addFlag("info", 0, "This is plain text with no link or action — generally low risk.");
+      addFlag("info", 0, T("plainTextLowRisk"));
     }
 
     if (parsed.type === "unknown") {
-      addFlag("low", 10, "The content format wasn't recognized, so it couldn't be fully analyzed.");
+      addFlag("low", 10, T("contentFormatUnrecognized"));
     }
 
     score = Math.max(0, Math.min(100, Math.round(score)));
