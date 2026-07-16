@@ -425,12 +425,14 @@ window.QRVEngine = (function () {
       const vpaLower = (parsed.upiHandle || "").toLowerCase();
       if (DECEPTIVE_VPA_TERMS.some((term) => vpaLower.includes(term))) {
         addFlag("critical", 30, T("upiDeceptiveVpa", { vpa: parsed.upiHandle }));
+        addFlag("info", 0, T("scamWarningUpiFraud"));
       }
 
       const payeeNameLower = (parsed.upiPayeeName || "").toLowerCase();
       const looksLikeSupportName = /customer\s*care|support\s*team|help\s*desk|refund\s*team/i.test(payeeNameLower);
       if (parsed.upiAmount && parsed.upiAmount >= 5000 && looksLikeSupportName) {
         addFlag("critical", 35, T("upiRefundScamPattern", { amount: parsed.upiAmount }));
+        addFlag("info", 0, T("scamWarningUpiFraud"));
       }
 
       const URGENT_NOTE_TERMS = ["immediate kyc", "urgent", "blocked", "will be blocked", "account suspend", "verify now"];

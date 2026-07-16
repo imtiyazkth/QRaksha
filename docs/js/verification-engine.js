@@ -145,6 +145,42 @@ window.QRVVerification = (function () {
     return null;
   }
 
+  // True if two same-purpose short codes are within edit-distance 1 of
+  // each other — i.e. a single character swapped, inserted, or removed.
+  // This generalizes a real spoofing technique (e.g. a scam SMS header
+  // "SBIBNK" vs the genuine "SBIINB" swapping one letter) into a
+  // reusable check, rather than hardcoding any specific example header.
+  function withinEditDistanceOne(a, b) {
+    if (a === b) return false; // identical isn't a "near miss", it's a match
+    const lenDiff = Math.abs(a.length - b.length);
+    if (lenDiff > 1) return false;
+    if (a.length === b.length) {
+      let diffs = 0;
+      for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) { diffs++; if (diffs > 1) return false; }
+      return diffs === 1;
+    }
+    const [shorter, longer] = a.length < b.length ? [a, b] : [b, a];
+    let i = 0, j = 0, diffs = 0;
+    while (i < shorter.length && j < longer.length) {
+      if (shorter[i] === longer[j]) { i++; j++; }
+      else { diffs++; j++; if (diffs > 1) return false; }
+    }
+    return true;
+  }
+
+  // Government-scheme name mentioned in a domain, but the domain isn't
+  // an actual .gov.in / .nic.in address — a generalizable red flag
+  // (fake scheme-registration sites almost always use a commercial TLD
+  // since they can't get a real government domain).
+  const GOV_SCHEME_TERMS = ["pmkisan", "pm-kisan", "pmawas", "ayushman", "pmjay", "ujjwala", "pmuy", "epfo", "uidai", "aadhaar", "incometax", "gst-portal", "pmgkay", "mnrega", "nrega"];
+  function detectFakeGovSchemeDomain(hostname) {
+    const normalized = normalizeLeet(hostname).replace(/[-_.]/g, "");
+    const isRealGovDomain = hostname.endsWith(".gov.in") || hostname.endsWith(".nic.in");
+    if (isRealGovDomain) return null;
+    const hit = GOV_SCHEME_TERMS.find((term) => normalized.includes(term));
+    return hit || null;
+  }
+
   /* ------------------------------------------------------------------
      Numverify: the free tier's key is never used directly from the
      browser — see functions/phoneLookup.js for why, and the setup guide
@@ -324,6 +360,17 @@ window.QRVVerification = (function () {
           ? T("brandImpersonationBoosted", { brand: brandHit.brand })
           : T("brandImpersonation", { brand: brandHit.brand })
       );
+      details.push(T("scamWarningPhishingGeneric")); // canonical educational context
+    }
+
+    // Fake government-scheme domain — a distinct pattern from brand
+    // impersonation above (targets scheme names like PM-Kisan, Ayushman
+    // Bharat, EPFO rather than commercial brands).
+    const govSchemeHit = detectFakeGovSchemeDomain(hostname);
+    if (govSchemeHit) {
+      riskScore += 45;
+      details.push(T("fakeGovSchemeDomain", { scheme: govSchemeHit }));
+      details.push(T("scamWarningGovSchemeFraud"));
     }
 
     // Excess subdomains / hyphens — fast-flux-style disposable hosting.
@@ -598,6 +645,7 @@ window.QRVVerification = (function () {
       if (spoofHit) {
         riskScore += 40;
         details.push(T("emailSpoofedSupportOnFreemail", { localPart, domain }));
+        details.push(T("scamWarningBankImpersonation"));
       } else {
         details.push(T("emailFreemailCaution", { domain }));
       }
@@ -615,6 +663,14 @@ window.QRVVerification = (function () {
           ? T("brandImpersonationBoosted", { brand: brandHit.brand })
           : T("brandImpersonation", { brand: brandHit.brand })
       );
+      details.push(T("scamWarningPhishingGeneric"));
+    }
+
+    const govSchemeHit = detectFakeGovSchemeDomain(domain);
+    if (govSchemeHit) {
+      riskScore += 45;
+      details.push(T("fakeGovSchemeDomain", { scheme: govSchemeHit }));
+      details.push(T("scamWarningGovSchemeFraud"));
     }
 
     if (!details.length) details.push(T("emailNoKnownRisk"));
@@ -641,8 +697,17 @@ window.QRVVerification = (function () {
         riskScore += 20;
         details.push(T("smsHeaderWrongLength", { suffix, len: suffix.length }));
       }
+      // Near-miss check first — a one-character-off match against a
+      // genuine verified header is a stronger, more precise signal than
+      // the loose "contains BK/BNK/SBI..." keyword check below, so it
+      // takes priority when both would otherwise fire.
+      const nearMissHeader = INTEL.VERIFIED_BANK_HEADERS.find((h) => withinEditDistanceOne(h, suffix));
       const looksLikeBank = /BK|BNK|SBI|HDFC|ICICI|AXIS|PNB|BANK/.test(suffix);
-      if (looksLikeBank && !INTEL.VERIFIED_BANK_HEADERS.includes(suffix)) {
+      if (nearMissHeader) {
+        riskScore += 45;
+        details.push(T("smsHeaderNearMiss", { suffix, realHeader: nearMissHeader }));
+        details.push(T("scamWarningBankImpersonation"));
+      } else if (looksLikeBank && !INTEL.VERIFIED_BANK_HEADERS.includes(suffix)) {
         riskScore += 30;
         details.push(T("smsHeaderUnverified", { suffix }));
       } else if (INTEL.VERIFIED_BANK_HEADERS.includes(suffix)) {

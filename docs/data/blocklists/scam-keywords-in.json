@@ -31,6 +31,10 @@
     { "phrase": "electricity bill will be disconnected", "severity": "medium", "explanation": "Fake urgent electricity-disconnection SMS with a payment link is a widespread utility-impersonation scam pattern in India." },
     { "phrase": "click to update pan", "severity": "high", "explanation": "PAN card update/linking requests via SMS link are a common phishing pattern \u2014 official PAN updates never happen through unsolicited links." },
     { "phrase": "border security force", "severity": "high", "explanation": "Impersonation of army/BSF personnel (often paired with a romance-scam or online-marketplace-seller persona asking for advance payment) is a well-documented fraud pattern." },
-    { "phrase": "customer id has been blocked", "severity": "medium", "explanation": "Generic \u2018your customer ID/account has been blocked\u2019 urgency messages are a broad phishing template used across many fake-bank scam scripts." }
+    { "phrase": "customer id has been blocked", "severity": "medium", "explanation": "Generic \u2018your customer ID/account has been blocked\u2019 urgency messages are a broad phishing template used across many fake-bank scam scripts." },
+    { "phrase": "stay on video call", "severity": "critical", "explanation": "Being instructed to remain on a video call while an \u2018investigation\u2019 proceeds is a core digital-arrest scam control tactic \u2014 no real law-enforcement process works this way." },
+    { "phrase": "deposit safety funds", "severity": "critical", "explanation": "Requests to \u2018deposit safety funds\u2019 for verification are a scripted digital-arrest and money-laundering-scam phrase \u2014 no legitimate authority collects money this way." },
+    { "phrase": "guaranteed returns", "severity": "high", "explanation": "Any investment promising \u2018guaranteed\u2019 returns, especially within a short/fixed timeframe, is a hallmark of Ponzi and pump-and-dump investment scams." },
+    { "phrase": "registration fee", "severity": "medium", "explanation": "Being asked to pay a \u2018registration fee\u2019 to accept a job offer is a widespread job-scam pattern \u2014 legitimate employers never charge candidates to be hired." }
   ]
 }
