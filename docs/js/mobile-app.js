@@ -109,6 +109,86 @@
     } catch (e) {}
   }
 
+  /* --------------------------------------------------------------------
+     playWarningTone — medium-risk / "proceed with caution" alert.
+     One mid-pitch pulse, distinct from both the danger alarm and the
+     success chime so the three risk tiers are audibly different.
+  -------------------------------------------------------------------- */
+  function playWarningTone() {
+    try {
+      const ctx = getAudioCtx();
+      if (!ctx) return;
+      const osc  = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type            = "triangle";
+      osc.frequency.value = 520;
+      gain.gain.setValueAtTime(0.001, ctx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.14, ctx.currentTime + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.22);
+      osc.connect(gain).connect(ctx.destination);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.23);
+    } catch (e) {}
+  }
+
+  /* --------------------------------------------------------------------
+     playClickTone — tiny UI-tap acknowledgment (nav/button presses).
+  -------------------------------------------------------------------- */
+  function playClickTone() {
+    try {
+      const ctx = getAudioCtx();
+      if (!ctx) return;
+      const osc  = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type            = "sine";
+      osc.frequency.value = 900;
+      gain.gain.setValueAtTime(0.08, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
+      osc.connect(gain).connect(ctx.destination);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.06);
+    } catch (e) {}
+  }
+
+  /* --------------------------------------------------------------------
+     playErrorTone — a check failed to complete (network/parse error),
+     distinct from playWarningTone/playTutTutSound which mean "this
+     content itself looks risky", not "something broke".
+  -------------------------------------------------------------------- */
+  function playErrorTone() {
+    try {
+      const ctx = getAudioCtx();
+      if (!ctx) return;
+      const osc  = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type            = "sawtooth";
+      osc.frequency.setValueAtTime(220, ctx.currentTime);
+      osc.frequency.linearRampToValueAtTime(140, ctx.currentTime + 0.2);
+      gain.gain.setValueAtTime(0.10, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
+      osc.connect(gain).connect(ctx.destination);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.21);
+    } catch (e) {}
+  }
+
+  /* --------------------------------------------------------------------
+     Centralized sound manager — exposed globally so every check path
+     (QR scan, category checks in verification-engine.js, AI checks in
+     ai-scam-check.js) can play consistent audio feedback through this
+     ONE shared AudioContext/engine, instead of each file reimplementing
+     its own beep logic. playDanger/playSuccess below are the exact same
+     functions already used by the QR scan flow — reused, not duplicated.
+  -------------------------------------------------------------------- */
+  window.QRVSound = {
+    playDanger: playTutTutSound,
+    playWarning: playWarningTone,
+    playSuccess: playSuccessChime,
+    playClick: playClickTone,
+    playScan: playTutTutSound, // scan-detected alert reuses the same alarm pattern
+    playError: playErrorTone,
+  };
+
   /* ====================================================================
      DUAL-TIER CONNECTIVITY CHECK
      Tier 1 — navigator.onLine (instant, but lies on captive portals and

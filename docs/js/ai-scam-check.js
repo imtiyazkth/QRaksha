@@ -200,6 +200,32 @@ window.QRVAiScamCheck = (function () {
       div.appendChild(msg);
       flagsEl.appendChild(div);
     });
+
+    // Voice accessibility — same pattern as the QR scan and category-
+    // check result cards: auto-speak a short alert immediately, and
+    // wire the replay button to read the full explanation + flags
+    // on demand, as many times as the user wants.
+    if (window.QRVVoice) {
+      const level = result.verdict.level;
+      if (level === "danger") window.QRVVoice.speakDangerAlert();
+      else if (level === "warn") window.QRVVoice.speakWarnAlert();
+      else window.QRVVoice.speakSafeAlert();
+
+      const replayBtn = $("btnReplayMsgResult");
+      if (replayBtn) {
+        replayBtn.onclick = () => {
+          const flagTexts = result.flags.map((f) => f.message).join(". ");
+          window.QRVVoice.speak([result.explanation, flagTexts].filter(Boolean).join(". "));
+        };
+      }
+    }
+    // Sound feedback — same centralized engine used everywhere else.
+    if (window.QRVSound) {
+      const level = result.verdict.level;
+      if (level === "danger") window.QRVSound.playDanger();
+      else if (level === "warn") window.QRVSound.playWarning();
+      else window.QRVSound.playSuccess();
+    }
   }
 
   /* ------------------------------------------------------------------
@@ -213,11 +239,19 @@ window.QRVAiScamCheck = (function () {
       window.QRVConsent.requireConsent(async () => {
         btn.disabled = true;
         btn.textContent = "Checking with AI\u2026";
+        if (window.QRVSound) window.QRVSound.playClick();
         const ai = await callAiCheckMessage(getDecodedText());
         btn.disabled = false;
         btn.textContent = "Get AI Advance Opinion";
-        if (!ai) { window.QRVUtils && window.QRVUtils.toast && window.QRVUtils.toast("AI check unavailable right now."); return; }
-        setText($("qrExplanation"), ai.explanation || $("qrExplanation").textContent);
+        if (!ai) {
+          window.QRVUtils && window.QRVUtils.toast && window.QRVUtils.toast("AI check unavailable right now.");
+          if (window.QRVSound) window.QRVSound.playError();
+          return;
+        }
+        const explanation = ai.explanation || $("qrExplanation").textContent;
+        setText($("qrExplanation"), explanation);
+        if (window.QRVSound) window.QRVSound.playSuccess();
+        if (window.QRVVoice) window.QRVVoice.speak(explanation);
       });
     };
   }

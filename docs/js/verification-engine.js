@@ -802,6 +802,12 @@ window.QRVVerification = (function () {
       else if (verdict.level === "warn") window.QRVVoice.speakWarnAlert();
       else if (verdict.level === "safe") window.QRVVoice.speakSafeAlert();
     }
+    // Sound feedback — same centralized engine the QR scan flow uses.
+    if (window.QRVSound) {
+      if (verdict.level === "danger") window.QRVSound.playDanger();
+      else if (verdict.level === "warn") window.QRVSound.playWarning();
+      else if (verdict.level === "safe") window.QRVSound.playSuccess();
+    }
 
     container.innerHTML = `
       <div class="rounded-2xl border ${style.border} ${style.bg} p-4 transition-all duration-300 ease-out animate-[fadeIn_.25s_ease-out] ${bold ? "shadow-lg" : ""}">

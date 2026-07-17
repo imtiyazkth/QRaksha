@@ -125,7 +125,6 @@
   [hidden] { display:none !important; }
 </style>
 <script>window.QRV_ABUSEIPDB_KEY = "79d98fb6213f4c67cdd99270e52108cb45f4924551f4110edff6fe10b265380020f0beb615beaf70";</script>
-<script>window.QRV_NUMVERIFY_KEY="3585de1241418cda49f6455b613559ea";window.QRV_GOOGLE_SAFE_BROWSING_KEY="AIzaSyApHx3DP93LSwNdtpt8sS3utOsXq1CSEA4";</script>
 </head>
 
 <body class="bg-ink text-neutral-100 font-body antialiased" data-theme="dark">
@@ -470,7 +469,11 @@
       </p>
 
       <div id="msgReportSection" hidden class="mt-4 rounded-3xl bg-panel border border-line p-5">
-        <p id="msgSourceHeading"  class="text-xs uppercase tracking-wide text-neutral-500 mb-1"></p>
+        <div class="flex items-start justify-between gap-2 mb-1">
+          <p id="msgSourceHeading" class="text-xs uppercase tracking-wide text-neutral-500 flex-1"></p>
+          <button type="button" id="btnReplayMsgResult" aria-label="Listen to this result"
+            class="qrv-voice-btn" style="position:static; flex-shrink:0;">🔊</button>
+        </div>
         <p id="msgExplanation"    class="text-sm text-neutral-100 mb-3"></p>
         <div id="msgRiskFlags"    class="space-y-2 mb-3"></div>
         <button id="btnAiSecondOpinionMsg" type="button" hidden
@@ -977,25 +980,25 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"          crossorigin="anonymous"></script>
 
 <!-- App modules — ORDER MATTERS -->
-<script src="js/sanitize.js?v=20260714a"></script>
-<script src="js/runtime-config.js?v=20260714a"></script>
-<script src="js/github-config.js?v=20260714a"></script>
-<script src="js/config.js?v=20260714a"></script>
-<script src="js/lang.js?v=20260714a"></script>
-<script src="js/risk-engine-core.js?v=20260714a"></script>
-<script src="js/free-intel-check.js?v=20260714a"></script>
-<script src="js/verification-engine.js?v=20260714a"></script>
-<script src="js/ad-gate.js?v=20260714a"></script>
-<script src="js/consent.js?v=20260714a"></script>
-<script src="js/panic-mode.js?v=20260714a"></script>
-<script src="js/ai-scam-check.js?v=20260714a"></script>
-<script src="js/mobile-scanner.js?v=20260714a"></script>
-<script src="js/dashboard.js?v=20260714a"></script>
-<script src="js/voice.js?v=20260714a"></script>
-<script src="js/scam-shield.js?v=20260714a"></script>
+<script src="js/sanitize.js?v=20260716a"></script>
+<script src="js/runtime-config.js?v=20260716a"></script>
+<script src="js/github-config.js?v=20260716a"></script>
+<script src="js/config.js?v=20260716a"></script>
+<script src="js/lang.js?v=20260716a"></script>
+<script src="js/risk-engine-core.js?v=20260716a"></script>
+<script src="js/free-intel-check.js?v=20260716a"></script>
+<script src="js/verification-engine.js?v=20260716a"></script>
+<script src="js/ad-gate.js?v=20260716a"></script>
+<script src="js/consent.js?v=20260716a"></script>
+<script src="js/panic-mode.js?v=20260716a"></script>
+<script src="js/ai-scam-check.js?v=20260716a"></script>
+<script src="js/mobile-scanner.js?v=20260716a"></script>
+<script src="js/dashboard.js?v=20260716a"></script>
+<script src="js/voice.js?v=20260716a"></script>
+<script src="js/scam-shield.js?v=20260716a"></script>
 <script type="module" src="js/firebase-init.js"></script>
-<script src="js/story-submit.js?v=20260714a"></script>
-<script src="js/mobile-app.js?v=20260714a"></script>
+<script src="js/story-submit.js?v=20260716a"></script>
+<script src="js/mobile-app.js?v=20260716a"></script>
 
 <script>
   /* Inline language picker in panic modal — wired here to keep panic-mode.js dependency-free */
