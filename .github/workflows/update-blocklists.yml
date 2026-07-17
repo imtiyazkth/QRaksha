@@ -21,8 +21,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       # ── ensure the output directory exists ──
       - name: Ensure output dirs exist
@@ -30,6 +28,7 @@ jobs:
 
       # ── OpenPhish community feed (no API key required) ──
       - name: Fetch OpenPhish community feed
+        continue-on-error: true
         run: |
           curl -sL --max-time 30 "https://openphish.com/feed.txt" \
             -o /tmp/openphish_raw.txt \
@@ -42,6 +41,7 @@ jobs:
 
       # ── URLhaus active-malware feed (no API key required) ──
       - name: Fetch URLhaus feed
+        continue-on-error: true
         run: |
           curl -sL --max-time 30 \
             "https://urlhaus.abuse.ch/downloads/text_online/" \
@@ -59,6 +59,7 @@ jobs:
       # last 24 h. Use it only for the domain-level blocklist; full
       # page details require a premium plan we don't have.
       - name: Fetch PhishHunt (phishunt.io) live feed
+        continue-on-error: true
         run: |
           curl -sL --max-time 30 \
             "https://phishunt.io/api/suspects/" \
@@ -101,7 +102,27 @@ jobs:
 
           if git diff --cached --quiet; then
             echo "No changes to blocklists — nothing to commit."
+            exit 0
+          fi
+
+          git commit -m "chore: refresh free threat-intel blocklists [automated $(date -u +%Y-%m-%d)]"
+
+          # Another workflow (e.g. the runtime-config injector) may have
+          # pushed to main between checkout and here — rebase onto the
+          # latest remote before pushing, so a normal race never fails
+          # this whole job. If even that can't be resolved automatically
+          # (a real conflict, not just "behind"), log it and exit
+          # successfully anyway — a missed blocklist refresh is not
+          # worth a red X / failure email, since the app already
+          # degrades gracefully to the previous snapshot.
+          git fetch origin main
+          if git rebase origin/main; then
+            if git push origin main; then
+              echo "Blocklists pushed successfully."
+            else
+              echo "Push still failed after rebase — will retry next scheduled run."
+            fi
           else
-            git commit -m "chore: refresh free threat-intel blocklists [automated $(date -u +%Y-%m-%d)]"
-            git push
+            git rebase --abort || true
+            echo "Could not auto-rebase onto origin/main (real conflict) — skipping this run, will retry next scheduled run."
           fi
