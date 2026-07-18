@@ -474,54 +474,59 @@ window.QRVEngine = (function () {
      9. HUMAN-LANGUAGE EXPLANATION
   ------------------------------------------------------------------ */
   function buildExplanation(parsed, risk, brand) {
+    const T = (key, vars) => (window.QRVLang ? window.QRVLang.t(key, vars) : key);
     const sentences = [];
 
     switch (parsed.type) {
       case "url":
-        sentences.push(parsed.app ? `This QR opens a website — it appears to be ${parsed.app}.` : "This QR opens a website.");
-        sentences.push(parsed.isHttps ? "This connection uses HTTPS." : "This connection uses plain HTTP, not HTTPS.");
-        if (parsed.isShortener) sentences.push("This may be a shortened link, so the real destination is hidden until you open it.");
-        if (brand.known === false) sentences.push("This domain isn't on our list of recognized official brand domains.");
+        sentences.push(parsed.app ? T("qrExplUrlWithApp", { app: parsed.app }) : T("qrExplUrlPlain"));
+        sentences.push(parsed.isHttps ? T("qrExplHttps") : T("qrExplHttp"));
+        if (parsed.isShortener) sentences.push(T("qrExplShortener"));
+        if (brand.known === false) sentences.push(T("qrExplUnknownBrand"));
         break;
       case "upi":
-        sentences.push(`This appears to be a UPI payment request${parsed.fields["Payee name"] && parsed.fields["Payee name"] !== "—" ? ` to "${parsed.fields["Payee name"]}"` : ""}.`);
-        sentences.push("Always confirm the payee name and amount inside your UPI app before paying.");
+        sentences.push(
+          parsed.fields["Payee name"] && parsed.fields["Payee name"] !== "—"
+            ? T("qrExplUpiWithPayee", { payee: parsed.fields["Payee name"] })
+            : T("qrExplUpiNoPayee")
+        );
+        sentences.push(T("qrExplUpiConfirm"));
         break;
       case "wifi":
-        sentences.push(`This QR connects your device to the WiFi network "${parsed.fields["Network (SSID)"]}".`);
+        sentences.push(T("qrExplWifi", { ssid: parsed.fields["Network (SSID)"] }));
         break;
       case "vcard":
-        sentences.push("This QR adds a contact card to your phone.");
+        sentences.push(T("qrExplVcard"));
         break;
       case "calendar":
-        sentences.push("This QR adds an event to your calendar.");
+        sentences.push(T("qrExplCalendar"));
         break;
       case "email":
-        sentences.push("This QR opens your email app with a message ready to send.");
+        sentences.push(T("qrExplEmail"));
         break;
       case "sms":
-        sentences.push("This QR opens your messaging app with a text ready to send.");
+        sentences.push(T("qrExplSms"));
         break;
       case "phone":
-        sentences.push("This QR starts a phone call.");
+        sentences.push(T("qrExplPhone"));
         break;
       case "location":
-        sentences.push("This QR opens a map at a specific location.");
+        sentences.push(T("qrExplLocation"));
         break;
       case "crypto":
-        sentences.push("This QR contains a cryptocurrency wallet address for sending funds.");
+        sentences.push(T("qrExplCrypto"));
         break;
       case "text":
-        sentences.push("This QR just contains plain text. It won't open a link or trigger any action.");
+        sentences.push(T("qrExplTextPlain"));
         break;
       default:
-        sentences.push("We couldn't confidently classify the content of this QR code.");
+        sentences.push(T("qrExplUnclassified"));
     }
 
-    if (risk.level === "low") sentences.push("No obvious danger was detected.");
-    else if (risk.level === "medium") sentences.push("A few details are worth double-checking before you continue.");
-    else if (risk.level === "high") sentences.push("Several warning signs were found — proceed with real caution.");
-    else if (risk.level === "critical") sentences.push("Multiple serious warning signs were found. We strongly recommend not opening or paying this.");
+    if (risk.level === "low") sentences.push(T("qrExplRiskLow"));
+    else if (risk.level === "medium") sentences.push(T("qrExplRiskMedium"));
+    else if (risk.level === "high") sentences.push(T("qrExplRiskHigh"));
+    else if (risk.level === "critical") sentences.push(T("qrExplRiskCritical"));
 
     return sentences.join(" ");
   }

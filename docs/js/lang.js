@@ -75,6 +75,9 @@ window.QRVLang = (function () {
       panicTitle: "Stop. Think. Act.",
       callHelplineLabel: "🚨 CALL OFFICIAL HELPLINE",
       reportPortalLabel: "Report at cybercrime.gov.in",
+      panicStopText: "<strong class=\"text-red-400\">Stop.</strong> No real police, court, or bank official asks you to stay on video call or transfer money. Hang up.",
+      panicThinkText: "<strong class=\"text-red-400\">Think.</strong> \"Digital arrest\" is not a real legal process in India.",
+      panicActText: "<strong class=\"text-red-400\">Act.</strong> Report now. Do not send more money.",
 
       /* Settings */
       langTitle: "Language",
@@ -168,6 +171,31 @@ window.QRVLang = (function () {
       brandImpersonation: "Domain mentions \"{brand}\" but isn't that brand's real domain — a classic lookalike-brand phishing pattern.",
       fakeGovSchemeDomain: "Mentions the government scheme \"{scheme}\" but isn't a real .gov.in or .nic.in address — genuine government scheme sites never use commercial domains.",
       smsHeaderNearMiss: "\"{suffix}\" is just one character different from the genuine verified header \"{realHeader}\" — a classic header-spoofing trick.",
+
+      /* ---- QR-scan explanation summary — risk-engine-core.js buildExplanation() ---- */
+      qrExplUrlWithApp: "This QR opens a website — it appears to be {app}.",
+      qrExplUrlPlain: "This QR opens a website.",
+      qrExplHttps: "This connection uses HTTPS.",
+      qrExplHttp: "This connection uses plain HTTP, not HTTPS.",
+      qrExplShortener: "This may be a shortened link, so the real destination is hidden until you open it.",
+      qrExplUnknownBrand: "This domain isn't on our list of recognized official brand domains.",
+      qrExplUpiWithPayee: "This appears to be a UPI payment request to \"{payee}\".",
+      qrExplUpiNoPayee: "This appears to be a UPI payment request.",
+      qrExplUpiConfirm: "Always confirm the payee name and amount inside your UPI app before paying.",
+      qrExplWifi: "This QR connects your device to the WiFi network \"{ssid}\".",
+      qrExplVcard: "This QR adds a contact card to your phone.",
+      qrExplCalendar: "This QR adds an event to your calendar.",
+      qrExplEmail: "This QR opens your email app with a message ready to send.",
+      qrExplSms: "This QR opens your messaging app with a text ready to send.",
+      qrExplPhone: "This QR starts a phone call.",
+      qrExplLocation: "This QR opens a map at a specific location.",
+      qrExplCrypto: "This QR contains a cryptocurrency wallet address for sending funds.",
+      qrExplTextPlain: "This QR just contains plain text. It won't open a link or trigger any action.",
+      qrExplUnclassified: "We couldn't confidently classify the content of this QR code.",
+      qrExplRiskLow: "No obvious danger was detected.",
+      qrExplRiskMedium: "A few details are worth double-checking before you continue.",
+      qrExplRiskHigh: "Several warning signs were found — proceed with real caution.",
+      qrExplRiskCritical: "Multiple serious warning signs were found. We strongly recommend not opening or paying this.",
       unusualHostnameStructure: "Unusually long/hyphenated hostname structure, often seen in auto-generated phishing subdomains.",
       flaggedByGsb: "Flagged by Google Safe Browsing: {types}.",
       abuseIpdbScore: "AbuseIPDB reports a {score}% abuse confidence score for this IP address ({reports} reports).",
@@ -278,6 +306,9 @@ window.QRVLang = (function () {
       panicTitle: "रुकें। सोचें। कार्रवाई करें।",
       callHelplineLabel: "🚨 आधिकारिक हेल्पलाइन पर कॉल करें",
       reportPortalLabel: "cybercrime.gov.in पर रिपोर्ट करें",
+      panicStopText: "<strong class=\"text-red-400\">रुकिए।</strong> कोई भी असली पुलिस, अदालत या बैंक अधिकारी आपसे वीडियो कॉल पर बने रहने या पैसे ट्रांसफर करने को नहीं कहता। कॉल काट दें।",
+      panicThinkText: "<strong class=\"text-red-400\">सोचिए।</strong> \"डिजिटल अरेस्ट\" भारत में कोई असली कानूनी प्रक्रिया नहीं है।",
+      panicActText: "<strong class=\"text-red-400\">कार्रवाई करें।</strong> अभी रिपोर्ट करें। और पैसे न भेजें।",
 
       langTitle: "भाषा",
       scammedRightNow: "अभी धोखाधड़ी हो रही है? तुरंत मदद के लिए यहाँ टैप करें",
@@ -359,6 +390,30 @@ window.QRVLang = (function () {
       brandImpersonation: "डोमेन \"{brand}\" का ज़िक्र करता है लेकिन यह उस ब्रांड का असली डोमेन नहीं है — एक क्लासिक नकली-ब्रांड फिशिंग पैटर्न।",
       fakeGovSchemeDomain: "सरकारी योजना \"{scheme}\" का ज़िक्र करता है लेकिन यह असली .gov.in या .nic.in पता नहीं है — असली सरकारी योजना साइट कभी commercial डोमेन इस्तेमाल नहीं करतीं।",
       smsHeaderNearMiss: "\"{suffix}\" असली वेरिफ़ाइड हेडर \"{realHeader}\" से सिर्फ एक अक्षर अलग है — यह एक क्लासिक header-spoofing तरीका है।",
+
+      qrExplUrlWithApp: "यह QR एक वेबसाइट खोलता है — यह {app} जैसा लगता है।",
+      qrExplUrlPlain: "यह QR एक वेबसाइट खोलता है।",
+      qrExplHttps: "यह कनेक्शन HTTPS इस्तेमाल करता है।",
+      qrExplHttp: "यह कनेक्शन सादा HTTP इस्तेमाल करता है, HTTPS नहीं।",
+      qrExplShortener: "यह एक छोटा किया हुआ लिंक हो सकता है, इसलिए असली मंज़िल तब तक छुपी रहती है जब तक आप इसे खोलते नहीं।",
+      qrExplUnknownBrand: "यह डोमेन हमारी मान्यता-प्राप्त आधिकारिक ब्रांड डोमेन की सूची में नहीं है।",
+      qrExplUpiWithPayee: "यह \"{payee}\" को एक UPI भुगतान अनुरोध जैसा लगता है।",
+      qrExplUpiNoPayee: "यह एक UPI भुगतान अनुरोध जैसा लगता है।",
+      qrExplUpiConfirm: "भुगतान करने से पहले हमेशा अपने UPI ऐप में payee नाम और राशि की पुष्टि करें।",
+      qrExplWifi: "यह QR आपके डिवाइस को WiFi नेटवर्क \"{ssid}\" से जोड़ता है।",
+      qrExplVcard: "यह QR आपके फोन में एक कॉन्टैक्ट कार्ड जोड़ता है।",
+      qrExplCalendar: "यह QR आपके कैलेंडर में एक इवेंट जोड़ता है।",
+      qrExplEmail: "यह QR आपका ईमेल ऐप खोलता है, एक तैयार मैसेज के साथ।",
+      qrExplSms: "यह QR आपका मैसेजिंग ऐप खोलता है, एक तैयार टेक्स्ट के साथ।",
+      qrExplPhone: "यह QR एक फोन कॉल शुरू करता है।",
+      qrExplLocation: "यह QR एक खास जगह पर मैप खोलता है।",
+      qrExplCrypto: "इस QR में पैसे भेजने के लिए एक क्रिप्टोकरेंसी wallet एड्रेस है।",
+      qrExplTextPlain: "इस QR में सिर्फ सादा टेक्स्ट है। यह कोई लिंक नहीं खोलेगा या कोई एक्शन ट्रिगर नहीं करेगा।",
+      qrExplUnclassified: "हम इस QR कोड की सामग्री को पूरे भरोसे के साथ वर्गीकृत नहीं कर सके।",
+      qrExplRiskLow: "कोई स्पष्ट खतरा नहीं मिला।",
+      qrExplRiskMedium: "आगे बढ़ने से पहले कुछ बातें दोबारा जांचने लायक हैं।",
+      qrExplRiskHigh: "कई चेतावनी संकेत मिले — असली सावधानी से आगे बढ़ें।",
+      qrExplRiskCritical: "कई गंभीर चेतावनी संकेत मिले। हम इसे न खोलने या भुगतान न करने की सख्त सलाह देते हैं।",
       unusualHostnameStructure: "असामान्य रूप से लंबी/हाइफ़न वाली hostname बनावट, जो अक्सर ऑटो-जनरेटेड फिशिंग सबडोमेन में दिखती है।",
       flaggedByGsb: "Google Safe Browsing ने इसे फ़्लैग किया: {types}।",
       abuseIpdbScore: "AbuseIPDB के अनुसार इस IP एड्रेस का abuse confidence score {score}% है ({reports} रिपोर्ट्स)।",
@@ -468,6 +523,9 @@ window.QRVLang = (function () {
       panicTitle: "থামুন। ভাবুন। ব্যবস্থা নিন।",
       callHelplineLabel: "🚨 অফিসিয়াল হেল্পলাইনে কল করুন",
       reportPortalLabel: "cybercrime.gov.in-এ রিপোর্ট করুন",
+      panicStopText: "<strong class=\"text-red-400\">থামুন।</strong> কোনো প্রকৃত পুলিশ, আদালত বা ব্যাংক কর্মকর্তা আপনাকে ভিডিও কলে থাকতে বা টাকা পাঠাতে বলে না। কল কেটে দিন।",
+      panicThinkText: "<strong class=\"text-red-400\">ভাবুন।</strong> \"ডিজিটাল অ্যারেস্ট\" ভারতে কোনো প্রকৃত আইনি প্রক্রিয়া নয়।",
+      panicActText: "<strong class=\"text-red-400\">ব্যবস্থা নিন।</strong> এখনই রিপোর্ট করুন। আর টাকা পাঠাবেন না।",
 
       langTitle: "ভাষা",
       scammedRightNow: "এখনই প্রতারিত হচ্ছেন? তাৎক্ষণিক সাহায্যের জন্য এখানে ট্যাপ করুন",
@@ -527,6 +585,9 @@ window.QRVLang = (function () {
       panicTitle: "ఆగండి. ఆలోచించండి. చర్య తీసుకోండి.",
       callHelplineLabel: "🚨 అధికారిక హెల్ప్‌లైన్ కు కాల్ చేయండి",
       reportPortalLabel: "cybercrime.gov.in వద్ద నివేదించండి",
+      panicStopText: "<strong class=\"text-red-400\">ఆగండి.</strong> నిజమైన పోలీసు, కోర్టు లేదా బ్యాంక్ అధికారి వీడియో కాల్‌లో ఉండమని లేదా డబ్బు పంపమని ఎప్పుడూ అడగరు. కాల్ కట్ చేయండి.",
+      panicThinkText: "<strong class=\"text-red-400\">ఆలోచించండి.</strong> \"డిజిటల్ అరెస్ట్\" భారతదేశంలో నిజమైన చట్టపరమైన ప్రక్రియ కాదు.",
+      panicActText: "<strong class=\"text-red-400\">చర్య తీసుకోండి.</strong> ఇప్పుడే రిపోర్ట్ చేయండి. మరింత డబ్బు పంపవద్దు.",
 
       langTitle: "భాష",
       scammedRightNow: "ఇప్పుడే మోసపోతున్నారా? తక్షణ సహాయం కోసం ఇక్కడ నొక్కండి",
@@ -586,6 +647,9 @@ window.QRVLang = (function () {
       panicTitle: "थांबा. विचार करा. कृती करा.",
       callHelplineLabel: "🚨 अधिकृत हेल्पलाइनवर कॉल करा",
       reportPortalLabel: "cybercrime.gov.in वर तक्रार करा",
+      panicStopText: "<strong class=\"text-red-400\">थांबा.</strong> कोणताही खरा पोलीस, न्यायालय किंवा बँक अधिकारी तुम्हाला व्हिडिओ कॉलवर राहण्यास किंवा पैसे पाठवण्यास सांगत नाही. कॉल बंद करा.",
+      panicThinkText: "<strong class=\"text-red-400\">विचार करा.</strong> \"डिजिटल अटक\" ही भारतात खरी कायदेशीर प्रक्रिया नाही.",
+      panicActText: "<strong class=\"text-red-400\">कृती करा.</strong> आत्ताच तक्रार करा. आणखी पैसे पाठवू नका.",
 
       langTitle: "भाषा",
       scammedRightNow: "आत्ता फसवणूक होत आहे? त्वरित मदतीसाठी येथे टॅप करा",
@@ -645,6 +709,9 @@ window.QRVLang = (function () {
       panicTitle: "நிறுத்து. யோசி. செயல்படு.",
       callHelplineLabel: "🚨 அதிகாரப்பூர்வ உதவி எண்ணை அழைக்கவும்",
       reportPortalLabel: "cybercrime.gov.in இல் புகார் அளிக்கவும்",
+      panicStopText: "<strong class=\"text-red-400\">நிறுத்துங்கள்.</strong> உண்மையான போலீஸ், நீதிமன்றம் அல்லது வங்கி அதிகாரி யாரும் வீடியோ கால் தொடர வேண்டும் அல்லது பணம் அனுப்ப வேண்டும் என்று கேட்க மாட்டார்கள். அழைப்பைத் துண்டியுங்கள்.",
+      panicThinkText: "<strong class=\"text-red-400\">யோசியுங்கள்.</strong> \"டிஜிட்டல் கைது\" இந்தியாவில் உண்மையான சட்ட செயல்முறை அல்ல.",
+      panicActText: "<strong class=\"text-red-400\">நடவடிக்கை எடுங்கள்.</strong> இப்போதே புகார் அளியுங்கள். மேலும் பணம் அனுப்ப வேண்டாம்.",
 
       langTitle: "மொழி",
       scammedRightNow: "இப்போது ஏமாற்றப்படுகிறீர்களா? உடனடி உதவிக்கு இங்கே தட்டவும்",
@@ -704,6 +771,9 @@ window.QRVLang = (function () {
       panicTitle: "رکیں۔ سوچیں۔ عمل کریں۔",
       callHelplineLabel: "🚨 سرکاری ہیلپ لائن پر کال کریں",
       reportPortalLabel: "cybercrime.gov.in پر رپورٹ کریں",
+      panicStopText: "<strong class=\"text-red-400\">رک جائیں۔</strong> کوئی حقیقی پولیس، عدالت یا بینک اہلکار آپ سے ویڈیو کال پر رہنے یا پیسے بھیجنے کو نہیں کہتا۔ کال بند کر دیں۔",
+      panicThinkText: "<strong class=\"text-red-400\">سوچیں۔</strong> \"ڈیجیٹل گرفتاری\" بھارت میں کوئی حقیقی قانونی عمل نہیں ہے۔",
+      panicActText: "<strong class=\"text-red-400\">اقدام کریں۔</strong> ابھی رپورٹ کریں۔ مزید پیسے نہ بھیجیں۔",
 
       langTitle: "زبان",
       scammedRightNow: "ابھی دھوکہ ہو رہا ہے؟ فوری مدد کے لیے یہاں ٹیپ کریں",
@@ -763,6 +833,9 @@ window.QRVLang = (function () {
       panicTitle: "રોકાઓ. વિચારો. પગલાં લો.",
       callHelplineLabel: "🚨 સત્તાવાર હેલ્પલાઇન પર કૉલ કરો",
       reportPortalLabel: "cybercrime.gov.in પર ફરિયાદ કરો",
+      panicStopText: "<strong class=\"text-red-400\">અટકો.</strong> કોઈ સાચો પોલીસ, કોર્ટ કે બેંક અધિકારી તમને વિડિયો કૉલ પર રહેવા કે પૈસા મોકલવા કહેતો નથી. કૉલ કાપી નાખો.",
+      panicThinkText: "<strong class=\"text-red-400\">વિચારો.</strong> \"ડિજિટલ ધરપકડ\" ભારતમાં કોઈ સાચી કાનૂની પ્રક્રિયા નથી.",
+      panicActText: "<strong class=\"text-red-400\">પગલાં લો.</strong> હમણાં જ ફરિયાદ કરો. વધુ પૈસા ન મોકલો.",
 
       langTitle: "ભાષા",
       scammedRightNow: "અત્યારે છેતરપિંડી થઈ રહી છે? તાત્કાલિક મદદ માટે અહીં ટેપ કરો",
@@ -822,6 +895,9 @@ window.QRVLang = (function () {
       panicTitle: "ನಿಲ್ಲಿಸಿ. ಯೋಚಿಸಿ. ಕ್ರಮ ತೆಗೆದುಕೊಳ್ಳಿ.",
       callHelplineLabel: "🚨 ಅಧಿಕೃತ ಹೆಲ್ಪ್‌ಲೈನ್‌ಗೆ ಕರೆ ಮಾಡಿ",
       reportPortalLabel: "cybercrime.gov.in ನಲ್ಲಿ ವರದಿ ಮಾಡಿ",
+      panicStopText: "<strong class=\"text-red-400\">ನಿಲ್ಲಿಸಿ.</strong> ನಿಜವಾದ ಪೊಲೀಸ್, ನ್ಯಾಯಾಲಯ ಅಥವಾ ಬ್ಯಾಂಕ್ ಅಧಿಕಾರಿ ಎಂದಿಗೂ ವೀಡಿಯೊ ಕರೆಯಲ್ಲಿ ಇರಲು ಅಥವಾ ಹಣ ಕಳುಹಿಸಲು ಕೇಳುವುದಿಲ್ಲ. ಕರೆ ಕಡಿತಗೊಳಿಸಿ.",
+      panicThinkText: "<strong class=\"text-red-400\">ಯೋಚಿಸಿ.</strong> \"ಡಿಜಿಟಲ್ ಅರೆಸ್ಟ್\" ಭಾರತದಲ್ಲಿ ನಿಜವಾದ ಕಾನೂನು ಪ್ರಕ್ರಿಯೆ ಅಲ್ಲ.",
+      panicActText: "<strong class=\"text-red-400\">ಕ್ರಮ ತೆಗೆದುಕೊಳ್ಳಿ.</strong> ಈಗಲೇ ವರದಿ ಮಾಡಿ. ಇನ್ನಷ್ಟು ಹಣ ಕಳುಹಿಸಬೇಡಿ.",
 
       langTitle: "ಭಾಷೆ",
       scammedRightNow: "ಈಗ ವಂಚನೆಗೆ ಒಳಗಾಗುತ್ತಿದ್ದೀರಾ? ತಕ್ಷಣದ ಸಹಾಯಕ್ಕಾಗಿ ಇಲ್ಲಿ ಟ್ಯಾಪ್ ಮಾಡಿ",
@@ -851,6 +927,21 @@ window.QRVLang = (function () {
 
   function save(lang) {
     try { localStorage.setItem("qrv-lang", lang); } catch (e) {}
+  }
+
+  /**
+   * Public entry point for changing the app language from anywhere
+   * outside the Settings picker (e.g. the Panic Mode inline dropdown).
+   * Does exactly what selecting a language in Settings does: persist
+   * it, re-render all [data-i18n]/[data-i18n-html] text, refresh both
+   * picker UIs so they stay in sync with each other, and notify the
+   * rest of the app (voice.js listens for this to re-speak/re-render).
+   */
+  function setLanguage(lang) {
+    save(lang);
+    applyToDom();
+    renderPicker();
+    document.dispatchEvent(new CustomEvent("qrv:lang-changed", { detail: { lang } }));
   }
 
   /**
@@ -920,12 +1011,8 @@ window.QRVLang = (function () {
         ? ""
         : "Not fully translated yet — shows English for untranslated text";
       btn.addEventListener("click", () => {
-        save(lang);
-        applyToDom();
+        setLanguage(lang);
         renderPicker();
-        document.dispatchEvent(
-          new CustomEvent("qrv:lang-changed", { detail: { lang } })
-        );
       });
       container.appendChild(btn);
     });
@@ -952,13 +1039,8 @@ window.QRVLang = (function () {
         ? ""
         : "Not fully translated yet — shows English for untranslated text";
       btn.addEventListener("click", () => {
-        save(lang);
-        applyToDom();
-        renderPicker();
+        setLanguage(lang);
         renderPickerInto(containerId, onSelect);
-        document.dispatchEvent(
-          new CustomEvent("qrv:lang-changed", { detail: { lang } })
-        );
         if (typeof onSelect === "function") onSelect(lang);
       });
       container.appendChild(btn);
@@ -981,5 +1063,5 @@ window.QRVLang = (function () {
     return getSaved();
   }
 
-  return { init, t, applyToDom, renderPicker, renderPickerInto, hasSavedLanguage, currentLangForAi, LANGUAGES };
+  return { init, t, applyToDom, renderPicker, renderPickerInto, hasSavedLanguage, currentLangForAi, setLanguage, LANGUAGES };
 })();
