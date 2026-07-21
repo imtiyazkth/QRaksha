@@ -31,35 +31,6 @@ window.QRVDashboard = (function () {
     social: { label: "Paste the social media profile URL", placeholder: "https://instagram.com/…", engineKey: "SOCIAL_MEDIA", voiceKey: "voiceSocial" },
   };
 
-  // Maps each category card's id (from cyber-resources.json) to
-  // translation keys for its title/description. The dashboard grid
-  // previously rendered cat.label/cat.desc straight from the JSON file
-  // — always English, regardless of the selected app language. This
-  // lookup lets the grid speak the user's chosen language instead,
-  // while still falling back to the JSON's own text if a category id
-  // is ever added here without a matching translation (never breaks,
-  // just shows English for that one card until translated).
-  const CATEGORY_I18N_KEYS = {
-    url:      { label: "catUrlLabel",      desc: "catUrlDesc" },
-    whatsapp: { label: "catWhatsappLabel", desc: "catWhatsappDesc" },
-    phone:    { label: "catPhoneLabel",    desc: "catPhoneDesc" },
-    email:    { label: "catEmailLabel",    desc: "catEmailDesc" },
-    sms:      { label: "catSmsLabel",      desc: "catSmsDesc" },
-    social:   { label: "catSocialLabel",   desc: "catSocialDesc" },
-  };
-  function translatedCatLabel(cat) {
-    const keys = CATEGORY_I18N_KEYS[cat.id];
-    if (!keys || !window.QRVLang) return cat.label;
-    const t = window.QRVLang.t(keys.label);
-    return t === keys.label ? cat.label : t; // t() returns the key itself on a miss
-  }
-  function translatedCatDesc(cat) {
-    const keys = CATEGORY_I18N_KEYS[cat.id];
-    if (!keys || !window.QRVLang) return cat.desc;
-    const t = window.QRVLang.t(keys.desc);
-    return t === keys.desc ? cat.desc : t;
-  }
-
   function renderCategoryGrid(categories, onNavigate) {
     const grid = $("dashboardGrid");
     grid.innerHTML = "";
@@ -80,8 +51,8 @@ window.QRVDashboard = (function () {
         btn.innerHTML = `
           <span class="text-2xl shrink-0" aria-hidden="true">${cat.icon}</span>
           <span class="flex-1 min-w-0">
-            <span class="block font-semibold text-sm text-white">${translatedCatLabel(cat)}</span>
-            <span class="block text-[11px] text-blue-200">${translatedCatDesc(cat)}</span>
+            <span class="block font-semibold text-sm text-white">${cat.label}</span>
+            <span class="block text-[11px] text-blue-200">${cat.desc}</span>
           </span>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4 text-blue-200 shrink-0"><path d="M7 17L17 7M9 7h8v8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
         `;
@@ -89,9 +60,9 @@ window.QRVDashboard = (function () {
         btn.className = "relative flex flex-col items-start gap-1 rounded-2xl bg-panel border border-line p-4 text-left cursor-pointer";
         btn.innerHTML = `
           <span class="text-2xl" aria-hidden="true">${cat.icon}</span>
-          <span class="font-medium text-sm text-neutral-100">${translatedCatLabel(cat)}</span>
-          <span class="text-[11px] text-neutral-500">${translatedCatDesc(cat)}</span>
-          ${cat.supported === false ? `<span class="text-[10px] text-warn mt-1">${window.QRVLang ? window.QRVLang.t("catComingSoon") : "Coming soon — routes to official report portal"}</span>` : ""}
+          <span class="font-medium text-sm text-neutral-100">${cat.label}</span>
+          <span class="text-[11px] text-neutral-500">${cat.desc}</span>
+          ${cat.supported === false ? '<span class="text-[10px] text-warn mt-1">Coming soon — routes to official report portal</span>' : ""}
         `;
       }
       const activate = () => {
@@ -224,17 +195,6 @@ window.QRVDashboard = (function () {
     renderCategoryGrid(data.categories || [], onNavigate);
     renderAwarenessGallery(data.awareness || []);
     renderPlatformReports(data.platformReports || []);
-
-    // Category card labels and platform-report voice prompts are
-    // translated at render time (see translatedCatLabel/Desc above),
-    // so a live language switch needs a re-render to actually update
-    // what's on screen — otherwise a user who opens Settings and
-    // changes language mid-session would still see the old language
-    // here until they left and returned to the Home tab.
-    document.addEventListener("qrv:lang-changed", () => {
-      renderCategoryGrid(data.categories || [], onNavigate);
-      renderPlatformReports(data.platformReports || []);
-    });
   }
 
   return { init };

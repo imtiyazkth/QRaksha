@@ -190,7 +190,7 @@
       <!-- ── VERIFY WITH GOVERNMENT DATA — premium single block ── -->
       <div class="qrv-govdata-card">
         <div class="inline-flex items-center gap-1.5 bg-red-500/10 border border-red-500/25 rounded-full px-2.5 py-1 mb-3">
-          <span class="text-[10px] font-mono font-semibold text-red-400 uppercase tracking-widest">🛡️ <span data-i18n="highPriority">High Priority</span></span>
+          <span class="text-[10px] font-mono font-semibold text-red-400 uppercase tracking-widest">🛡️ High Priority</span>
         </div>
         <h2 class="text-base font-bold text-neutral-100 mb-2 leading-snug" data-i18n="govVerifyTitle">
           Verify with Government Data
@@ -206,13 +206,14 @@
                   transition-shadow duration-200">
           <span data-i18n="govVerifyBtn">Open Official Portal ↗</span>
         </a>
-        <p class="text-[11px] text-neutral-500 text-center mt-3 italic leading-snug" data-i18n="govPartnershipNote">
-          We are actively working toward establishing direct structural integration and official partnerships with relevant government regulatory authorities to protect our users.
+        <p class="text-[11px] text-neutral-500 text-center mt-3 italic leading-snug">
+          हम अपने उपयोगकर्ताओं की सुरक्षा के लिए संबंधित सरकारी विनियामक प्राधिकरणों के साथ
+          सीधे संरचनात्मक एकीकरण और आधिकारिक साझेदारी स्थापित करने के लिए सक्रिय रूप से प्रयासरत हैं।
         </p>
       </div>
 
       <!-- Awareness gallery -->
-      <h2 class="font-display font-bold text-lg mb-2" data-i18n="awarenessResourcesTitle">Awareness &amp; Resources</h2>
+      <h2 class="font-display font-bold text-lg mb-2">Awareness &amp; Resources</h2>
       <div id="awarenessGallery" class="flex gap-3 overflow-x-auto pb-2 mb-6 snap-x"></div>
 
       <!-- How QRaksha Protects You -->
@@ -259,33 +260,33 @@
       </button>
 
       <!-- Platform complaint router -->
-      <h2 class="font-display font-bold text-lg mb-2" data-i18n="reportToPlatformTitle">Report Directly to a Platform</h2>
-      <p class="text-xs text-neutral-500 mb-3" data-i18n="reportToPlatformDesc">
+      <h2 class="font-display font-bold text-lg mb-2">Report Directly to a Platform</h2>
+      <p class="text-xs text-neutral-500 mb-3">
         Links go straight to each platform's own official report page — QRaksha does not process these reports itself.
       </p>
       <div id="platformReportGrid" class="grid grid-cols-3 gap-2 mb-4"></div>
 
       <!-- Success story CTA -->
       <div class="rounded-2xl bg-panel border border-amber/30 p-4 mb-4">
-        <h2 class="font-display font-bold text-lg mb-1" data-i18n="storyCtaTitle">Aapki Kahani, Cyber Suraksha ki Zubani</h2>
-        <p class="text-xs text-neutral-400 mb-3" data-i18n="storyCtaDesc">
+        <h2 class="font-display font-bold text-lg mb-1">Aapki Kahani, Cyber Suraksha ki Zubani</h2>
+        <p class="text-xs text-neutral-400 mb-3">
           Agar aap hamare app ka istemal karke kisi dhokhadhadi ya fraud se bache hain, toh apni kahani hamare sath saja karein.
         </p>
         <button id="btnOpenStoryForm" type="button"
-          class="w-full py-2.5 rounded-xl bg-amber text-ink text-sm font-semibold" data-i18n="storyCtaButton">
+          class="w-full py-2.5 rounded-xl bg-amber text-ink text-sm font-semibold">
           Share Your Success Story
         </button>
       </div>
 
       <!-- About & Transparency -->
-      <h2 class="font-display font-bold text-lg mb-2" data-i18n="aboutTransparencyTitle">About &amp; Transparency</h2>
+      <h2 class="font-display font-bold text-lg mb-2">About &amp; Transparency</h2>
       <div class="space-y-2 mb-8">
         <button id="btnOpenFounderHome" type="button"
-          class="w-full text-left py-3 px-4 rounded-xl border border-line text-sm text-neutral-200 bg-panel" data-i18n="aboutFounderLabel">
+          class="w-full text-left py-3 px-4 rounded-xl border border-line text-sm text-neutral-200 bg-panel">
           About the Founder
         </button>
         <button id="btnOpenPrivacyHome" type="button"
-          class="w-full text-left py-3 px-4 rounded-xl border border-line text-sm text-neutral-200 bg-panel" data-i18n="privacyPolicyTitle">
+          class="w-full text-left py-3 px-4 rounded-xl border border-line text-sm text-neutral-200 bg-panel">
           Privacy Policy
         </button>
       </div>
@@ -489,18 +490,18 @@
 
     <!-- ─────────────── GENERATE TAB ─────────────── -->
     <section id="tabGenerate" class="tab-panel px-4 pt-4" hidden>
-      <h2 class="font-display font-bold text-xl mb-1" data-i18n="generateTitle">Generate</h2>
-      <p class="text-sm text-neutral-400 mb-4" data-i18n="generateSubtitle">Create a QR code for the things people actually scan.</p>
+      <h2 class="font-display font-bold text-xl mb-1">Generate</h2>
+      <p class="text-sm text-neutral-400 mb-4">Create a QR code for the things people actually scan.</p>
       <div class="grid grid-cols-2 gap-3 mb-4">
-        <button class="qrv-gen-tile" data-kind="social">📱<span data-i18n="genSocialProfile">Social Media Profile</span></button>
-        <button class="qrv-gen-tile" data-kind="campaign">📣<span data-i18n="genMarketingCampaign">Marketing Campaign</span></button>
-        <button class="qrv-gen-tile" data-kind="account">🪪<span data-i18n="genAccountCard">Account Card</span></button>
-        <button class="qrv-gen-tile" data-kind="review">⭐<span data-i18n="genGoogleReview">Google Review</span></button>
-        <button class="qrv-gen-tile" data-kind="maps">📍<span data-i18n="genGoogleMaps">Google Maps Location</span></button>
-        <button class="qrv-gen-tile" data-kind="store">⬇️<span data-i18n="genPlayStoreLink">App / Play Store Link</span></button>
+        <button class="qrv-gen-tile" data-kind="social">📱<span>Social Media Profile</span></button>
+        <button class="qrv-gen-tile" data-kind="campaign">📣<span>Marketing Campaign</span></button>
+        <button class="qrv-gen-tile" data-kind="account">🪪<span>Account Card</span></button>
+        <button class="qrv-gen-tile" data-kind="review">⭐<span>Google Review</span></button>
+        <button class="qrv-gen-tile" data-kind="maps">📍<span>Google Maps Location</span></button>
+        <button class="qrv-gen-tile" data-kind="store">⬇️<span>App / Play Store Link</span></button>
       </div>
       <div id="genFormArea" class="mt-2"></div>
-      <p class="text-[11px] text-neutral-500 text-center mt-4" data-i18n="genAdNote">
+      <p class="text-[11px] text-neutral-500 text-center mt-4">
         Downloading a generated QR image plays a short ad first — generating and previewing is always free.
       </p>
     </section>
@@ -540,21 +541,21 @@
       <button id="btnSettingsHome" type="button"
         class="flex items-center gap-1.5 text-xs text-neutral-400 mb-5 bg-transparent border-none cursor-pointer">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4"><path d="M15 18l-6-6 6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <span data-i18n="backToHome">Back to Home</span>
+        Back to Home
       </button>
 
-      <h2 class="font-display font-bold text-lg mb-4" data-i18n="appearanceTitle">Appearance</h2>
+      <h2 class="font-display font-bold text-lg mb-4">Appearance</h2>
       <div class="grid grid-cols-3 gap-3 mb-6">
-        <button class="qrv-theme-swatch" data-theme="dark" data-i18n="themeDark">Dark</button>
-        <button class="qrv-theme-swatch" data-theme="light" data-i18n="themeLight">Light</button>
+        <button class="qrv-theme-swatch" data-theme="dark">Dark</button>
+        <button class="qrv-theme-swatch" data-theme="light">Light</button>
         <label class="qrv-theme-swatch flex items-center justify-center gap-2 cursor-pointer relative">
-          <span data-i18n="themeCustom">Custom</span>
+          Custom
           <input type="color" id="customAccentInput" value="#FFB020"
                  class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
         </label>
       </div>
       <button id="btnCloseSettings" type="button"
-        class="w-full py-3 rounded-2xl border border-line text-sm mb-6" data-i18n="scamShieldClose">Close</button>
+        class="w-full py-3 rounded-2xl border border-line text-sm mb-6">Close</button>
 
       <!-- Language picker — globe icon + scroll grid -->
       <h2 class="font-display font-bold text-lg mb-3 flex items-center gap-2">
@@ -577,12 +578,12 @@
       </button>
       <p class="text-[10px] text-neutral-500 mb-6">Uses your device's own text-to-speech engine — works offline, no data is sent anywhere. Speaks in whichever language you select above.</p>
 
-      <h2 class="font-display font-bold text-lg mb-3" data-i18n="aboutTransparencyTitle">About &amp; Transparency</h2>
+      <h2 class="font-display font-bold text-lg mb-3">About &amp; Transparency</h2>
       <div class="space-y-2 mb-4">
         <button id="btnOpenFounder" type="button"
-          class="w-full text-left py-3 px-4 rounded-xl border border-line text-sm text-neutral-200 bg-transparent" data-i18n="aboutFounderLabel">About the Founder</button>
+          class="w-full text-left py-3 px-4 rounded-xl border border-line text-sm text-neutral-200 bg-transparent">About the Founder</button>
         <button id="btnOpenPrivacy" type="button"
-          class="w-full text-left py-3 px-4 rounded-xl border border-line text-sm text-neutral-200 bg-transparent" data-i18n="privacyPolicyTitle">Privacy Policy</button>
+          class="w-full text-left py-3 px-4 rounded-xl border border-line text-sm text-neutral-200 bg-transparent">Privacy Policy</button>
         <button id="btnOpenShareApp" type="button"
           class="w-full text-left py-3 px-4 rounded-xl border border-line text-sm text-neutral-200 bg-transparent flex items-center justify-between">
           <span data-i18n="shareQRaksha">Share QRaksha</span>
@@ -591,13 +592,13 @@
       </div>
 
       <div class="rounded-xl bg-ink border border-line p-4 mb-4">
-        <p class="text-xs font-semibold text-neutral-300 mb-1" data-i18n="transparencyTitle">Revenue &amp; Growth Roadmap (transparency)</p>
-        <p class="text-[11px] text-neutral-500 leading-relaxed" data-i18n="transparencyBody">
+        <p class="text-xs font-semibold text-neutral-300 mb-1">Revenue &amp; Growth Roadmap (transparency)</p>
+        <p class="text-[11px] text-neutral-500 leading-relaxed">
           QRaksha is free today. Roadmap may include non-intrusive AdMob placements, an optional premium tier
           (unlimited AI checks, ad-free), and B2B API licensing. Core safety features — offline QR check, Panic
           Mode, and basic scam detection — are intended to always remain free.
         </p>
-        <p class="text-[11px] leading-relaxed mt-2" style="color:var(--qrv-accent);" data-i18n="transparencyGovWork">
+        <p class="text-[11px] leading-relaxed mt-2" style="color:var(--qrv-accent);">
           We are actively working toward establishing direct API integrations and formal partnerships with
           Government Law Enforcement Authorities.
         </p>
@@ -605,7 +606,7 @@
 
       <button id="btnAboutHome" type="button"
         class="w-full mt-2 py-3 rounded-2xl border border-line text-sm flex items-center justify-center gap-2">
-        🏠 <span data-i18n="backToHome">Back to Home</span>
+        🏠 Back to Home
       </button>
     </div>
   </div>
@@ -727,7 +728,7 @@
       <button id="btnFounderHome" type="button"
         class="flex items-center gap-1.5 text-xs text-neutral-400 mb-5 bg-transparent border-none cursor-pointer">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4"><path d="M15 18l-6-6 6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <span data-i18n="backToHome">Back to Home</span>
+        Back to Home
       </button>
 
       <!-- Premium founder header -->
@@ -790,7 +791,7 @@
       </div>
 
       <button id="btnCloseFounder" type="button"
-        class="w-full py-3 rounded-2xl border border-line text-sm" data-i18n="scamShieldClose">Close</button>
+        class="w-full py-3 rounded-2xl border border-line text-sm">Close</button>
     </div>
   </div>
 
@@ -801,13 +802,13 @@
        class="fixed inset-0 z-50 flex items-end justify-center bg-black/70">
     <div class="w-full max-w-[480px] max-h-[86vh] overflow-y-auto bg-panel rounded-t-3xl p-6 border-t border-line"
          style="-webkit-overflow-scrolling:touch;">
-      <h2 class="font-display font-bold text-lg mb-3" data-i18n="privacyPolicyTitle">Privacy Policy</h2>
-      <p class="text-sm text-neutral-300 mb-3" data-i18n="privacyPoint1">QR scanning and offline message checks run entirely in your browser — nothing is sent anywhere.</p>
-      <p class="text-sm text-neutral-300 mb-3" data-i18n="privacyPoint2">The optional AI Advance Opinion sends only the text/image you explicitly submit to our server. It is not stored afterward.</p>
-      <p class="text-sm text-neutral-300 mb-3" data-i18n="privacyPoint3">Success stories you explicitly submit are stored in our database. A human reviews each story before it is published.</p>
-      <p class="text-sm text-neutral-300 mb-5" data-i18n="privacyPoint4">We do not sell user data. We do not show targeted ads.</p>
+      <h2 class="font-display font-bold text-lg mb-3">Privacy Policy</h2>
+      <p class="text-sm text-neutral-300 mb-3">QR scanning and offline message checks run entirely in your browser — nothing is sent anywhere.</p>
+      <p class="text-sm text-neutral-300 mb-3">The optional AI Advance Opinion sends only the text/image you explicitly submit to our server. It is not stored afterward.</p>
+      <p class="text-sm text-neutral-300 mb-3">Success stories you explicitly submit are stored in our database. A human reviews each story before it is published.</p>
+      <p class="text-sm text-neutral-300 mb-5">We do not sell user data. We do not show targeted ads.</p>
       <button id="btnClosePrivacy" type="button"
-        class="w-full py-3 rounded-2xl border border-line text-sm" data-i18n="scamShieldClose">Close</button>
+        class="w-full py-3 rounded-2xl border border-line text-sm">Close</button>
     </div>
   </div>
 
@@ -817,15 +818,15 @@
   <div id="consentModal" role="dialog" aria-modal="true" hidden
        class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-6">
     <div class="w-full max-w-sm bg-panel rounded-3xl p-6 border border-line">
-      <h2 class="font-display font-bold text-lg mb-2" data-i18n="consentTitle">Enable AI Advance Opinion?</h2>
-      <p class="text-sm text-neutral-300 mb-4" data-i18n="consentBody">Offline and free threat-intel checks always run automatically. An AI Advance Opinion sends the text/image to our server, which forwards it to Mesh API. Nothing is stored afterward.</p>
+      <h2 class="font-display font-bold text-lg mb-2">Enable AI Advance Opinion?</h2>
+      <p class="text-sm text-neutral-300 mb-4">Offline and free threat-intel checks always run automatically. An AI Advance Opinion sends the text/image to our server, which forwards it to Mesh API. Nothing is stored afterward.</p>
       <label class="flex items-center gap-2 text-sm mb-4">
         <input type="checkbox" id="consentCheckbox">
-        <span data-i18n="consentCheckboxLabel">I understand and want to enable AI Advance Opinion</span>
+        I understand and want to enable AI Advance Opinion
       </label>
       <div class="flex gap-2">
-        <button id="btnConsentAccept"  type="button" class="flex-1 py-2.5 rounded-xl bg-amber text-ink font-semibold text-sm" data-i18n="consentEnable">Enable</button>
-        <button id="btnConsentDecline" type="button" class="flex-1 py-2.5 rounded-xl border border-line text-sm" data-i18n="consentNotNow">Not now</button>
+        <button id="btnConsentAccept"  type="button" class="flex-1 py-2.5 rounded-xl bg-amber text-ink font-semibold text-sm">Enable</button>
+        <button id="btnConsentDecline" type="button" class="flex-1 py-2.5 rounded-xl border border-line text-sm">Not now</button>
       </div>
     </div>
   </div>
@@ -876,10 +877,11 @@
             <option value="Kannada">ಕನ್ನಡ — Kannada</option>
           </select>
         </div>
-        <p class="text-[11px] text-gray-400 text-center italic leading-snug" data-i18n="govPartnershipNote">
-          We are actively working toward establishing direct structural integration and official partnerships with relevant government regulatory authorities to protect our users.
+        <p class="text-[11px] text-gray-400 text-center italic leading-snug">
+          हम अपने उपयोगकर्ताओं की सुरक्षा के लिए संबंधित सरकारी विनियामक प्राधिकरणों के साथ सीधे
+          संरचनात्मक एकीकरण और आधिकारिक साझेदारी स्थापित करने के लिए सक्रिय रूप से प्रयासरत हैं।
         </p>
-        <button id="btnClosePanic" type="button" class="py-2 text-sm text-neutral-400" data-i18n="scamShieldClose">Close</button>
+        <button id="btnClosePanic" type="button" class="py-2 text-sm text-neutral-400">Close</button>
       </div>
     </div>
   </div>
@@ -896,37 +898,37 @@
        class="fixed inset-0 z-50 flex items-end justify-center bg-black/70">
     <div class="w-full max-w-[480px] max-h-[88vh] overflow-y-auto bg-panel rounded-t-3xl p-6 border-t border-line"
          style="-webkit-overflow-scrolling:touch;">
-      <h2 class="font-display font-bold text-lg mb-1" data-i18n="storyFormTitle">Share Your Success Story</h2>
-      <p class="text-xs text-neutral-400 mb-4" data-i18n="storyFormSubtitle">Aapki kahani cyber awareness badhane mein madad karegi.</p>
+      <h2 class="font-display font-bold text-lg mb-1">Share Your Success Story</h2>
+      <p class="text-xs text-neutral-400 mb-4">Aapki kahani cyber awareness badhane mein madad karegi.</p>
       <form id="storyForm" class="space-y-3">
-        <div><label class="text-xs text-neutral-400" for="storyFullName" data-i18n="storyLabelName">Full Name</label>
+        <div><label class="text-xs text-neutral-400" for="storyFullName">Full Name</label>
           <input id="storyFullName" required maxlength="80" type="text" class="w-full mt-1 rounded-xl bg-ink border border-line p-3 text-sm text-neutral-100"></div>
-        <div><label class="text-xs text-neutral-400" for="storyCity" data-i18n="storyLabelCity">Location / City</label>
+        <div><label class="text-xs text-neutral-400" for="storyCity">Location / City</label>
           <input id="storyCity" required maxlength="60" type="text" class="w-full mt-1 rounded-xl bg-ink border border-line p-3 text-sm text-neutral-100"></div>
-        <div><label class="text-xs text-neutral-400" for="storyAmount" data-i18n="storyLabelAmount">Estimated Amount Saved (₹)</label>
+        <div><label class="text-xs text-neutral-400" for="storyAmount">Estimated Amount Saved (₹)</label>
           <input id="storyAmount" required min="0" type="number" class="w-full mt-1 rounded-xl bg-ink border border-line p-3 text-sm text-neutral-100"></div>
-        <div><label class="text-xs text-neutral-400" for="storyFraudType" data-i18n="storyLabelFraudType">Fraud Type</label>
+        <div><label class="text-xs text-neutral-400" for="storyFraudType">Fraud Type</label>
           <select id="storyFraudType" required class="w-full mt-1 rounded-xl bg-ink border border-line p-3 text-sm text-neutral-100">
-            <option data-i18n="storyOptQr">QR Code Scam</option><option data-i18n="storyOptJob">WhatsApp Job Fraud</option>
-            <option data-i18n="storyOptCare">Fake Customer Care</option><option data-i18n="storyOptApp">Suspicious App</option><option data-i18n="storyOptOther">Other</option>
+            <option>QR Code Scam</option><option>WhatsApp Job Fraud</option>
+            <option>Fake Customer Care</option><option>Suspicious App</option><option>Other</option>
           </select></div>
-        <div><label class="text-xs text-neutral-400" for="storyDescription" data-i18n="storyLabelDescription">Your Story</label>
+        <div><label class="text-xs text-neutral-400" for="storyDescription">Your Story</label>
           <textarea id="storyDescription" required minlength="20" maxlength="3000" rows="4"
             placeholder="QRaksha ne kaise warning di aur aap kaise bache…"
             class="w-full mt-1 rounded-xl bg-ink border border-line p-3 text-sm text-neutral-100 resize-none"
             style="-webkit-overflow-scrolling:touch;"></textarea></div>
         <label class="flex items-start gap-2 text-xs text-neutral-300">
           <input type="checkbox" id="storyAnonymous" class="mt-0.5">
-          <span data-i18n="storyAnonymousLabel">Meri kahani bina naam ke (Anonymous) publish karein.</span>
+          Meri kahani bina naam ke (Anonymous) publish karein.
         </label>
         <label class="flex items-start gap-2 text-xs text-neutral-300">
           <input type="checkbox" id="storyConsent" required class="mt-0.5">
-          <span data-i18n="storyConsentLabel">Main sehmat hoon ki meri kahani cyber awareness badhane ke liye public platforms par publish ki jaye.</span>
+          Main sehmat hoon ki meri kahani cyber awareness badhane ke liye public platforms par publish ki jaye.
         </label>
         <p id="storyFormError" class="text-xs text-red-400" hidden></p>
         <div class="flex gap-2 pt-2">
-          <button type="submit" id="btnSubmitStory" class="flex-1 py-3 rounded-2xl bg-amber text-ink font-semibold text-sm" data-i18n="storySubmitButton">Submit</button>
-          <button type="button" id="btnCancelStoryForm" class="flex-1 py-3 rounded-2xl border border-line text-sm" data-i18n="storyCancelButton">Cancel</button>
+          <button type="submit" id="btnSubmitStory" class="flex-1 py-3 rounded-2xl bg-amber text-ink font-semibold text-sm">Submit</button>
+          <button type="button" id="btnCancelStoryForm" class="flex-1 py-3 rounded-2xl border border-line text-sm">Cancel</button>
         </div>
       </form>
     </div>
@@ -978,25 +980,25 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"          crossorigin="anonymous"></script>
 
 <!-- App modules — ORDER MATTERS -->
-<script src="js/sanitize.js?v=20260717b"></script>
-<script src="js/runtime-config.js?v=20260717b"></script>
-<script src="js/github-config.js?v=20260717b"></script>
-<script src="js/config.js?v=20260717b"></script>
-<script src="js/lang.js?v=20260717b"></script>
-<script src="js/risk-engine-core.js?v=20260717b"></script>
-<script src="js/free-intel-check.js?v=20260717b"></script>
-<script src="js/verification-engine.js?v=20260717b"></script>
-<script src="js/ad-gate.js?v=20260717b"></script>
-<script src="js/consent.js?v=20260717b"></script>
-<script src="js/panic-mode.js?v=20260717b"></script>
-<script src="js/ai-scam-check.js?v=20260717b"></script>
-<script src="js/mobile-scanner.js?v=20260717b"></script>
-<script src="js/dashboard.js?v=20260717b"></script>
-<script src="js/voice.js?v=20260717b"></script>
-<script src="js/scam-shield.js?v=20260717b"></script>
+<script src="js/sanitize.js?v=20260717a"></script>
+<script src="js/runtime-config.js?v=20260717a"></script>
+<script src="js/github-config.js?v=20260717a"></script>
+<script src="js/config.js?v=20260717a"></script>
+<script src="js/lang.js?v=20260717a"></script>
+<script src="js/risk-engine-core.js?v=20260717a"></script>
+<script src="js/free-intel-check.js?v=20260717a"></script>
+<script src="js/verification-engine.js?v=20260717a"></script>
+<script src="js/ad-gate.js?v=20260717a"></script>
+<script src="js/consent.js?v=20260717a"></script>
+<script src="js/panic-mode.js?v=20260717a"></script>
+<script src="js/ai-scam-check.js?v=20260717a"></script>
+<script src="js/mobile-scanner.js?v=20260717a"></script>
+<script src="js/dashboard.js?v=20260717a"></script>
+<script src="js/voice.js?v=20260717a"></script>
+<script src="js/scam-shield.js?v=20260717a"></script>
 <script type="module" src="js/firebase-init.js"></script>
-<script src="js/story-submit.js?v=20260717b"></script>
-<script src="js/mobile-app.js?v=20260717b"></script>
+<script src="js/story-submit.js?v=20260717a"></script>
+<script src="js/mobile-app.js?v=20260717a"></script>
 
 <script>
   /* Inline language picker in panic modal — wired here to keep panic-mode.js dependency-free */
@@ -1009,40 +1011,7 @@
   });
   /* PWA service worker */
   if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./sw.js").then((reg) => {
-        // Actively check for a newer sw.js on every load, not just
-        // whenever the browser happens to. This is what makes updates
-        // show up promptly instead of only after a browser-chosen
-        // background check interval.
-        reg.update().catch(() => {});
-
-        // When a new service worker has installed and is ready to
-        // take over, tell it to activate immediately rather than
-        // waiting for every open tab to close first.
-        reg.addEventListener("updatefound", () => {
-          const newWorker = reg.installing;
-          if (!newWorker) return;
-          newWorker.addEventListener("statechange", () => {
-            if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
-              newWorker.postMessage({ type: "SKIP_WAITING" });
-            }
-          });
-        });
-      }).catch(() => {});
-
-      // Once the new service worker actually takes control, reload
-      // the page ONE time so the user is transparently upgraded to the
-      // latest deployed version — no manual refresh, no clearing data.
-      // The reloading flag guards against a reload loop, since
-      // controllerchange can in rare cases fire more than once.
-      let reloading = false;
-      navigator.serviceWorker.addEventListener("controllerchange", () => {
-        if (reloading) return;
-        reloading = true;
-        window.location.reload();
-      });
-    });
+    window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(() => {}));
   }
 </script>
 </body>
