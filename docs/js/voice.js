@@ -53,25 +53,57 @@ window.QRVVoice = (function () {
     return LANG_CODES[lang] || LANG_CODES.English;
   }
 
-  // Voice list loads asynchronously in some browsers. This resolves
-  // once voices are actually available (or immediately if already
-  // cached), so pickVoice() below doesn't silently get an empty list.
-  let voicesReadyPromise = null;
+  // Voice list loads asynchronously in some browsers/WebViews — the
+  // very first speak() call (e.g. Panic Mode's auto-speak on open,
+  // which fires the instant the app loads) can run before the browser
+  // has finished populating its full list of installed TTS voices.
+  //
+  // BUG THIS FIXES: this used to resolve a promise ONCE and cache it
+  // forever. If that first call caught the voice list mid-load (e.g.
+  // only 1-2 English voices registered so far), every future speak()
+  // call — regardless of language — kept reusing that same incomplete
+  // snapshot, so languages whose voices finished loading a moment
+  // later (commonly Bengali/Telugu/Urdu/Gujarati/Kannada, since Hindi
+  // and English are typically preloaded first on Indian Android
+  // devices) could never be found, forever, for the rest of the
+  // session — even though the device genuinely had them installed.
+  //
+  // Fix: always re-read getVoices() fresh on every call. Only the
+  // "wait for the async voiceschanged event" part is memoized, and
+  // only until the first time we see a non-empty list — after that,
+  // every call goes straight to a live getVoices() read.
+  let voicesEverLoaded = false;
+  let firstLoadPromise = null;
   function voicesReady() {
     if (!supported()) return Promise.resolve([]);
-    if (voicesReadyPromise) return voicesReadyPromise;
-    voicesReadyPromise = new Promise((resolve) => {
-      const existing = window.speechSynthesis.getVoices();
-      if (existing.length) { resolve(existing); return; }
+
+    const existing = window.speechSynthesis.getVoices();
+    if (existing.length) {
+      voicesEverLoaded = true;
+      return Promise.resolve(existing);
+    }
+    if (voicesEverLoaded) {
+      // We've seen a populated list before; an empty result now is a
+      // transient fluke, not "no voices installed" — return whatever
+      // is currently there rather than waiting again.
+      return Promise.resolve(existing);
+    }
+    if (firstLoadPromise) return firstLoadPromise;
+
+    firstLoadPromise = new Promise((resolve) => {
       const onChange = () => {
         window.speechSynthesis.removeEventListener("voiceschanged", onChange);
+        voicesEverLoaded = true;
         resolve(window.speechSynthesis.getVoices());
       };
       window.speechSynthesis.addEventListener("voiceschanged", onChange);
       // Safety timeout — some WebViews never fire voiceschanged at all.
-      setTimeout(() => resolve(window.speechSynthesis.getVoices()), 1200);
+      setTimeout(() => {
+        voicesEverLoaded = true;
+        resolve(window.speechSynthesis.getVoices());
+      }, 1200);
     });
-    return voicesReadyPromise;
+    return firstLoadPromise;
   }
 
   function pickVoice(voices, langCode) {
@@ -201,6 +233,15 @@ window.QRVVoice = (function () {
 
   function init() {
     if (!supported()) return;
+    // Chrome (and Chromium WebViews) sometimes only start actually
+    // loading the TTS voice list after getVoices() has been called at
+    // least once. Calling it here, at app startup, means the list has
+    // the best possible chance of being fully populated by the time
+    // Panic Mode's near-instant auto-speak runs, rather than starting
+    // the load from zero right when speed matters most.
+    try { window.speechSynthesis.getVoices(); } catch (e) {}
+    voicesReady(); // kick off the real load-tracking too
+
     // Minimal injected styling for the speaker buttons — kept here
     // rather than the main stylesheet so this module is fully
     // self-contained and easy to remove later if ever needed.

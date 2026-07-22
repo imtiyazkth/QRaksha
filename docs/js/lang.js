@@ -107,6 +107,10 @@ window.QRVLang = (function () {
       catSocialLabel: "Social Media URL",
       catSocialDesc: "Screen profile cloning or fake giveaways",
       catComingSoon: "Coming soon — routes to official report portal",
+      voiceFounderButtonHint: "This is the About the Founder button. It tells you about the person who built QRaksha.",
+      voiceFounderPageIntro: "This page tells you about our founder, Imtiyaz Surjapuri, and the projects he has built. If you'd like to support his work, you can follow, subscribe, and like his social media accounts using the links below.",
+      voicePrivacyButtonHint: "This is the Privacy Policy button. It tells you how QRaksha handles your data.",
+      voicePrivacyPageIntro: "This is our Privacy Policy.",
 
       /* Scan / camera */
       scanPrivacy: "Scan with privacy",
@@ -409,6 +413,10 @@ window.QRVLang = (function () {
       catSocialLabel: "सोशल मीडिया URL",
       catSocialDesc: "प्रोफाइल क्लोनिंग या फर्ज़ी गिवअवे जांचें",
       catComingSoon: "जल्द आ रहा है — आधिकारिक रिपोर्ट पोर्टल पर भेजता है",
+      voiceFounderButtonHint: "यह फाउंडर के बारे में वाला बटन है। यह आपको बताता है कि QRaksha किसने बनाया।",
+      voiceFounderPageIntro: "यह पेज आपको हमारे फाउंडर, इम्तियाज़ सुरजापुरी, और उनके बनाए प्रोजेक्ट्स के बारे में बताता है। अगर आप उनके काम को सपोर्ट करना चाहते हैं, तो नीचे दिए गए लिंक से उनके सोशल मीडिया अकाउंट्स को फॉलो, सब्सक्राइब और लाइक कर सकते हैं।",
+      voicePrivacyButtonHint: "यह प्राइवेसी पॉलिसी वाला बटन है। यह आपको बताता है कि QRaksha आपके डेटा को कैसे संभालता है।",
+      voicePrivacyPageIntro: "यह हमारी प्राइवेसी पॉलिसी है।",
 
       scanPrivacy: "गोपनीयता के साथ स्कैन करें",
       scanAnother: "नया स्कैन करें",
@@ -692,6 +700,10 @@ window.QRVLang = (function () {
       catSocialLabel: "সোশ্যাল মিডিয়া URL",
       catSocialDesc: "প্রোফাইল ক্লোনিং বা ভুয়া গিভঅ্যাওয়ে যাচাই করুন",
       catComingSoon: "শীঘ্রই আসছে — অফিসিয়াল রিপোর্ট পোর্টালে যায়",
+      voiceFounderButtonHint: "এটি প্রতিষ্ঠাতা সম্পর্কে বোতাম। এটি আপনাকে বলে যে QRaksha কে তৈরি করেছেন।",
+      voiceFounderPageIntro: "এই পাতাটি আপনাকে আমাদের প্রতিষ্ঠাতা, ইমতিয়াজ সুরজাপুরি, এবং তার তৈরি প্রকল্পগুলি সম্পর্কে বলে। আপনি যদি তার কাজকে সমর্থন করতে চান, তাহলে নিচের লিঙ্কগুলি ব্যবহার করে তার সোশ্যাল মিডিয়া অ্যাকাউন্ট ফলো, সাবস্ক্রাইব এবং লাইক করতে পারেন।",
+      voicePrivacyButtonHint: "এটি গোপনীয়তা নীতি বোতাম। এটি আপনাকে বলে যে QRaksha আপনার ডেটা কীভাবে পরিচালনা করে।",
+      voicePrivacyPageIntro: "এটি আমাদের গোপনীয়তা নীতি।",
 
       scanPrivacy: "গোপনীয়তার সাথে স্ক্যান করুন",
       scanAnother: "আরেকটি স্ক্যান করুন",
@@ -820,6 +832,10 @@ window.QRVLang = (function () {
       catSocialLabel: "సోషల్ మీడియా URL",
       catSocialDesc: "ప్రొఫైల్ క్లోనింగ్ లేదా నకిలీ గివ్‌అవేలను తనిఖీ చేయండి",
       catComingSoon: "త్వరలో వస్తుంది — అధికారిక రిపోర్ట్ పోర్టల్‌కి మళ్ళిస్తుంది",
+      voiceFounderButtonHint: "ఇది వ్యవస్థాపకుడి గురించి బటన్. QRaksha ను ఎవరు తయారు చేశారో ఇది మీకు చెబుతుంది.",
+      voiceFounderPageIntro: "ఈ పేజీ మా వ్యవస్థాపకుడు, ఇమ్తియాజ్ సుర్జాపురి, మరియు అతను నిర్మించిన ప్రాజెక్టుల గురించి మీకు చెబుతుంది. మీరు అతని పనికి మద్దతు ఇవ్వాలనుకుంటే, దిగువ లింక్‌లను ఉపయోగించి అతని సోషల్ మీడియా ఖాతాలను ఫాలో, సబ్‌స్క్రైబ్ మరియు లైక్ చేయవచ్చు.",
+      voicePrivacyButtonHint: "ఇది గోప్యతా విధానం బటన్. QRaksha మీ డేటాను ఎలా నిర్వహిస్తుందో ఇది మీకు చెబుతుంది.",
+      voicePrivacyPageIntro: "ఇది మా గోప్యతా విధానం.",
 
       scanPrivacy: "గోప్యతతో స్కాన్ చేయండి",
       scanAnother: "మరొకటి స్కాన్ చేయండి",
@@ -948,6 +964,10 @@ window.QRVLang = (function () {
       catSocialLabel: "सोशल मीडिया URL",
       catSocialDesc: "प्रोफाइल क्लोनिंग किंवा बनावट गिव्हअवे तपासा",
       catComingSoon: "लवकरच येत आहे — अधिकृत तक्रार पोर्टलवर पाठवते",
+      voiceFounderButtonHint: "हे संस्थापकाबद्दलचे बटण आहे. QRaksha कोणी तयार केले हे हे तुम्हाला सांगते.",
+      voiceFounderPageIntro: "हे पान तुम्हाला आमचे संस्थापक, इम्तियाज सुरजापुरी, आणि त्यांनी तयार केलेल्या प्रकल्पांबद्दल सांगते. जर तुम्हाला त्यांच्या कामाला पाठिंबा द्यायचा असेल, तर खालील लिंक वापरून त्यांचे सोशल मीडिया अकाउंट फॉलो, सबस्क्राइब आणि लाईक करू शकता.",
+      voicePrivacyButtonHint: "हे गोपनीयता धोरण बटण आहे. QRaksha तुमचा डेटा कसा हाताळते हे हे तुम्हाला सांगते.",
+      voicePrivacyPageIntro: "हे आमचे गोपनीयता धोरण आहे.",
 
       scanPrivacy: "गोपनीयतेसह स्कॅन करा",
       scanAnother: "नवीन स्कॅन करा",
@@ -1076,6 +1096,10 @@ window.QRVLang = (function () {
       catSocialLabel: "சமூக ஊடக URL",
       catSocialDesc: "சுயவிவர நகலெடுப்பு அல்லது போலி பரிசுகளை சரிபார்க்கவும்",
       catComingSoon: "விரைவில் வருகிறது — அதிகாரப்பூர்வ புகார் போர்டலுக்கு செல்கிறது",
+      voiceFounderButtonHint: "இது நிறுவனர் பற்றிய பொத்தான். QRaksha-வை யார் உருவாக்கினார்கள் என்பதை இது உங்களுக்குச் சொல்கிறது.",
+      voiceFounderPageIntro: "இந்தப் பக்கம் எங்கள் நிறுவனர், இம்தியாஜ் சூர்ஜாபுரி, மற்றும் அவர் உருவாக்கிய திட்டங்களைப் பற்றி உங்களுக்குச் சொல்கிறது. அவரது பணியை நீங்கள் ஆதரிக்க விரும்பினால், கீழே உள்ள இணைப்புகளைப் பயன்படுத்தி அவரது சமூக ஊடக கணக்குகளைப் பின்தொடரலாம், குழுசேரலாம், விருப்பமும் தெரிவிக்கலாம்.",
+      voicePrivacyButtonHint: "இது தனியுரிமைக் கொள்கை பொத்தான். QRaksha உங்கள் தரவை எவ்வாறு கையாளுகிறது என்பதை இது உங்களுக்குச் சொல்கிறது.",
+      voicePrivacyPageIntro: "இது எங்கள் தனியுரிமைக் கொள்கை.",
 
       scanPrivacy: "தனியுரிமையுடன் ஸ்கேன் செய்யவும்",
       scanAnother: "வேறொன்றை ஸ்கேன் செய்யவும்",
@@ -1204,6 +1228,10 @@ window.QRVLang = (function () {
       catSocialLabel: "سوشل میڈیا یو آر ایل",
       catSocialDesc: "پروفائل کلوننگ یا جعلی گیو اوے چیک کریں",
       catComingSoon: "جلد آ رہا ہے — آفیشل رپورٹ پورٹل پر بھیجتا ہے",
+      voiceFounderButtonHint: "یہ بانی کے بارے میں والا بٹن ہے۔ یہ آپ کو بتاتا ہے کہ QRaksha کس نے بنایا۔",
+      voiceFounderPageIntro: "یہ صفحہ آپ کو ہمارے بانی، امتیاز سورجاپوری، اور ان کے بنائے گئے پروجیکٹس کے بارے میں بتاتا ہے۔ اگر آپ ان کے کام کی حمایت کرنا چاہتے ہیں، تو نیچے دیے گئے لنکس کا استعمال کرتے ہوئے ان کے سوشل میڈیا اکاؤنٹس کو فالو، سبسکرائب اور لائک کر سکتے ہیں۔",
+      voicePrivacyButtonHint: "یہ پرائیویسی پالیسی والا بٹن ہے۔ یہ آپ کو بتاتا ہے کہ QRaksha آپ کے ڈیٹا کو کیسے سنبھالتا ہے۔",
+      voicePrivacyPageIntro: "یہ ہماری پرائیویسی پالیسی ہے۔",
 
       scanPrivacy: "رازداری کے ساتھ اسکین کریں",
       scanAnother: "دوبارہ اسکین کریں",
@@ -1332,6 +1360,10 @@ window.QRVLang = (function () {
       catSocialLabel: "સોશિયલ મીડિયા URL",
       catSocialDesc: "પ્રોફાઇલ ક્લોનિંગ અથવા નકલી ગિવઅવે તપાસો",
       catComingSoon: "ટૂંક સમયમાં આવી રહ્યું છે — સત્તાવાર રિપોર્ટ પોર્ટલ પર મોકલે છે",
+      voiceFounderButtonHint: "આ સ્થાપક વિશેનું બટન છે. તે તમને કહે છે કે QRaksha કોણે બનાવ્યું.",
+      voiceFounderPageIntro: "આ પેજ તમને અમારા સ્થાપક, ઇમ્તિયાઝ સુરજાપુરી, અને તેમણે બનાવેલા પ્રોજેક્ટ્સ વિશે કહે છે. જો તમે તેમના કામને સપોર્ટ કરવા માંગતા હો, તો નીચે આપેલી લિંક્સનો ઉપયોગ કરીને તેમના સોશિયલ મીડિયા એકાઉન્ટ્સને ફોલો, સબસ્ક્રાઇબ અને લાઈક કરી શકો છો.",
+      voicePrivacyButtonHint: "આ ગોપનીયતા નીતિ બટન છે. તે તમને કહે છે કે QRaksha તમારો ડેટા કેવી રીતે હેન્ડલ કરે છે.",
+      voicePrivacyPageIntro: "આ અમારી ગોપનીયતા નીતિ છે.",
 
       scanPrivacy: "ગોપનીયતા સાથે સ્કેન કરો",
       scanAnother: "બીજું સ્કેન કરો",
@@ -1460,6 +1492,10 @@ window.QRVLang = (function () {
       catSocialLabel: "ಸಾಮಾಜಿಕ ಮಾಧ್ಯಮ URL",
       catSocialDesc: "ಪ್ರೊಫೈಲ್ ಕ್ಲೋನಿಂಗ್ ಅಥವಾ ನಕಲಿ ಗಿವ್‌ಅವೇಗಳನ್ನು ಪರಿಶೀಲಿಸಿ",
       catComingSoon: "ಶೀಘ್ರದಲ್ಲೇ ಬರುತ್ತಿದೆ — ಅಧಿಕೃತ ವರದಿ ಪೋರ್ಟಲ್‌ಗೆ ಮರುನಿರ್ದೇಶಿಸುತ್ತದೆ",
+      voiceFounderButtonHint: "ಇದು ಸಂಸ್ಥಾಪಕರ ಬಗ್ಗೆ ಬಟನ್. QRaksha ಅನ್ನು ಯಾರು ನಿರ್ಮಿಸಿದರು ಎಂದು ಇದು ನಿಮಗೆ ತಿಳಿಸುತ್ತದೆ.",
+      voiceFounderPageIntro: "ಈ ಪುಟವು ನಮ್ಮ ಸಂಸ್ಥಾಪಕರಾದ ಇಮ್ತಿಯಾಜ್ ಸೂರ್ಜಾಪುರಿ ಮತ್ತು ಅವರು ನಿರ್ಮಿಸಿದ ಯೋಜನೆಗಳ ಬಗ್ಗೆ ನಿಮಗೆ ತಿಳಿಸುತ್ತದೆ. ನೀವು ಅವರ ಕೆಲಸವನ್ನು ಬೆಂಬಲಿಸಲು ಬಯಸಿದರೆ, ಕೆಳಗಿನ ಲಿಂಕ್‌ಗಳನ್ನು ಬಳಸಿ ಅವರ ಸಾಮಾಜಿಕ ಮಾಧ್ಯಮ ಖಾತೆಗಳನ್ನು ಫಾಲೋ, ಸಬ್‌ಸ್ಕ್ರೈಬ್ ಮತ್ತು ಲೈಕ್ ಮಾಡಬಹುದು.",
+      voicePrivacyButtonHint: "ಇದು ಗೌಪ್ಯತಾ ನೀತಿ ಬಟನ್. QRaksha ನಿಮ್ಮ ಡೇಟಾವನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುತ್ತದೆ ಎಂದು ಇದು ನಿಮಗೆ ತಿಳಿಸುತ್ತದೆ.",
+      voicePrivacyPageIntro: "ಇದು ನಮ್ಮ ಗೌಪ್ಯತಾ ನೀತಿ.",
 
       scanPrivacy: "ಗೌಪ್ಯತೆಯೊಂದಿಗೆ ಸ್ಕ್ಯಾನ್ ಮಾಡಿ",
       scanAnother: "ಮತ್ತೊಂದು ಸ್ಕ್ಯಾನ್ ಮಾಡಿ",

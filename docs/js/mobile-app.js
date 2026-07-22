@@ -949,6 +949,18 @@
     openBtn.addEventListener("click", () => {
       $("founderModal").hidden = false;
       renderFounderPortfolio();
+      // Voice accessibility: announce what this section is, then read
+      // the founder's bio and a follow/subscribe/like prompt — all in
+      // whichever language is currently selected. speak() (not
+      // speakKey/force) is used for the second part so it queues after
+      // the first sentence naturally via a short combined utterance,
+      // matching the same "stop previous, speak new" behavior used
+      // everywhere else in the app.
+      if (window.QRVVoice && window.QRVLang) {
+        const intro = window.QRVLang.t("voiceFounderButtonHint");
+        const page = window.QRVLang.t("voiceFounderPageIntro");
+        window.QRVVoice.speak(`${intro} ${page}`, { force: true });
+      }
     });
   }
 
@@ -956,24 +968,38 @@
   wireFounderModal("btnOpenFounderHome");
 
   if ($("btnCloseFounder")) {
-    $("btnCloseFounder").addEventListener("click", () => { $("founderModal").hidden = true; });
+    $("btnCloseFounder").addEventListener("click", () => {
+      $("founderModal").hidden = true;
+      if (window.QRVVoice) window.QRVVoice.stop();
+    });
   }
   if ($("btnFounderHome")) {
     $("btnFounderHome").addEventListener("click", () => {
       $("founderModal").hidden = true;
       $("settingsModal").hidden = true;
+      if (window.QRVVoice) window.QRVVoice.stop();
       activateTab("tabHome");
     });
   }
 
   function wirePrivacyModal(openBtnId) {
     const openBtn = $(openBtnId);
-    if (openBtn) openBtn.addEventListener("click", () => { $("privacyModal").hidden = false; });
+    if (openBtn) openBtn.addEventListener("click", () => {
+      $("privacyModal").hidden = false;
+      if (window.QRVVoice && window.QRVLang) {
+        const intro = window.QRVLang.t("voicePrivacyButtonHint");
+        const page = window.QRVLang.t("voicePrivacyPageIntro");
+        window.QRVVoice.speak(`${intro} ${page}`, { force: true });
+      }
+    });
   }
   wirePrivacyModal("btnOpenPrivacy");
   wirePrivacyModal("btnOpenPrivacyHome");
   if ($("btnClosePrivacy")) {
-    $("btnClosePrivacy").addEventListener("click", () => { $("privacyModal").hidden = true; });
+    $("btnClosePrivacy").addEventListener("click", () => {
+      $("privacyModal").hidden = true;
+      if (window.QRVVoice) window.QRVVoice.stop();
+    });
   }
 
   /* ====================================================================
