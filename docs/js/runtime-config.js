@@ -14,5 +14,5 @@ window.QRV_RUNTIME_CONFIG = {
   functionsBaseUrl:        "",
   aiFeaturesEnabled:       false,
   googleSafeBrowsingKey:   "AIzaSyApHx3DP93LSwNdtpt8sS3utOsXq1CSEA4",
-  generatedAt:             "2026-07-21T12:17:15Z",
+  generatedAt:             "2026-07-22T06:46:58Z",
 };
