@@ -1610,7 +1610,7 @@ window.QRVLang = (function () {
       el.style.transform = "translateX(-50%) translateY(12px)";
     }, 2200);
 
-    if (window.QRVVoice) window.QRVVoice.speak(message, { force: true });
+    if (window.QRVVoice) window.QRVVoice.speak(message);
   }
 
   /**

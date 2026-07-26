@@ -959,7 +959,7 @@
       if (window.QRVVoice && window.QRVLang) {
         const intro = window.QRVLang.t("voiceFounderButtonHint");
         const page = window.QRVLang.t("voiceFounderPageIntro");
-        window.QRVVoice.speak(`${intro} ${page}`, { force: true });
+        window.QRVVoice.speak(`${intro} ${page}`);
       }
     });
   }
@@ -989,7 +989,7 @@
       if (window.QRVVoice && window.QRVLang) {
         const intro = window.QRVLang.t("voicePrivacyButtonHint");
         const page = window.QRVLang.t("voicePrivacyPageIntro");
-        window.QRVVoice.speak(`${intro} ${page}`, { force: true });
+        window.QRVVoice.speak(`${intro} ${page}`);
       }
     });
   }
