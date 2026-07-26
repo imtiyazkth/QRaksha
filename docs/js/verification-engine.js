@@ -882,5 +882,24 @@ window.QRVVerification = (function () {
     container.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 
+  // WHOIS domain age — flags domains registered < 30 days ago.
+  // Free tier: whoisfreaks.com 100 lookups/month. Degrades silently.
+  async function checkDomainAge(domain) {
+    try {
+      const clean = domain.replace(/^www\./, "");
+      const url = "https://api.whoisfreaks.com/v1.0/whois?apiKey=FREE&whois=live&domainName="
+                  + encodeURIComponent(clean);
+      const res = await fetch(url, { signal: AbortSignal.timeout(4000) });
+      if (!res.ok) return null;
+      const data = await res.json();
+      const created = data.create_date || null;
+      if (!created) return null;
+      const ageDays = (Date.now() - new Date(created).getTime()) / 86400000;
+      return { ageDays: Math.round(ageDays), isNew: ageDays < 30, isVeryNew: ageDays < 7 };
+    } catch (_) { return null; }
+  }
+  window.QRVDomainAge = { check: checkDomainAge };
+
+
   return { handleVerificationCheck, renderVerdictCard, INTEL, checkGlobalSignature, buildGlobalSignatureVerdict };
 })();

@@ -38,8 +38,25 @@ window.QRVSanitize = (function () {
   // string or inject instructions before text is sent to the AI backend.
   // This is a defense-in-depth measure — the real prompt-injection defense
   // lives server-side in the Cloud Function's system prompt, not here.
+  // Strip prompt injection attempts before sending to Mesh AI.
+  // Removes: null bytes, common jailbreak phrases, role-switching attempts,
+  // instruction overrides, and control characters. Defense-in-depth only —
+  // the real protection lives in the server-side system prompt.
   function normalizeForAiInput(text) {
-    return String(text).slice(0, 2000).replace(/\u0000/g, "");
+    return String(text)
+      .slice(0, 2000)
+      .replace(/\u0000/g, "")
+      .replace(/[\x01-\x08\x0b\x0c\x0e-\x1f\x7f]/g, "")
+      .replace(/ignore\s+(previous|all|above)\s+instructions?/gi, "[removed]")
+      .replace(/you\s+are\s+now\s+(a|an|the)?\s*/gi, "[removed]")
+      .replace(/act\s+as\s+(a|an|the)?\s*/gi, "[removed]")
+      .replace(/system\s*:/gi, "[removed]")
+      .replace(/\[system\]/gi, "[removed]")
+      .replace(/jailbreak/gi, "[removed]")
+      .replace(/DAN\b/g, "[removed]")
+      .replace(/forget\s+(your|all|previous)\s*/gi, "[removed]")
+      .replace(/new\s+instructions?\s*:/gi, "[removed]")
+      .trim();
   }
 
   return { escapeHtml, setText, safeHtml, normalizeForAiInput };

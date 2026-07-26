@@ -333,6 +333,11 @@
 
       <!-- RESULT CARD -->
       <div id="resultCard" hidden class="mt-4 rounded-3xl bg-panel border border-line p-5">
+    <!-- Legal disclaimer — shown at bottom of every result -->
+    <p id="resultDisclaimerText" data-i18n="resultDisclaimer"
+       class="text-[11px] text-neutral-500 text-center mt-4 pt-3 border-t border-line leading-relaxed">
+      QRaksha detects patterns — no tool guarantees 100% certainty. When in doubt, verify through official channels.
+    </p>
         <p class="text-xs uppercase tracking-wide text-neutral-500 mb-1">What this is</p>
         <p id="resultContext" class="text-base font-medium text-neutral-100 mb-4"></p>
 
@@ -606,6 +611,13 @@
       <div class="space-y-2 mb-4">
         <button id="btnOpenFounder" type="button"
           class="w-full text-left py-3 px-4 rounded-xl border border-line text-sm text-neutral-200 bg-transparent" data-i18n="aboutFounderLabel">About the Founder</button>
+
+      <!-- Grievance Officer — DPDPA 2023 compliance -->
+      <div class="mt-4 p-4 rounded-xl border border-line bg-neutral-900/50">
+        <p class="text-xs font-semibold text-amber mb-1" data-i18n="grievanceLabel">Grievance Officer</p>
+        <p class="text-[11px] text-neutral-400 leading-relaxed" data-i18n="grievanceContact">Report an issue: qrakshasupport@gmail.com · Response within 72 hours</p>
+        <p class="text-[10px] text-neutral-600 mt-1">In compliance with DPDPA 2023 (India) &amp; IT Act 2000</p>
+      </div>
         <button id="btnOpenPrivacy" type="button"
           class="w-full text-left py-3 px-4 rounded-xl border border-line text-sm text-neutral-200 bg-transparent" data-i18n="privacyPolicyTitle">Privacy Policy</button>
         <button id="btnOpenShareApp" type="button"

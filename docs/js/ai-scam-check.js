@@ -10,6 +10,43 @@
 window.QRVAiScamCheck = (function () {
   "use strict";
 
+  // ── AI rate limiter ─────────────────────────────────────────────────
+  // Max 5 AI checks per hour per device. Stored in localStorage so it
+  // persists across page reloads. Protects against accidental abuse and
+  // helps stay within free-tier API quotas.
+  const AI_RATE_KEY = "qrv_ai_calls";
+  const AI_RATE_MAX = 5;
+  const AI_RATE_WINDOW_MS = 60 * 60 * 1000; // 1 hour
+
+  function isAiRateLimited() {
+    try {
+      const raw = localStorage.getItem(AI_RATE_KEY);
+      const record = raw ? JSON.parse(raw) : { calls: [], windowStart: Date.now() };
+      const now = Date.now();
+      // Drop calls older than 1 hour
+      record.calls = record.calls.filter(t => now - t < AI_RATE_WINDOW_MS);
+      if (record.calls.length >= AI_RATE_MAX) return true;
+      record.calls.push(now);
+      localStorage.setItem(AI_RATE_KEY, JSON.stringify(record));
+      return false;
+    } catch (_) {
+      return false; // If localStorage blocked, allow the call
+    }
+  }
+
+  function aiCallsRemaining() {
+    try {
+      const raw = localStorage.getItem(AI_RATE_KEY);
+      if (!raw) return AI_RATE_MAX;
+      const record = JSON.parse(raw);
+      const now = Date.now();
+      const recent = record.calls.filter(t => now - t < AI_RATE_WINDOW_MS);
+      return Math.max(0, AI_RATE_MAX - recent.length);
+    } catch (_) {
+      return AI_RATE_MAX;
+    }
+  }
+
   const $ = (id) => document.getElementById(id);
   const { escapeHtml, setText } = window.QRVSanitize;
   const SEVERITY_WEIGHT = { info: 5, low: 20, medium: 45, high: 70, critical: 95 };
