@@ -510,6 +510,25 @@
   <!-- ═══════════════════════════════════════════════════════
        BOTTOM NAVIGATION
   ═══════════════════════════════════════════════════════ -->
+  <!-- ── Floating voice mute/unmute pill (always visible above bottom nav) ── -->
+  <div id="voiceFloatPill"
+    class="fixed bottom-16 right-4 z-40 flex gap-2 items-center
+           bg-neutral-900 border border-line rounded-full px-3 py-2 shadow-lg
+           transition-opacity duration-300">
+    <button id="btnFloatVoiceOn" type="button"
+      title="Voice ON"
+      class="w-9 h-9 rounded-full flex items-center justify-center text-lg
+             bg-amber/15 border border-amber/40 text-amber active:scale-90 transition-transform">
+      🔊
+    </button>
+    <button id="btnFloatVoiceOff" type="button"
+      title="Mute All"
+      class="w-9 h-9 rounded-full flex items-center justify-center text-lg
+             bg-transparent border border-line text-neutral-500 active:scale-90 transition-transform">
+      🔇
+    </button>
+  </div>
+
   <nav class="fixed bottom-0 left-0 right-0 max-w-4xl mx-auto bg-panel border-t border-line grid grid-cols-5 z-30
               safe-area-inset-bottom">
     <button class="qrv-navbtn is-active" data-tab="tabHome">
@@ -570,11 +589,17 @@
       <h2 class="font-display font-bold text-lg mb-3 flex items-center gap-2">
         🔊 <span>Voice Guidance</span>
       </h2>
-      <button id="btnToggleVoice" type="button"
-        class="w-full flex items-center justify-between py-3 px-4 rounded-xl border border-line text-sm text-neutral-200 bg-transparent mb-1">
-        <span>Read screens and results aloud</span>
-        <span id="voiceToggleState" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-amber/15 text-amber">ON</span>
-      </button>
+      <div class="flex gap-3 mb-1">
+        <button id="btnVoiceOn" type="button"
+          class="flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl border border-amber/40 text-sm font-semibold text-amber bg-amber/10 active:scale-95 transition-transform">
+          🔊 <span data-i18n="voiceOnBtn">Voice ON</span>
+        </button>
+        <button id="btnVoiceOff" type="button"
+          class="flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl border border-line text-sm font-semibold text-neutral-400 bg-transparent active:scale-95 transition-transform">
+          🔇 <span data-i18n="voiceOffBtn">Mute All</span>
+        </button>
+      </div>
+      <p id="voiceStatusLine" class="text-[11px] text-amber mb-1">🔊 Voice guidance is ON</p>
       <p class="text-[10px] text-neutral-500 mb-6">Uses your device's own text-to-speech engine — works offline, no data is sent anywhere. Speaks in whichever language you select above.</p>
 
       <h2 class="font-display font-bold text-lg mb-3" data-i18n="aboutTransparencyTitle">About &amp; Transparency</h2>

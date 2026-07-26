@@ -214,21 +214,55 @@ window.QRVVoice = (function () {
   }
 
   function wireMuteToggle() {
-    const btn = document.getElementById("btnToggleVoice");
-    const state = document.getElementById("voiceToggleState");
-    if (!btn || !state) return;
-    const render = () => {
+    // Settings panel buttons
+    const btnOn  = document.getElementById("btnVoiceOn");
+    const btnOff = document.getElementById("btnVoiceOff");
+    const statusLine = document.getElementById("voiceStatusLine");
+    // Floating pill buttons
+    const floatOn  = document.getElementById("btnFloatVoiceOn");
+    const floatOff = document.getElementById("btnFloatVoiceOff");
+
+    function renderAll() {
       const muted = isMuted();
-      state.textContent = muted ? "OFF" : "ON";
-      state.className = "text-xs font-semibold px-2.5 py-1 rounded-full " +
-        (muted ? "bg-neutral-700 text-neutral-400" : "bg-amber/15 text-amber");
-    };
-    render();
-    btn.addEventListener("click", () => {
-      setMuted(!isMuted());
-      render();
-      if (!isMuted()) speak("Voice guidance on.", { force: true });
-    });
+
+      // Settings panel
+      if (btnOn)  btnOn.className  = btnOn.className.replace(/bg-amber\/10|bg-transparent/, muted ? "bg-transparent" : "bg-amber/10")
+                                              .replace(/text-amber|text-neutral-400/, muted ? "text-neutral-400" : "text-amber")
+                                              .replace(/border-amber\/40|border-line/, muted ? "border-line" : "border-amber/40");
+      if (btnOff) btnOff.className = btnOff.className.replace(/bg-amber\/10|bg-transparent/, muted ? "bg-amber/10" : "bg-transparent")
+                                               .replace(/text-amber|text-neutral-400/, muted ? "text-amber" : "text-neutral-400")
+                                               .replace(/border-amber\/40|border-line/, muted ? "border-amber/40" : "border-line");
+      if (statusLine) {
+        statusLine.textContent = muted ? "🔇 Voice guidance is OFF" : "🔊 Voice guidance is ON";
+        statusLine.className = "text-[11px] mb-1 " + (muted ? "text-neutral-500" : "text-amber");
+      }
+
+      // Floating pill
+      if (floatOn)  floatOn.className  = floatOn.className.replace(/bg-amber\/15|bg-transparent/, muted ? "bg-transparent" : "bg-amber/15")
+                                                           .replace(/text-amber|text-neutral-500/, muted ? "text-neutral-500" : "text-amber")
+                                                           .replace(/border-amber\/40|border-line/, muted ? "border-line" : "border-amber/40");
+      if (floatOff) floatOff.className = floatOff.className.replace(/bg-amber\/15|bg-transparent/, muted ? "bg-amber/15" : "bg-transparent")
+                                                            .replace(/text-amber|text-neutral-500/, muted ? "text-amber" : "text-neutral-500")
+                                                            .replace(/border-amber\/40|border-line/, muted ? "border-amber/40" : "border-line");
+    }
+
+    function turnOn() {
+      setMuted(false);
+      renderAll();
+      speak("Voice guidance on.", { force: true });
+    }
+    function turnOff() {
+      setMuted(true);
+      stop();
+      renderAll();
+    }
+
+    if (btnOn)    btnOn.addEventListener("click", turnOn);
+    if (btnOff)   btnOff.addEventListener("click", turnOff);
+    if (floatOn)  floatOn.addEventListener("click", turnOn);
+    if (floatOff) floatOff.addEventListener("click", turnOff);
+
+    renderAll();
   }
 
   function init() {
