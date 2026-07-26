@@ -14,7 +14,7 @@
    the old-cache cleanup below.
    ========================================================================== */
 
-const CACHE_NAME = "qraksha-shell-v20260717a";
+const CACHE_NAME = "qraksha-shell-__BUILD_HASH__";
 const SHELL_FILES = [
   "./",
   "./index.html",

@@ -1,0 +1,43 @@
+name: Inject build hash into service worker
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  inject:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Inject git commit hash into sw.js
+        run: |
+          HASH=$(git rev-parse --short HEAD)
+          DATE=$(date -u +%Y%m%d)
+          BUILD="${DATE}-${HASH}"
+          echo "Injecting build: $BUILD"
+          sed -i "s/__BUILD_HASH__/${BUILD}/g" docs/sw.js
+
+      - name: Commit updated sw.js
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/sw.js
+          if git diff --cached --quiet; then
+            echo "sw.js unchanged — nothing to commit."
+            exit 0
+          fi
+          git commit -m "chore: inject build hash into sw.js [auto]"
+          git fetch origin main
+          if git rebase origin/main; then
+            git push origin main
+            echo "sw.js pushed."
+          else
+            git rebase --abort || true
+            echo "Rebase conflict — will retry next push."
+          fi
