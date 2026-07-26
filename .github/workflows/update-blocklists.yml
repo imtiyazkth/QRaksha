@@ -53,11 +53,49 @@ jobs:
             --output docs/data/blocklists/urlhaus.json \
             --source "URLhaus (abuse.ch) — free, no API key"
 
+      # ── URLhaus recent feed (last 30 days, broader coverage) ──
+      - name: Fetch URLhaus recent feed
+        continue-on-error: true
+        run: |
+          curl -sL --max-time 30 \
+            "https://urlhaus.abuse.ch/downloads/text_recent/" \
+            -o /tmp/urlhaus_recent_raw.txt \
+            || (echo "URLhaus recent unavailable — keeping previous snapshot"; touch /tmp/urlhaus_recent_raw.txt)
+
+          node .github/scripts/build-blocklist.js \
+            --input  /tmp/urlhaus_recent_raw.txt \
+            --output docs/data/blocklists/urlhaus-recent.json \
+            --source "URLhaus recent (abuse.ch) — last 30 days, no API key"
+
+      # ── Block List Project — scam sites ──
+      - name: Fetch Block List Project scam feed
+        continue-on-error: true
+        run: |
+          curl -sL --max-time 30 \
+            "https://blocklistproject.github.io/Lists/scam.txt" \
+            -o /tmp/blp_scam_raw.txt \
+            || (echo "BLP scam unavailable — keeping previous snapshot"; touch /tmp/blp_scam_raw.txt)
+
+          node .github/scripts/build-blocklist.js \
+            --input  /tmp/blp_scam_raw.txt \
+            --output docs/data/blocklists/blp-scam.json \
+            --source "Block List Project — scam sites (Unlicense, free)"
+
+      # ── Phishing Army extended blocklist ──
+      - name: Fetch Phishing Army extended blocklist
+        continue-on-error: true
+        run: |
+          curl -sL --max-time 60 \
+            "https://phishing.army/download/phishing_army_blocklist_extended.txt" \
+            -o /tmp/phishing_army_raw.txt \
+            || (echo "Phishing Army unavailable — keeping previous snapshot"; touch /tmp/phishing_army_raw.txt)
+
+          node .github/scripts/build-blocklist.js \
+            --input  /tmp/phishing_army_raw.txt \
+            --output docs/data/blocklists/phishing-army.json \
+            --source "Phishing Army extended (PhishTank+OpenPhish+Cert.pl+URLscan+phishunt)"
+
       # ── PhishHunt live feed (no API key, compact JSON API) ──
-      # phishunt.io exposes a small public API endpoint that aggregates
-      # PhishTank + OpenPhish + Google Safe Browsing hits seen in the
-      # last 24 h. Use it only for the domain-level blocklist; full
-      # page details require a premium plan we don't have.
       - name: Fetch PhishHunt (phishunt.io) live feed
         continue-on-error: true
         run: |
@@ -74,10 +112,6 @@ jobs:
             --format json
 
       # ── PhishTank bulk data download (requires a FREE registered API key)
-      # Register at https://www.phishtank.com/api_register.php (free, instant)
-      # then add PHISHTANK_API_KEY as a repository secret under
-      # Settings → Secrets and variables → Actions.
-      # The step is skipped (no error) if the secret is absent.
       - name: Fetch PhishTank bulk feed (optional — needs PHISHTANK_API_KEY secret)
         if: ${{ secrets.PHISHTANK_API_KEY != '' }}
         run: |
@@ -92,7 +126,7 @@ jobs:
             --source "PhishTank bulk data (registered API key)" \
             --format json
 
-      # ── Commit refreshed blocklists back to the repo ──
+      # ── Commit ALL refreshed blocklists back to the repo ──
       - name: Commit refreshed blocklists
         run: |
           git config user.name  "github-actions[bot]"
@@ -107,14 +141,6 @@ jobs:
 
           git commit -m "chore: refresh free threat-intel blocklists [automated $(date -u +%Y-%m-%d)]"
 
-          # Another workflow (e.g. the runtime-config injector) may have
-          # pushed to main between checkout and here — rebase onto the
-          # latest remote before pushing, so a normal race never fails
-          # this whole job. If even that can't be resolved automatically
-          # (a real conflict, not just "behind"), log it and exit
-          # successfully anyway — a missed blocklist refresh is not
-          # worth a red X / failure email, since the app already
-          # degrades gracefully to the previous snapshot.
           git fetch origin main
           if git rebase origin/main; then
             if git push origin main; then
