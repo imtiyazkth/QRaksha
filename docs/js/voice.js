@@ -18,6 +18,8 @@ window.QRVVoice = (function () {
   "use strict";
 
   const MUTE_KEY = "qrv-voice-muted";
+  let _mutedInMemory = false; // fallback when localStorage is blocked
+
 
   // Maps QRVLang's language names to BCP-47 speech codes. Only languages
   // that have full text translations get a real spoken-language code;
@@ -40,11 +42,17 @@ window.QRVVoice = (function () {
   }
 
   function isMuted() {
-    try { return localStorage.getItem(MUTE_KEY) === "true"; }
-    catch (e) { return false; }
+    try {
+      const val = localStorage.getItem(MUTE_KEY);
+      _mutedInMemory = (val === "true");
+      return _mutedInMemory;
+    } catch (e) {
+      return _mutedInMemory;
+    }
   }
 
   function setMuted(muted) {
+    _mutedInMemory = !!muted;
     try { localStorage.setItem(MUTE_KEY, muted ? "true" : "false"); } catch (e) {}
   }
 
