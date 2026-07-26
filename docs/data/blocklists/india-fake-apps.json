@@ -1,0 +1,21 @@
+{
+  "version": "2026-07-26",
+  "source": "RBI, MeitY, state cyber cell reports 2025-2026",
+  "namePatterns": [
+    "instant loan", "quick cash", "rupee loan", "easy rupees",
+    "turbo loan", "cash advance india", "fast paisa", "rupee wallet",
+    "loan buddy", "credit mama", "paisa dost", "money tree india",
+    "go cash", "ok cash", "hi cash", "u cash", "we loan",
+    "aadhar loan", "pan card loan", "kyc loan", "aadhaar wallet",
+    "flexi loan", "rocket loan", "flash loan india",
+    "loan pe", "cash pe", "rupee pe", "paisa pe",
+    "instant paisa", "quick rupee", "super loan",
+    "get cash now", "loan 5 minutes", "loan without documents"
+  ],
+  "riskPermissions": [
+    "READ_CONTACTS", "READ_SMS", "CAMERA",
+    "READ_CALL_LOG", "PROCESS_OUTGOING_CALLS",
+    "ACCESS_FINE_LOCATION", "RECORD_AUDIO"
+  ],
+  "note": "Any APK link requesting READ_CONTACTS + READ_SMS + CAMERA together = HIGH RISK"
+}

@@ -1,0 +1,32 @@
+{
+  "version": "2026-07-26",
+  "source": "TRAI, CERT-In, I4C advisories 2025-2026",
+  "patterns": [
+    "your.*account.*blocked.*click",
+    "kyc.*update.*link.*expire",
+    "won.*prize.*claim.*now",
+    "aadhaar.*linked.*crime",
+    "digital arrest",
+    "income tax.*refund.*verify",
+    "electricity.*cut.*today.*pay",
+    "parcel.*held.*customs.*pay",
+    "otp.*share.*bank.*verify",
+    "work from home.*per day.*earn",
+    "free.*recharge.*click",
+    "lottery.*winner.*lakh",
+    "upi.*cashback.*link.*click",
+    "sbi.*alert.*link",
+    "hdfc.*alert.*link",
+    "icici.*alert.*link",
+    "paytm.*kyc.*expire",
+    "ration card.*update.*link",
+    "epfo.*claim.*link",
+    "trai.*notice.*number.*block",
+    "rbi.*reward.*click",
+    "pm.*yojana.*beneficiary.*link",
+    "uidai.*verify.*link",
+    "call merge.*otp",
+    "screen share.*support",
+    "anydesk.*teamviewer.*install"
+  ]
+}

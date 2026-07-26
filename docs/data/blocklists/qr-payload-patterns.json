@@ -1,0 +1,38 @@
+{
+  "version": "2026-07-26",
+  "source": "QRaksha internal — verified scam QR patterns India 2025-2026",
+  "suspiciousLinkPatterns": [
+    "wa\\.me\\/\\+",
+    "t\\.me\\/\\+",
+    "t\\.me\\/joinchat\\/",
+    "telegram\\.me\\/joinchat",
+    "bit\\.ly\\/",
+    "tinyurl\\.com\\/",
+    "cutt\\.ly\\/",
+    "rb\\.gy\\/",
+    "forms\\.gle\\/",
+    "docs\\.google\\.com\\/forms\\/"
+  ],
+  "payloadTypes": {
+    "whatsapp": ["wa.me/", "whatsapp://send"],
+    "telegramGroup": ["t.me/+", "t.me/joinchat/", "telegram.me/joinchat"],
+    "upiDeeplink": ["upi://pay", "gpay://", "phonepe://", "paytmmp://"],
+    "apkInstall": ["intent://", "market://details?id=", ".apk"],
+    "smsPrefill": ["smsto:", "sms:"],
+    "wifiCredential": ["WIFI:S:"],
+    "vcardContact": ["BEGIN:VCARD"]
+  },
+  "alwaysHighRisk": [
+    "intent://",
+    "t.me/joinchat/",
+    "t.me/+",
+    ".apk"
+  ],
+  "alwaysMediumRisk": [
+    "wa.me/",
+    "bit.ly/",
+    "tinyurl.com/",
+    "cutt.ly/",
+    "smsto:"
+  ]
+}
