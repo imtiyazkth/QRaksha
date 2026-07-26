@@ -20,9 +20,8 @@ jobs:
           HASH=$(git rev-parse --short HEAD)
           DATE=$(date -u +%Y%m%d)
           BUILD="${DATE}-${HASH}"
-          echo "Cache-busting with: $BUILD"
+          echo "Injecting build: $BUILD"
           sed -i -E "s/\.(js|css)\?v=[a-zA-Z0-9_-]+/.\1?v=${BUILD}/g" docs/index.html
-          echo "Done. Sample:"
           grep "?v=" docs/index.html | head -3
 
       - name: Commit updated index.html
@@ -31,15 +30,14 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add docs/index.html
           if git diff --cached --quiet; then
-            echo "index.html unchanged — nothing to commit."
+            echo "Nothing changed."
             exit 0
           fi
           git commit -m "chore: bump JS/CSS cache-bust version [auto]"
           git fetch origin main
           if git rebase origin/main; then
             git push origin main
-            echo "index.html pushed."
           else
             git rebase --abort || true
-            echo "Rebase conflict — will retry next push."
+            echo "Rebase conflict — skipping."
           fi

@@ -113,7 +113,9 @@ jobs:
 
       # ── PhishTank bulk data download (requires a FREE registered API key)
       - name: Fetch PhishTank bulk feed (optional — needs PHISHTANK_API_KEY secret)
-        if: ${{ secrets.PHISHTANK_API_KEY != '' }}
+        if: ${{ env.PHISHTANK_KEY != '' }}
+        env:
+          PHISHTANK_KEY: ${{ secrets.PHISHTANK_API_KEY }}
         run: |
           curl -sL --max-time 60 \
             "https://data.phishtank.com/data/${{ secrets.PHISHTANK_API_KEY }}/online-valid.json" \
