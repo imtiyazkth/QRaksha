@@ -1,6 +1,6 @@
 {
-  "version": "2026-07-26",
-  "source": "CERT-In, MHA I4C, cybercrime.gov.in 2025-2026",
+  "version": "2026-07-28",
+  "source": "CERT-In, MHA I4C, cybercrime.gov.in, I4C reports 2025-2026",
   "keywords": [
     "sbi-kyc", "hdfc-update", "paytm-kyc", "irctc-refund",
     "gov-in-", "-gov-scheme", "pm-yojana", "ration-card-update",
@@ -11,6 +11,14 @@
     "npci-upi", "bhim-reward", "gpay-cashback", "phonepe-offer",
     "amazon-winner", "flipkart-prize", "meesho-gift",
     "naukri-job-offer", "work-from-home-india",
-    "free-iphone-india", "jio-offer-", "airtel-recharge-free"
+    "free-iphone-india", "jio-offer-", "airtel-recharge-free",
+    "kyc-update-refund", "upi-cashback-", "refund-claim-",
+    "qr-payment-verify", "merchant-verify-",
+    "temple-donation-", "charity-qr-",
+    "job-registration-fee", "advance-salary-",
+    "olx-buyer-", "quikr-payment-",
+    "digital-arrest", "cyber-police-india",
+    "parcel-stuck-customs", "fedex-india-delivery",
+    "dhl-india-clearance", "army-officer-matrimony"
   ]
 }

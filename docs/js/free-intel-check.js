@@ -33,6 +33,9 @@ window.QRVFreeIntel = (function () {
       keywords: (keywords && keywords.patterns) || [],
       updatedAt: (openphish && openphish.updatedAt) || null,
     };
+    // Expose UPI data globally for qr-verify-core.js (offline, no network needed)
+    window._QRVValidUpiHandles  = cache.validUpiHandles;
+    window._QRVScamUpiKeywords  = cache.scamUpiKeywords;
     return cache;
   }
 
@@ -63,6 +66,19 @@ window.QRVFreeIntel = (function () {
     const lists = await loadLists();
     const domain = extractDomain(url);
     const flags = [];
+    // Check India scam domain keywords
+    if (domain) {
+      const domainLower = domain.toLowerCase();
+      const kwHit = lists.indiaDomainKeywords.find(kw => domainLower.includes(kw));
+      if (kwHit) {
+        flags.push({
+          severity: "high",
+          message: `Domain contains known India scam pattern "${kwHit}" — treat with extreme caution.`
+        });
+      }
+    }
+
+    // Check if URL is in any blocklist
     if (domain && lists.domains.has(domain)) {
       flags.push({
         severity: "critical",

@@ -14,13 +14,13 @@
     "docs\\.google\\.com\\/forms\\/"
   ],
   "payloadTypes": {
-    "whatsapp": ["wa.me/", "whatsapp://send"],
-    "telegramGroup": ["t.me/+", "t.me/joinchat/", "telegram.me/joinchat"],
-    "upiDeeplink": ["upi://pay", "gpay://", "phonepe://", "paytmmp://"],
-    "apkInstall": ["intent://", "market://details?id=", ".apk"],
-    "smsPrefill": ["smsto:", "sms:"],
+    "whatsapp":       ["wa.me/", "whatsapp://send"],
+    "telegramGroup":  ["t.me/+", "t.me/joinchat/", "telegram.me/joinchat"],
+    "upiDeeplink":    ["upi://pay", "gpay://", "phonepe://", "paytmmp://"],
+    "apkInstall":     ["intent://", "market://details?id=", ".apk"],
+    "smsPrefill":     ["smsto:", "sms:"],
     "wifiCredential": ["WIFI:S:"],
-    "vcardContact": ["BEGIN:VCARD"]
+    "vcardContact":   ["BEGIN:VCARD"]
   },
   "alwaysHighRisk": [
     "intent://",
@@ -34,5 +34,41 @@
     "tinyurl.com/",
     "cutt.ly/",
     "smsto:"
+  ],
+  "validUpiHandles": [
+    "oksbi", "okaxis", "okicici", "okhdfcbank",
+    "ybl", "ibl", "axl",
+    "paytm", "paytmbank",
+    "apl", "yapl",
+    "ikwik", "freecharge",
+    "hsbc", "pnb", "boi", "cnrb",
+    "aubank", "idbi", "federal",
+    "kotak", "kmbl",
+    "sib", "citi", "sc",
+    "niyoicici", "jupiteraxis",
+    "slice", "fi",
+    "indus", "indusind",
+    "rbl", "jsb",
+    "dbs", "dlb",
+    "upi", "bhim",
+    "naviaxis", "mahb",
+    "ptaxis", "pthdfc",
+    "rarecbk", "yesbankltd",
+    "kbl", "tjsb",
+    "barodampay", "unionbankofindia"
+  ],
+  "scamUpiKeywords": [
+    "kyc", "refund", "reward", "cashback", "helpline",
+    "support", "update", "verify", "unblock", "claim",
+    "prize", "winner", "lottery", "free", "gift",
+    "registration", "advance", "salary", "fee"
+  ],
+  "newIndia2026Patterns": [
+    "kyc-update-refund", "rewards@paytrn",
+    "upi-cashback-", "refund-claim-",
+    "qr-payment-verify", "merchant-verify-",
+    "temple-donation-", "charity-qr-",
+    "job-registration-fee", "advance-salary-",
+    "olx-buyer-", "quikr-payment-"
   ]
 }

@@ -1,17 +1,12 @@
 name: Update free threat-intel blocklists
 
-# ┌──────────────────────────────────────────────────────────────────┐
-# │  PATH BUG FIX (was using public/data/…, correct path is docs/)  │
-# │  Runs weekly, Monday 03:00 UTC. Also triggerable from Actions tab│
-# └──────────────────────────────────────────────────────────────────┘
-
 on:
   schedule:
-    - cron: "0 3 * * 1"   # every Monday 03:00 UTC
-  workflow_dispatch: {}    # manual trigger from the Actions tab
+    - cron: "0 3 * * 1"
+  workflow_dispatch: {}
 
 permissions:
-  contents: write          # needed to git-push the refreshed JSON files
+  contents: write
 
 jobs:
   refresh:
@@ -22,135 +17,153 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # ── ensure the output directory exists ──
       - name: Ensure output dirs exist
         run: mkdir -p docs/data/blocklists
 
-      # ── OpenPhish community feed (no API key required) ──
       - name: Fetch OpenPhish community feed
         continue-on-error: true
         run: |
           curl -sL --max-time 30 "https://openphish.com/feed.txt" \
             -o /tmp/openphish_raw.txt \
-            || (echo "OpenPhish unavailable — keeping previous snapshot"; touch /tmp/openphish_raw.txt)
-
+            || (echo "OpenPhish unavailable"; touch /tmp/openphish_raw.txt)
           node .github/scripts/build-blocklist.js \
             --input  /tmp/openphish_raw.txt \
             --output docs/data/blocklists/openphish.json \
             --source "OpenPhish community feed (free, no API key)"
 
-      # ── URLhaus active-malware feed (no API key required) ──
-      - name: Fetch URLhaus feed
+      - name: Fetch URLhaus active feed
         continue-on-error: true
         run: |
           curl -sL --max-time 30 \
             "https://urlhaus.abuse.ch/downloads/text_online/" \
             -o /tmp/urlhaus_raw.txt \
-            || (echo "URLhaus unavailable — keeping previous snapshot"; touch /tmp/urlhaus_raw.txt)
-
+            || (echo "URLhaus unavailable"; touch /tmp/urlhaus_raw.txt)
           node .github/scripts/build-blocklist.js \
             --input  /tmp/urlhaus_raw.txt \
             --output docs/data/blocklists/urlhaus.json \
             --source "URLhaus (abuse.ch) — free, no API key"
 
-      # ── URLhaus recent feed (last 30 days, broader coverage) ──
       - name: Fetch URLhaus recent feed
         continue-on-error: true
         run: |
           curl -sL --max-time 30 \
             "https://urlhaus.abuse.ch/downloads/text_recent/" \
             -o /tmp/urlhaus_recent_raw.txt \
-            || (echo "URLhaus recent unavailable — keeping previous snapshot"; touch /tmp/urlhaus_recent_raw.txt)
-
+            || (echo "URLhaus recent unavailable"; touch /tmp/urlhaus_recent_raw.txt)
           node .github/scripts/build-blocklist.js \
             --input  /tmp/urlhaus_recent_raw.txt \
             --output docs/data/blocklists/urlhaus-recent.json \
-            --source "URLhaus recent (abuse.ch) — last 30 days, no API key"
+            --source "URLhaus recent (abuse.ch) — last 30 days"
 
-      # ── Block List Project — scam sites ──
       - name: Fetch Block List Project scam feed
         continue-on-error: true
         run: |
           curl -sL --max-time 30 \
             "https://blocklistproject.github.io/Lists/scam.txt" \
             -o /tmp/blp_scam_raw.txt \
-            || (echo "BLP scam unavailable — keeping previous snapshot"; touch /tmp/blp_scam_raw.txt)
-
+            || (echo "BLP unavailable"; touch /tmp/blp_scam_raw.txt)
           node .github/scripts/build-blocklist.js \
             --input  /tmp/blp_scam_raw.txt \
             --output docs/data/blocklists/blp-scam.json \
-            --source "Block List Project — scam sites (Unlicense, free)"
+            --source "Block List Project — scam sites (Unlicense)"
 
-      # ── Phishing Army extended blocklist ──
-      - name: Fetch Phishing Army extended blocklist
+      - name: Fetch Phishing Army extended
         continue-on-error: true
         run: |
           curl -sL --max-time 60 \
             "https://phishing.army/download/phishing_army_blocklist_extended.txt" \
             -o /tmp/phishing_army_raw.txt \
-            || (echo "Phishing Army unavailable — keeping previous snapshot"; touch /tmp/phishing_army_raw.txt)
-
+            || (echo "Phishing Army unavailable"; touch /tmp/phishing_army_raw.txt)
           node .github/scripts/build-blocklist.js \
             --input  /tmp/phishing_army_raw.txt \
             --output docs/data/blocklists/phishing-army.json \
-            --source "Phishing Army extended (PhishTank+OpenPhish+Cert.pl+URLscan+phishunt)"
+            --source "Phishing Army extended (PhishTank+OpenPhish+Cert.pl+URLscan)"
 
-      # ── PhishHunt live feed (no API key, compact JSON API) ──
-      - name: Fetch PhishHunt (phishunt.io) live feed
+      - name: Fetch ThreatFox recent IOCs
+        continue-on-error: true
+        run: |
+          curl -sL --max-time 60 \
+            -X POST "https://threatfox-api.abuse.ch/api/v1/" \
+            -H "Content-Type: application/json" \
+            -d '{"query":"get_iocs","days":7}' \
+            -o /tmp/threatfox_raw.json \
+            || (echo "ThreatFox unavailable"; echo '{"query_status":"no_results","data":[]}' > /tmp/threatfox_raw.json)
+          node .github/scripts/build-blocklist.js \
+            --input  /tmp/threatfox_raw.json \
+            --output docs/data/blocklists/threatfox.json \
+            --source "ThreatFox (abuse.ch) — community IOC feed, free" \
+            --format threatfox
+
+      - name: Fetch AlienVault OTX pulse feed
+        continue-on-error: true
+        run: |
+          curl -sL --max-time 60 \
+            "https://reputation.alienvault.com/reputation.data" \
+            -o /tmp/otx_raw.txt \
+            || (echo "OTX unavailable"; touch /tmp/otx_raw.txt)
+          node .github/scripts/build-blocklist.js \
+            --input  /tmp/otx_raw.txt \
+            --output docs/data/blocklists/alienvault-otx.json \
+            --source "AlienVault OTX reputation feed (free)"
+
+      - name: Fetch Spamhaus DROP list
+        continue-on-error: true
+        run: |
+          curl -sL --max-time 30 \
+            "https://www.spamhaus.org/drop/drop.txt" \
+            -o /tmp/spamhaus_raw.txt \
+            || (echo "Spamhaus unavailable"; touch /tmp/spamhaus_raw.txt)
+          node .github/scripts/build-blocklist.js \
+            --input  /tmp/spamhaus_raw.txt \
+            --output docs/data/blocklists/spamhaus-drop.json \
+            --source "Spamhaus DROP list (free, nonprofit)" \
+            --format ip
+
+      - name: Fetch PhishHunt live feed
         continue-on-error: true
         run: |
           curl -sL --max-time 30 \
             "https://phishunt.io/api/suspects/" \
             -H "Accept: application/json" \
             -o /tmp/phishunt_raw.json \
-            || (echo "PhishHunt unavailable — keeping previous snapshot"; echo "[]" > /tmp/phishunt_raw.json)
-
+            || (echo "PhishHunt unavailable"; echo "[]" > /tmp/phishunt_raw.json)
           node .github/scripts/build-blocklist.js \
             --input  /tmp/phishunt_raw.json \
             --output docs/data/blocklists/phishunt.json \
-            --source "phishunt.io live feed (aggregates PhishTank/OpenPhish/Google Safe Browsing)" \
+            --source "phishunt.io live feed" \
             --format json
 
-      # ── PhishTank bulk data download (requires a FREE registered API key)
-      - name: Fetch PhishTank bulk feed (optional — needs PHISHTANK_API_KEY secret)
-        if: ${{ env.PHISHTANK_KEY != '' }}
+      - name: Fetch PhishTank bulk feed (optional)
+        continue-on-error: true
         env:
           PHISHTANK_KEY: ${{ secrets.PHISHTANK_API_KEY }}
+        if: env.PHISHTANK_KEY != ''
         run: |
           curl -sL --max-time 60 \
-            "https://data.phishtank.com/data/${{ secrets.PHISHTANK_API_KEY }}/online-valid.json" \
+            "https://data.phishtank.com/data/${PHISHTANK_KEY}/online-valid.json" \
             -o /tmp/phishtank_raw.json \
-            || (echo "PhishTank unavailable — keeping previous snapshot"; exit 0)
-
+            || (echo "PhishTank unavailable"; exit 0)
           node .github/scripts/build-blocklist.js \
             --input  /tmp/phishtank_raw.json \
             --output docs/data/blocklists/phishtank.json \
             --source "PhishTank bulk data (registered API key)" \
             --format json
 
-      # ── Commit ALL refreshed blocklists back to the repo ──
       - name: Commit refreshed blocklists
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-
           git add docs/data/blocklists/*.json
-
           if git diff --cached --quiet; then
-            echo "No changes to blocklists — nothing to commit."
+            echo "No changes — nothing to commit."
             exit 0
           fi
-
-          git commit -m "chore: refresh free threat-intel blocklists [automated $(date -u +%Y-%m-%d)]"
-
+          git commit -m "chore: refresh threat-intel blocklists [automated $(date -u +%Y-%m-%d)]"
           git fetch origin main
           if git rebase origin/main; then
-            if git push origin main; then
-              echo "Blocklists pushed successfully."
-            else
-              echo "Push still failed after rebase — will retry next scheduled run."
-            fi
+            git push origin main
+            echo "Blocklists pushed."
           else
             git rebase --abort || true
-            echo "Could not auto-rebase onto origin/main (real conflict) — skipping this run, will retry next scheduled run."
+            echo "Rebase conflict — will retry next run."
           fi

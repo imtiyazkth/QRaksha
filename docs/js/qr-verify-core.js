@@ -733,6 +733,21 @@
       const rawAmount = parseFloat((parsed.fields["Amount"] || "").replace(/[^0-9.]/g, "")) || 0;
       const payeeName = (parsed.fields["Payee name"] || "").toLowerCase();
       const vpa = (parsed.upiHandle || "").toLowerCase();
+
+      // Check UPI handle against verified allowlist (offline, instant)
+      if (vpa && vpa.includes("@")) {
+        const handle = vpa.split("@")[1] || "";
+        // Load valid handles from qr-payload-patterns.json if available
+        const validHandles = window._QRVValidUpiHandles || null;
+        if (validHandles && handle && !validHandles.has(handle.toLowerCase())) {
+          addFlag("high", 25, `UPI handle "@${handle}" is not a recognised bank/PSP handle. Verify the merchant name carefully before paying.`);
+        }
+        // Check VPA for scam keywords
+        const scamKw = (window._QRVScamUpiKeywords || []).find(kw => vpa.includes(kw));
+        if (scamKw) {
+          addFlag("critical", 35, `UPI address contains scam keyword "${scamKw}" — legitimate merchants never use words like refund/kyc/helpline in their UPI ID.`);
+        }
+      }
       const note = (parsed.fields["Note"] || parsed.fields["Transaction note"] || "").toLowerCase();
 
       if (parsed.fields["Amount"] && parsed.fields["Amount"] !== "Not fixed (you'll be asked)") {
