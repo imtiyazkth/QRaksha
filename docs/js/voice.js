@@ -116,12 +116,36 @@ window.QRVVoice = (function () {
 
   function pickVoice(voices, langCode) {
     if (!voices || !voices.length) return null;
+
+    // 1. Exact BCP-47 match e.g. "ta-IN"
     const exact = voices.find((v) => v.lang && v.lang.toLowerCase() === langCode.toLowerCase());
     if (exact) return exact;
+
+    // 2. Language prefix match e.g. "ta" matches "ta-IN" or "ta-LK"
     const prefix = langCode.split("-")[0].toLowerCase();
     const partial = voices.find((v) => v.lang && v.lang.toLowerCase().startsWith(prefix));
     if (partial) return partial;
-    return null; // let the browser use its own default rather than forcing a wrong-language voice
+
+    // 3. Indian English — better than US/UK default for Indian users
+    const indEnglish = voices.find((v) => v.lang && v.lang.toLowerCase() === "en-in");
+    if (indEnglish) return indEnglish;
+
+    // 4. Google Hindi — present on most Indian Android devices
+    const hindiGoogle = voices.find((v) =>
+      v.lang && v.lang.toLowerCase().startsWith("hi") &&
+      v.name && v.name.toLowerCase().includes("google")
+    );
+    if (hindiGoogle) return hindiGoogle;
+
+    // 5. Any Hindi voice
+    const hindi = voices.find((v) => v.lang && v.lang.toLowerCase().startsWith("hi"));
+    if (hindi) return hindi;
+
+    // 6. Any English voice as last resort
+    const english = voices.find((v) => v.lang && v.lang.toLowerCase().startsWith("en"));
+    if (english) return english;
+
+    return null;
   }
 
   let currentUtterance = null;
