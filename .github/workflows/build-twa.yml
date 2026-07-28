@@ -22,29 +22,52 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Install Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Install Bubblewrap non-interactive
-        run: npm install -g @bubblewrap/cli
-
-      - name: Create TWA project with Bubblewrap (non-interactive)
+      - name: Clone TWA Quickstart template
         run: |
-          mkdir -p twa-build
+          git clone https://github.com/GoogleChromeLabs/svgomg-twa.git twa-build
           cd twa-build
-          bubblewrap init \
-            --manifest "https://imtiyazkth.github.io/QRaksha/manifest.json" \
-            --directory . \
-            --jdkPath "$JAVA_HOME" \
-            --androidSdkPath "$ANDROID_SDK_ROOT" \
-            --skipPwaValidation \
-            --yesAll || true
+          # Update app config
+          cat > app/build.gradle << 'GRADLE'
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 34
+    defaultConfig {
+        applicationId "com.qraksha.app"
+        minSdkVersion 21
+        targetSdkVersion 34
+        versionCode 1
+        versionName "1.0.0"
+        manifestPlaceholders = [
+            hostName: "imtiyazkth.github.io",
+            defaultUrl: "https://imtiyazkth.github.io/QRaksha/",
+            launcherName: "QRaksha",
+            appThemeColors: "@style/AppTheme"
+        ]
+    }
+    signingConfigs {
+        release {
+            storeFile file("../android.keystore")
+            storePassword "qraksha123"
+            keyAlias "qraksha"
+            keyPassword "qraksha123"
+        }
+    }
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled false
+        }
+    }
+}
+
+dependencies {
+    implementation 'com.google.androidbrowserhelper:androidbrowserhelper:2.5.0'
+}
+GRADLE
 
       - name: Generate keystore
         run: |
-          cd twa-build
           keytool -genkeypair -v \
             -keystore android.keystore \
             -alias qraksha \
@@ -59,19 +82,12 @@ jobs:
       - name: Build APK
         run: |
           cd twa-build
-          bubblewrap build \
-            --skipPwaValidation \
-            --jdkPath "$JAVA_HOME" \
-            --androidSdkPath "$ANDROID_SDK_ROOT"
+          chmod +x gradlew
+          ./gradlew assembleRelease
 
-      - name: Find APK
-        run: find twa-build -name "*.apk" | head -10
-
-      - name: Upload APK artifact
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: QRaksha-APK
-          path: |
-            twa-build/**/*.apk
-            twa-build/**/*.aab
+          path: twa-build/app/build/outputs/apk/**/*.apk
           retention-days: 30
