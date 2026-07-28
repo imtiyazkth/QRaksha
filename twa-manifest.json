@@ -1,0 +1,32 @@
+{
+  "packageId": "com.qraksha.app",
+  "host": "imtiyazkth.github.io",
+  "name": "QRaksha",
+  "launcherName": "QRaksha",
+  "display": "standalone",
+  "orientation": "portrait",
+  "themeColor": "#0B0E11",
+  "navigationColor": "#0B0E11",
+  "navigationColorDark": "#0B0E11",
+  "navigationDividerColor": "#0B0E11",
+  "navigationDividerColorDark": "#0B0E11",
+  "backgroundColor": "#0B0E11",
+  "enableNotifications": false,
+  "startUrl": "/QRaksha/",
+  "iconUrl": "https://imtiyazkth.github.io/QRaksha/icons/icon-512.png",
+  "maskableIconUrl": "https://imtiyazkth.github.io/QRaksha/icons/icon-512.png",
+  "monochromeIconUrl": "https://imtiyazkth.github.io/QRaksha/icons/icon-512.png",
+  "appVersion": "1.0.0",
+  "appVersionCode": 1,
+  "signingKey": {
+    "path": "android.keystore",
+    "alias": "qraksha"
+  },
+  "splashScreenFadeOutDuration": 300,
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "isMetaQuest": false,
+  "fullScopeUrl": "https://imtiyazkth.github.io/QRaksha/",
+  "minSdkVersion": 21,
+  "shortcuts": []
+}

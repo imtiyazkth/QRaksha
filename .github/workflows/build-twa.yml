@@ -1,0 +1,79 @@
+name: Build TWA Android APK
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches: [main]
+    paths:
+      - 'twa-manifest.json'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Bubblewrap
+        run: npm install -g @bubblewrap/cli
+
+      - name: Generate keystore
+        run: |
+          keytool -genkeypair -v \
+            -keystore android.keystore \
+            -alias qraksha \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000 \
+            -storepass qraksha123 \
+            -keypass qraksha123 \
+            -dname "CN=QRaksha, OU=App, O=QRaksha, L=India, S=India, C=IN"
+
+      - name: Init TWA project
+        run: |
+          bubblewrap init \
+            --manifest https://imtiyazkth.github.io/QRaksha/manifest.json \
+            --directory twa-build
+        env:
+          BUBBLEWRAP_JDK_PATH: /opt/hostedtoolcache/Java_Temurin_jdk/17*/x64
+          BUBBLEWRAP_ANDROID_SDK_PATH: /usr/local/lib/android/sdk
+
+      - name: Build APK
+        run: |
+          cd twa-build
+          bubblewrap build \
+            --skipPwaValidation
+        env:
+          BUBBLEWRAP_JDK_PATH: /opt/hostedtoolcache/Java_Temurin_jdk/17*/x64
+          BUBBLEWRAP_ANDROID_SDK_PATH: /usr/local/lib/android/sdk
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: QRaksha-APK
+          path: twa-build/*.apk
+          retention-days: 30
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.${{ github.run_number }}
+          name: QRaksha v1.0.${{ github.run_number }}
+          files: twa-build/*.apk
+          body: |
+            QRaksha Android App (TWA)
+            - Scan QR codes directly from any app
+            - Appears in Android link chooser
+            - All features of qraksha-india.web.app
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
