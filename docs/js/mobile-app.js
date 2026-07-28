@@ -1029,6 +1029,55 @@
     });
 
     if (window.QRVDashboard) window.QRVDashboard.init(activateTab);
+    // ── Share Target handler ──────────────────────────────────────────
+    // When user shares a link/text from any app → QRaksha opens and
+    // auto-scans it. No copy-paste needed.
+    const urlParams = new URLSearchParams(window.location.search);
+    const sharedUrl   = urlParams.get("url");
+    const sharedText  = urlParams.get("text");
+    const sharedTitle = urlParams.get("title");
+    const action      = urlParams.get("action");
+
+    if (sharedUrl || sharedText) {
+      const input = sharedUrl || sharedText || "";
+      setTimeout(() => {
+        // Switch to scan/check tab
+        const tabScan = document.querySelector('[data-tab="tabHome"]');
+        if (tabScan) tabScan.click();
+        // Find the text input and fill it
+        const textInput = document.getElementById("manualInput") ||
+                          document.getElementById("urlInput") ||
+                          document.querySelector("input[type=text]") ||
+                          document.querySelector("textarea");
+        if (textInput) {
+          textInput.value = input;
+          textInput.dispatchEvent(new Event("input", { bubbles: true }));
+        }
+        // Auto-trigger scan after short delay
+        setTimeout(() => {
+          const scanBtn = document.getElementById("btnManualCheck") ||
+                          document.getElementById("btnCheck") ||
+                          document.getElementById("btnScan");
+          if (scanBtn) scanBtn.click();
+        }, 500);
+        // Clean URL so refresh doesn't re-trigger
+        window.history.replaceState({}, "", "./index.html");
+      }, 800);
+    }
+
+    // Shortcut actions
+    if (action === "scan") {
+      setTimeout(() => {
+        const scanTab = document.querySelector('[data-tab="tabScan"]');
+        if (scanTab) scanTab.click();
+      }, 500);
+    } else if (action === "check") {
+      setTimeout(() => {
+        const homeTab = document.querySelector('[data-tab="tabHome"]');
+        if (homeTab) homeTab.click();
+      }, 500);
+    }
+
     if (window.QRVLang)      window.QRVLang.init();
     if (window.QRVVoice)     window.QRVVoice.init();
     if (window.QRVStorySubmit) window.QRVStorySubmit.init();
