@@ -23,50 +23,131 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Clone TWA template
+      - name: Create TWA project from scratch
         run: |
-          git clone --depth 1 \
-            https://github.com/GoogleChromeLabs/svgomg-twa.git twa-build
+          mkdir -p twa-build/app/src/main/res/values
+          mkdir -p twa-build/app/src/main/res/xml
+          mkdir -p twa-build/app/src/main/res/drawable
+          mkdir -p twa-build/gradle/wrapper
 
-      - name: Upgrade Gradle to 8.9
+      - name: Write settings.gradle
         run: |
-          cd twa-build
-          sed -i 's|gradle-4.6-all|gradle-8.9-all|g' gradle/wrapper/gradle-wrapper.properties
-          sed -i 's|gradle-.*-all|gradle-8.9-all|g' gradle/wrapper/gradle-wrapper.properties
-          sed -i 's|distributionUrl=.*|distributionUrl=https\\://services.gradle.org/distributions/gradle-8.9-all.zip|g' gradle/wrapper/gradle-wrapper.properties
-          cat gradle/wrapper/gradle-wrapper.properties
+          cat > twa-build/settings.gradle << 'EOF'
+          pluginManagement {
+            repositories {
+              google()
+              mavenCentral()
+              gradlePluginPortal()
+            }
+          }
+          dependencyResolutionManagement {
+            repositories {
+              google()
+              mavenCentral()
+            }
+          }
+          rootProject.name = "QRaksha"
+          include ':app'
+          EOF
 
-      - name: Upgrade build.gradle for Java 17
+      - name: Write root build.gradle
         run: |
-          cd twa-build
-          # Update compileSdkVersion and targetSdkVersion
-          sed -i 's/compileSdkVersion 28/compileSdkVersion 34/g' app/build.gradle
-          sed -i 's/targetSdkVersion 28/targetSdkVersion 34/g' app/build.gradle
-          sed -i 's/compileSdkVersion 29/compileSdkVersion 34/g' app/build.gradle
-          sed -i 's/targetSdkVersion 29/targetSdkVersion 34/g' app/build.gradle
-          # Update classpath in root build.gradle
-          sed -i "s|classpath 'com.android.tools.build:gradle:.*'|classpath 'com.android.tools.build:gradle:8.1.0'|g" build.gradle
-          cat app/build.gradle
+          cat > twa-build/build.gradle << 'EOF'
+          buildscript {
+            dependencies {
+              classpath 'com.android.tools.build:gradle:8.1.0'
+            }
+          }
+          EOF
 
-      - name: Configure QRaksha TWA
+      - name: Write app build.gradle
         run: |
-          cd twa-build
-          # Package ID
-          sed -i 's|com.svgomg.twa|com.qraksha.app|g' app/build.gradle
-          # Host
-          find . -name "*.xml" -exec sed -i 's|svgomg.firebaseapp.com|imtiyazkth.github.io|g' {} \;
-          find . -name "*.xml" -exec sed -i 's|svgomg\.firebaseapp\.com|imtiyazkth.github.io|g' {} \;
-          find . -name "*.gradle" -exec sed -i 's|svgomg.firebaseapp.com|imtiyazkth.github.io|g' {} \;
-          # Start URL
-          find . -name "*.xml" -exec sed -i 's|https://svgomg.firebaseapp.com|https://imtiyazkth.github.io/QRaksha/|g' {} \;
-          # App name
-          find . -name "strings.xml" -exec sed -i 's|SVGOMG|QRaksha|g' {} \;
-          find . -name "strings.xml" -exec sed -i 's|Svgomg|QRaksha|g' {} \;
+          cat > twa-build/app/build.gradle << 'EOF'
+          plugins {
+            id 'com.android.application'
+          }
+          android {
+            namespace 'com.qraksha.app'
+            compileSdk 34
+            defaultConfig {
+              applicationId 'com.qraksha.app'
+              minSdk 21
+              targetSdk 34
+              versionCode 1
+              versionName '1.0.0'
+            }
+            buildTypes {
+              debug {
+                debuggable true
+              }
+            }
+          }
+          dependencies {
+            implementation 'com.google.androidbrowserhelper:androidbrowserhelper:2.5.0'
+          }
+          EOF
+
+      - name: Write AndroidManifest.xml
+        run: |
+          cat > twa-build/app/src/main/AndroidManifest.xml << 'EOF'
+          <?xml version="1.0" encoding="utf-8"?>
+          <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+            <application
+              android:label="QRaksha"
+              android:theme="@style/Theme.AppCompat.NoActionBar">
+              <activity
+                android:name="com.google.androidbrowserhelper.trusted.LauncherActivity"
+                android:exported="true">
+                <meta-data
+                  android:name="android.support.customtabs.trusted.DEFAULT_URL"
+                  android:value="https://imtiyazkth.github.io/QRaksha/" />
+                <intent-filter android:autoVerify="true">
+                  <action android:name="android.intent.action.VIEW"/>
+                  <category android:name="android.intent.category.DEFAULT"/>
+                  <category android:name="android.intent.category.BROWSABLE"/>
+                  <data android:scheme="https"
+                        android:host="imtiyazkth.github.io"
+                        android:pathPrefix="/QRaksha"/>
+                </intent-filter>
+                <intent-filter>
+                  <action android:name="android.intent.action.MAIN"/>
+                  <category android:name="android.intent.category.LAUNCHER"/>
+                </intent-filter>
+              </activity>
+            </application>
+          </manifest>
+          EOF
+
+      - name: Write strings.xml
+        run: |
+          cat > twa-build/app/src/main/res/values/strings.xml << 'EOF'
+          <?xml version="1.0" encoding="utf-8"?>
+          <resources>
+            <string name="app_name">QRaksha</string>
+          </resources>
+          EOF
+
+      - name: Write gradle wrapper properties
+        run: |
+          cat > twa-build/gradle/wrapper/gradle-wrapper.properties << 'EOF'
+          distributionBase=GRADLE_USER_HOME
+          distributionPath=wrapper/dists
+          distributionUrl=https\://services.gradle.org/distributions/gradle-8.9-bin.zip
+          zipStoreBase=GRADLE_USER_HOME
+          zipStorePath=wrapper/dists
+          EOF
+
+      - name: Write gradlew
+        run: |
+          cp $(which gradle || echo /usr/bin/gradle) twa-build/gradlew 2>/dev/null || \
+          curl -sL https://raw.githubusercontent.com/gradle/gradle/master/gradlew \
+            -o twa-build/gradlew
+          chmod +x twa-build/gradlew
 
       - name: Generate keystore
         run: |
           keytool -genkeypair -v \
-            -keystore android.keystore \
+            -keystore twa-build/android.keystore \
             -alias qraksha \
             -keyalg RSA \
             -keysize 2048 \
@@ -75,17 +156,15 @@ jobs:
             -keypass qraksha123 \
             -dname "CN=QRaksha,OU=App,O=QRaksha,L=India,ST=India,C=IN" \
             -noprompt
-          cp android.keystore twa-build/
 
-      - name: Build debug APK
+      - name: Build APK
         run: |
           cd twa-build
-          chmod +x gradlew
-          ./gradlew assembleDebug --stacktrace
+          ./gradlew assembleDebug --stacktrace 2>&1 | tail -50
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: QRaksha-debug-APK
+          name: QRaksha-APK
           path: twa-build/app/build/outputs/apk/debug/*.apk
           retention-days: 30
