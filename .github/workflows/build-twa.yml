@@ -28,12 +28,40 @@ jobs:
           git clone --depth 1 \
             https://github.com/GoogleChromeLabs/svgomg-twa.git twa-build
 
-      - name: Configure TWA app
+      - name: Upgrade Gradle to 8.9
         run: |
           cd twa-build
+          sed -i 's|gradle-4.6-all|gradle-8.9-all|g' gradle/wrapper/gradle-wrapper.properties
+          sed -i 's|gradle-.*-all|gradle-8.9-all|g' gradle/wrapper/gradle-wrapper.properties
+          sed -i 's|distributionUrl=.*|distributionUrl=https\\://services.gradle.org/distributions/gradle-8.9-all.zip|g' gradle/wrapper/gradle-wrapper.properties
+          cat gradle/wrapper/gradle-wrapper.properties
+
+      - name: Upgrade build.gradle for Java 17
+        run: |
+          cd twa-build
+          # Update compileSdkVersion and targetSdkVersion
+          sed -i 's/compileSdkVersion 28/compileSdkVersion 34/g' app/build.gradle
+          sed -i 's/targetSdkVersion 28/targetSdkVersion 34/g' app/build.gradle
+          sed -i 's/compileSdkVersion 29/compileSdkVersion 34/g' app/build.gradle
+          sed -i 's/targetSdkVersion 29/targetSdkVersion 34/g' app/build.gradle
+          # Update classpath in root build.gradle
+          sed -i "s|classpath 'com.android.tools.build:gradle:.*'|classpath 'com.android.tools.build:gradle:8.1.0'|g" build.gradle
+          cat app/build.gradle
+
+      - name: Configure QRaksha TWA
+        run: |
+          cd twa-build
+          # Package ID
           sed -i 's|com.svgomg.twa|com.qraksha.app|g' app/build.gradle
-          sed -i 's|svgomg.firebaseapp.com|imtiyazkth.github.io|g' app/src/main/AndroidManifest.xml
-          sed -i 's|https://svgomg.firebaseapp.com|https://imtiyazkth.github.io/QRaksha/|g' app/src/main/res/values/strings.xml || true
+          # Host
+          find . -name "*.xml" -exec sed -i 's|svgomg.firebaseapp.com|imtiyazkth.github.io|g' {} \;
+          find . -name "*.xml" -exec sed -i 's|svgomg\.firebaseapp\.com|imtiyazkth.github.io|g' {} \;
+          find . -name "*.gradle" -exec sed -i 's|svgomg.firebaseapp.com|imtiyazkth.github.io|g' {} \;
+          # Start URL
+          find . -name "*.xml" -exec sed -i 's|https://svgomg.firebaseapp.com|https://imtiyazkth.github.io/QRaksha/|g' {} \;
+          # App name
+          find . -name "strings.xml" -exec sed -i 's|SVGOMG|QRaksha|g' {} \;
+          find . -name "strings.xml" -exec sed -i 's|Svgomg|QRaksha|g' {} \;
 
       - name: Generate keystore
         run: |
@@ -53,9 +81,9 @@ jobs:
         run: |
           cd twa-build
           chmod +x gradlew
-          ./gradlew assembleDebug
+          ./gradlew assembleDebug --stacktrace
 
-      - name: Find and upload APK
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: QRaksha-debug-APK
