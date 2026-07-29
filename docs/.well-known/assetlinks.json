@@ -1,0 +1,10 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.qraksha.app",
+    "sha256_cert_fingerprints": [
+      "01:5D:2B:37:D3:00:EC:49:89:62:CF:69:BA:7E:17:8C:BB:1A:50:CF:A8:32:F0:22:60:8C:FB:AB:B8:1C:B8:D4"
+    ]
+  }
+}]
