@@ -184,6 +184,7 @@ jobs:
           curl -sL https://raw.githubusercontent.com/gradle/gradle/master/gradlew \
             -o twa-build/gradlew
           chmod +x twa-build/gradlew
+          curl -sL "https://github.com/gradle/gradle/raw/v8.9.0/gradle/wrapper/gradle-wrapper.jar" -o twa-build/gradle/wrapper/gradle-wrapper.jar
 
       - name: Generate keystore
         run: |
