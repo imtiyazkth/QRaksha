@@ -165,6 +165,14 @@ jobs:
           }
           EOF
 
+      - name: Write gradle.properties
+        run: |
+          cat > twa-build/gradle.properties << 'EOF'
+          android.useAndroidX=true
+          android.enableJetifier=true
+          org.gradle.jvmargs=-Xmx2048m
+          EOF
+
       - name: Init Gradle wrapper
         run: |
           cd twa-build
