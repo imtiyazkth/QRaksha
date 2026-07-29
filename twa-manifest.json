@@ -1,6 +1,6 @@
 {
   "packageId": "com.qraksha.app",
-  "host": "imtiyazkth.github.io",
+  "host": "qraksha-india.web.app",
   "name": "QRaksha",
   "launcherName": "QRaksha",
   "display": "standalone",
@@ -12,7 +12,7 @@
   "navigationDividerColorDark": "#0B0E11",
   "backgroundColor": "#0B0E11",
   "enableNotifications": false,
-  "startUrl": "/QRaksha/",
+  "startUrl": "https://qraksha-india.web.app/",
   "iconUrl": "https://imtiyazkth.github.io/QRaksha/icons/icon-512.png",
   "maskableIconUrl": "https://imtiyazkth.github.io/QRaksha/icons/icon-512.png",
   "monochromeIconUrl": "https://imtiyazkth.github.io/QRaksha/icons/icon-512.png",
@@ -26,7 +26,7 @@
   "enableSiteSettingsShortcut": true,
   "isChromeOSOnly": false,
   "isMetaQuest": false,
-  "fullScopeUrl": "https://imtiyazkth.github.io/QRaksha/",
+  "fullScopeUrl": "https://qraksha-india.web.app/",
   "minSdkVersion": 21,
   "shortcuts": []
 }
