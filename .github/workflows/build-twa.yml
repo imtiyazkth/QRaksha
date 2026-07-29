@@ -50,7 +50,7 @@ jobs:
           include ':app'
           EOF
 
-      - name: Write root build.gradle
+      - name: Write root build.gradle & gradle.properties
         run: |
           cat > twa-build/build.gradle << 'EOF'
           buildscript {
@@ -59,9 +59,14 @@ jobs:
               mavenCentral()
             }
             dependencies {
-              classpath 'com.android.tools.build:gradle:8.1.0'
+              classpath 'com.android.tools.build:gradle:8.2.2'
             }
           }
+          EOF
+
+          cat > twa-build/gradle.properties << 'EOF'
+          android.useAndroidX=true
+          android.enableJetifier=true
           EOF
 
       - name: Write app build.gradle
