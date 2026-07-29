@@ -1032,37 +1032,55 @@
     // ── Share Target handler ──────────────────────────────────────────
     // When user shares a link/text from any app → QRaksha opens and
     // auto-scans it. No copy-paste needed.
+    // ── TWA / Share Target link handler ────────────────────────────────
+    // When QRaksha is opened via Android link chooser OR share menu,
+    // extract the URL and auto-scan it immediately.
     const urlParams = new URLSearchParams(window.location.search);
     const sharedUrl   = urlParams.get("url");
     const sharedText  = urlParams.get("text");
     const sharedTitle = urlParams.get("title");
     const action      = urlParams.get("action");
 
-    if (sharedUrl || sharedText) {
-      const input = sharedUrl || sharedText || "";
+    // Also check if app was opened directly with a URL (TWA intent)
+    const currentUrl  = window.location.href;
+    const isTwaIntent = currentUrl !== window.location.origin + "/QRaksha/" &&
+                        currentUrl !== window.location.origin + "/" &&
+                        !currentUrl.includes("index.html") &&
+                        (currentUrl.startsWith("https://") || currentUrl.startsWith("http://"));
+
+    const incomingUrl = sharedUrl || sharedText ||
+                        (isTwaIntent ? currentUrl : null);
+
+    if (incomingUrl) {
       setTimeout(() => {
-        // Switch to scan/check tab
-        const tabScan = document.querySelector('[data-tab="tabHome"]');
-        if (tabScan) tabScan.click();
-        // Find the text input and fill it
-        const textInput = document.getElementById("manualInput") ||
-                          document.getElementById("urlInput") ||
-                          document.querySelector("input[type=text]") ||
-                          document.querySelector("textarea");
-        if (textInput) {
-          textInput.value = input;
-          textInput.dispatchEvent(new Event("input", { bubbles: true }));
-        }
-        // Auto-trigger scan after short delay
+        // Go to Home tab (manual check tab)
+        const homeTab = document.querySelector('[data-tab="tabHome"]');
+        if (homeTab) homeTab.click();
+
         setTimeout(() => {
-          const scanBtn = document.getElementById("btnManualCheck") ||
-                          document.getElementById("btnCheck") ||
-                          document.getElementById("btnScan");
-          if (scanBtn) scanBtn.click();
-        }, 500);
-        // Clean URL so refresh doesn't re-trigger
-        window.history.replaceState({}, "", "./index.html");
-      }, 800);
+          // Find manual input field
+          const textInput = document.getElementById("manualInput") ||
+                            document.getElementById("urlInput") ||
+                            document.querySelector("input[type=text], textarea");
+          if (textInput) {
+            textInput.value = incomingUrl;
+            textInput.dispatchEvent(new Event("input", { bubbles: true }));
+            textInput.focus();
+          }
+
+          // Auto-trigger scan
+          setTimeout(() => {
+            const scanBtn = document.getElementById("btnManualCheck") ||
+                            document.getElementById("btnCheck") ||
+                            document.getElementById("btnVerify") ||
+                            document.querySelector("button[type=submit]");
+            if (scanBtn) scanBtn.click();
+          }, 400);
+
+          // Clean URL bar
+          window.history.replaceState({}, "", "./index.html");
+        }, 600);
+      }, 1000);
     }
 
     // Shortcut actions
