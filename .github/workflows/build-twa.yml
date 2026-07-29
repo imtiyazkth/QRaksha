@@ -139,7 +139,6 @@ jobs:
 
       - name: Write gradlew
         run: |
-          cp $(which gradle || echo /usr/bin/gradle) twa-build/gradlew 2>/dev/null || \
           curl -sL https://raw.githubusercontent.com/gradle/gradle/master/gradlew \
             -o twa-build/gradlew
           chmod +x twa-build/gradlew
@@ -160,11 +159,17 @@ jobs:
       - name: Build APK
         run: |
           cd twa-build
-          ./gradlew assembleDebug --stacktrace 2>&1 | tail -50
+          ./gradlew assembleDebug
+          echo "=== Finding APK files ==="
+          find . -name "*.apk" 2>/dev/null
+          find . -name "*.aab" 2>/dev/null
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: QRaksha-APK
-          path: twa-build/app/build/outputs/apk/debug/*.apk
+          path: |
+            twa-build/**/*.apk
+            twa-build/**/*.aab
+          if-no-files-found: warn
           retention-days: 30
