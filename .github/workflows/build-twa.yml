@@ -23,7 +23,7 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Create TWA project from scratch
+      - name: Create TWA project structure
         run: |
           mkdir -p twa-build/app/src/main/res/values
           mkdir -p twa-build/app/src/main/res/xml
@@ -54,6 +54,10 @@ jobs:
         run: |
           cat > twa-build/build.gradle << 'EOF'
           buildscript {
+            repositories {
+              google()
+              mavenCentral()
+            }
             dependencies {
               classpath 'com.android.tools.build:gradle:8.1.0'
             }
@@ -127,7 +131,7 @@ jobs:
           </resources>
           EOF
 
-      - name: Write gradle wrapper properties
+      - name: Setup Gradle Wrapper and Executables
         run: |
           cat > twa-build/gradle/wrapper/gradle-wrapper.properties << 'EOF'
           distributionBase=GRADLE_USER_HOME
@@ -137,10 +141,12 @@ jobs:
           zipStorePath=wrapper/dists
           EOF
 
-      - name: Write gradlew
-        run: |
-          curl -sL https://raw.githubusercontent.com/gradle/gradle/master/gradlew \
+          curl -sL https://raw.githubusercontent.com/gradle/gradle/v8.9.0/gradle/wrapper/gradle-wrapper.jar \
+            -o twa-build/gradle/wrapper/gradle-wrapper.jar
+
+          curl -sL https://raw.githubusercontent.com/gradle/gradle/v8.9.0/gradlew \
             -o twa-build/gradlew
+
           chmod +x twa-build/gradlew
 
       - name: Generate keystore
@@ -162,14 +168,11 @@ jobs:
           ./gradlew assembleDebug
           echo "=== Finding APK files ==="
           find . -name "*.apk" 2>/dev/null
-          find . -name "*.aab" 2>/dev/null
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: QRaksha-APK
-          path: |
-            twa-build/**/*.apk
-            twa-build/**/*.aab
-          if-no-files-found: warn
+          path: twa-build/**/*.apk
+          if-no-files-found: error
           retention-days: 30
