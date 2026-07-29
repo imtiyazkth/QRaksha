@@ -1,9 +1,10 @@
-name: Build TWA Android APK
+name: QRaksha TWA Android Build
 
 on:
-  workflow_dispatch: {}
+  workflow_dispatch:
   push:
-    branches: [main]
+    branches:
+      - main
     paths:
       - 'twa-manifest.json'
 
@@ -22,49 +23,17 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Clone TWA Quickstart template
+      - name: Clone TWA template
         run: |
-          git clone https://github.com/GoogleChromeLabs/svgomg-twa.git twa-build
+          git clone --depth 1 \
+            https://github.com/GoogleChromeLabs/svgomg-twa.git twa-build
+
+      - name: Configure TWA app
+        run: |
           cd twa-build
-          # Update app config
-          cat > app/build.gradle << 'GRADLE'
-apply plugin: 'com.android.application'
-
-android {
-    compileSdkVersion 34
-    defaultConfig {
-        applicationId "com.qraksha.app"
-        minSdkVersion 21
-        targetSdkVersion 34
-        versionCode 1
-        versionName "1.0.0"
-        manifestPlaceholders = [
-            hostName: "imtiyazkth.github.io",
-            defaultUrl: "https://imtiyazkth.github.io/QRaksha/",
-            launcherName: "QRaksha",
-            appThemeColors: "@style/AppTheme"
-        ]
-    }
-    signingConfigs {
-        release {
-            storeFile file("../android.keystore")
-            storePassword "qraksha123"
-            keyAlias "qraksha"
-            keyPassword "qraksha123"
-        }
-    }
-    buildTypes {
-        release {
-            signingConfig signingConfigs.release
-            minifyEnabled false
-        }
-    }
-}
-
-dependencies {
-    implementation 'com.google.androidbrowserhelper:androidbrowserhelper:2.5.0'
-}
-GRADLE
+          sed -i 's|com.svgomg.twa|com.qraksha.app|g' app/build.gradle
+          sed -i 's|svgomg.firebaseapp.com|imtiyazkth.github.io|g' app/src/main/AndroidManifest.xml
+          sed -i 's|https://svgomg.firebaseapp.com|https://imtiyazkth.github.io/QRaksha/|g' app/src/main/res/values/strings.xml || true
 
       - name: Generate keystore
         run: |
@@ -78,17 +47,17 @@ GRADLE
             -keypass qraksha123 \
             -dname "CN=QRaksha,OU=App,O=QRaksha,L=India,ST=India,C=IN" \
             -noprompt
+          cp android.keystore twa-build/
 
-      - name: Build APK
+      - name: Build debug APK
         run: |
           cd twa-build
           chmod +x gradlew
-          ./gradlew assembleRelease
+          ./gradlew assembleDebug
 
-      - name: Upload APK
+      - name: Find and upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: QRaksha-APK
-          path: twa-build/app/build/outputs/apk/**/*.apk
+          name: QRaksha-debug-APK
+          path: twa-build/app/build/outputs/apk/debug/*.apk
           retention-days: 30
-
