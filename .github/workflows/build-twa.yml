@@ -128,7 +128,17 @@ jobs:
         run: |
           cat > twa-build/build.gradle << 'EOF'
           buildscript {
+            repositories {
+              google()
+              mavenCentral()
+            }
             dependencies { classpath 'com.android.tools.build:gradle:8.1.0' }
+          }
+          allprojects {
+            repositories {
+              google()
+              mavenCentral()
+            }
           }
           EOF
           cat > twa-build/app/build.gradle << 'EOF'
