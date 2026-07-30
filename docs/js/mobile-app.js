@@ -1053,15 +1053,13 @@
 
     if (incomingUrl) {
       setTimeout(() => {
-        // Go to Home tab (manual check tab)
-        const homeTab = document.querySelector('[data-tab="tabHome"]');
-        if (homeTab) homeTab.click();
+        // Go to Message check tab (tabMessage has the text input)
+        const msgTab = document.querySelector('[data-tab="tabMessage"]');
+        if (msgTab) msgTab.click();
 
         setTimeout(() => {
-          // Find manual input field
-          const textInput = document.getElementById("manualInput") ||
-                            document.getElementById("urlInput") ||
-                            document.querySelector("input[type=text], textarea");
+          // Fill the message/URL input
+          const textInput = document.getElementById("msgTextInput");
           if (textInput) {
             textInput.value = incomingUrl;
             textInput.dispatchEvent(new Event("input", { bubbles: true }));
@@ -1070,17 +1068,14 @@
 
           // Auto-trigger scan
           setTimeout(() => {
-            const scanBtn = document.getElementById("btnManualCheck") ||
-                            document.getElementById("btnCheck") ||
-                            document.getElementById("btnVerify") ||
-                            document.querySelector("button[type=submit]");
+            const scanBtn = document.getElementById("btnCheckMessage");
             if (scanBtn) scanBtn.click();
-          }, 400);
+          }, 500);
 
           // Clean URL bar
-          window.history.replaceState({}, "", "./index.html");
-        }, 600);
-      }, 1000);
+          window.history.replaceState({}, "", "./");
+        }, 700);
+      }, 1200);
     }
 
     // Shortcut actions
