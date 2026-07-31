@@ -1051,6 +1051,12 @@
     const incomingUrl = sharedUrl || sharedText ||
                         (isTwaIntent ? currentUrl : null);
 
+    // Debug — log what we received (remove after testing)
+    console.log("QRaksha TWA debug:", {
+      sharedUrl, sharedText, isTwaIntent, currentUrl,
+      incomingUrl, search: window.location.search
+    });
+
     if (incomingUrl) {
       setTimeout(() => {
         // Go to Home tab where category cards are
