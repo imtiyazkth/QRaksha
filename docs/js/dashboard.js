@@ -237,5 +237,29 @@ window.QRVDashboard = (function () {
     });
   }
 
-  return { init };
+  function openUrlPanel(url) {
+    // Open URL category panel and auto-fill with incoming URL
+    const urlCat = { id: "url" };
+    if (typeof openCategoryInputPanel === "function") {
+      openCategoryInputPanel(urlCat, () => {});
+    }
+    let attempts = 0;
+    const tryFill = setInterval(() => {
+      attempts++;
+      const box = document.getElementById("categoryInputBox");
+      if (box) {
+        clearInterval(tryFill);
+        box.value = url;
+        box.dispatchEvent(new Event("input", { bubbles: true }));
+        box.focus();
+        setTimeout(() => {
+          const btn = document.getElementById("btnCategoryCheckNow");
+          if (btn) btn.click();
+        }, 500);
+      }
+      if (attempts > 20) clearInterval(tryFill);
+    }, 100);
+  }
+
+  return { init, openUrlPanel };
 })();
