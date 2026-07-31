@@ -1053,12 +1053,16 @@
 
     if (incomingUrl) {
       setTimeout(() => {
-        // Go to Message check tab (tabMessage has the text input)
-        const msgTab = document.querySelector('[data-tab="tabMessage"]');
-        if (msgTab) msgTab.click();
+        // Use activateTab to switch to message check tab
+        if (typeof activateTab === "function") {
+          activateTab("tabMessage");
+        } else {
+          const goBtn = document.getElementById("btnGoMessageCheck");
+          if (goBtn) goBtn.click();
+        }
 
         setTimeout(() => {
-          // Fill the message/URL input
+          // Fill the message/URL input with incoming URL
           const textInput = document.getElementById("msgTextInput");
           if (textInput) {
             textInput.value = incomingUrl;
@@ -1070,11 +1074,11 @@
           setTimeout(() => {
             const scanBtn = document.getElementById("btnCheckMessage");
             if (scanBtn) scanBtn.click();
-          }, 500);
+          }, 600);
 
-          // Clean URL bar
+          // Clean URL bar so refresh does not re-trigger
           window.history.replaceState({}, "", "./");
-        }, 700);
+        }, 800);
       }, 1200);
     }
 
