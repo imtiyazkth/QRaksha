@@ -39,31 +39,26 @@ jobs:
           cat > twa-build/app/src/main/java/com/qraksha/app/LinkScanActivity.java << 'EOF'
           package com.qraksha.app;
           import android.app.Activity;
-          import android.content.ComponentName;
           import android.content.Intent;
           import android.net.Uri;
           import android.os.Bundle;
-          import androidx.browser.customtabs.CustomTabsIntent;
           public class LinkScanActivity extends Activity {
             @Override
             protected void onCreate(Bundle savedInstanceState) {
               super.onCreate(savedInstanceState);
-              String incomingUrl = "";
+              Uri incomingUri = null;
               Intent intent = getIntent();
-              if (intent != null && intent.getData() != null) {
-                incomingUrl = intent.getData().toString();
+              if (intent != null) incomingUri = intent.getData();
+              String scanUrl;
+              if (incomingUri != null) {
+                scanUrl = "https://qraksha-india.web.app/?url=" +
+                  Uri.encode(incomingUri.toString());
+              } else {
+                scanUrl = "https://qraksha-india.web.app/";
               }
-              // Open QRaksha scanner with the URL as parameter
-              // Using CustomTabsIntent so it opens inside QRaksha TWA
-              String scanUrl = "https://qraksha-india.web.app/?url=" + Uri.encode(incomingUrl);
-              try {
-                CustomTabsIntent customTabsIntent = new CustomTabsIntent.Builder().build();
-                customTabsIntent.intent.setPackage("com.android.chrome");
-                customTabsIntent.launchUrl(this, Uri.parse(scanUrl));
-              } catch (Exception e) {
-                Intent fallback = new Intent(Intent.ACTION_VIEW, Uri.parse(scanUrl));
-                startActivity(fallback);
-              }
+              Intent open = new Intent(Intent.ACTION_VIEW, Uri.parse(scanUrl));
+              open.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+              startActivity(open);
               finish();
             }
           }
@@ -172,7 +167,6 @@ jobs:
           dependencies {
             implementation 'com.google.androidbrowserhelper:androidbrowserhelper:2.5.0'
             implementation 'androidx.appcompat:appcompat:1.6.1'
-            implementation 'androidx.browser:browser:1.7.0'
           }
           EOF
 
