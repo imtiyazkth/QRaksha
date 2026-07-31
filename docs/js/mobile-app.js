@@ -1053,30 +1053,41 @@
 
     if (incomingUrl) {
       setTimeout(() => {
-        // Use activateTab to switch to message check tab
-        if (typeof activateTab === "function") {
-          activateTab("tabMessage");
-        } else {
-          const goBtn = document.getElementById("btnGoMessageCheck");
-          if (goBtn) goBtn.click();
-        }
+        // Go to Home tab where category cards are
+        if (typeof activateTab === "function") activateTab("tabHome");
 
         setTimeout(() => {
-          // Fill the message/URL input with incoming URL
-          const textInput = document.getElementById("msgTextInput");
-          if (textInput) {
-            textInput.value = incomingUrl;
-            textInput.dispatchEvent(new Event("input", { bubbles: true }));
-            textInput.focus();
+          // Open URL category panel directly
+          if (window.QRVDashboard && typeof window.QRVDashboard.openUrlPanel === "function") {
+            window.QRVDashboard.openUrlPanel(incomingUrl);
+          } else {
+            // Fallback: find and click Website URL category card
+            const cards = document.querySelectorAll("[data-cat-id]");
+            let urlCard = null;
+            cards.forEach(c => {
+              if (c.dataset.catId === "url" || c.dataset.catId === "WEBSITE_URL") urlCard = c;
+            });
+            if (!urlCard) {
+              // Try finding by text content
+              document.querySelectorAll(".qrv-cat-btn, button").forEach(btn => {
+                if (btn.textContent.includes("URL") || btn.textContent.includes("Website")) urlCard = btn;
+              });
+            }
+            if (urlCard) {
+              urlCard.click();
+              setTimeout(() => {
+                const box = document.getElementById("categoryInputBox");
+                if (box) {
+                  box.value = incomingUrl;
+                  box.dispatchEvent(new Event("input", { bubbles: true }));
+                  setTimeout(() => {
+                    const btn = document.getElementById("btnCategoryCheckNow");
+                    if (btn) btn.click();
+                  }, 400);
+                }
+              }, 500);
+            }
           }
-
-          // Auto-trigger scan
-          setTimeout(() => {
-            const scanBtn = document.getElementById("btnCheckMessage");
-            if (scanBtn) scanBtn.click();
-          }, 600);
-
-          // Clean URL bar so refresh does not re-trigger
           window.history.replaceState({}, "", "./");
         }, 800);
       }, 1200);
