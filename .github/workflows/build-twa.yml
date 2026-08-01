@@ -70,8 +70,10 @@ jobs:
               } else {
                 scanUrl = "https://qraksha-india.web.app/";
               }
-              Intent open = new Intent(Intent.ACTION_VIEW, Uri.parse(scanUrl));
-              open.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+              // Open inside QRaksha TWA (LauncherActivity) not Chrome
+              Intent open = new Intent(this, com.google.androidbrowserhelper.trusted.LauncherActivity.class);
+              open.setData(Uri.parse(scanUrl));
+              open.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
               startActivity(open);
               finish();
             }
