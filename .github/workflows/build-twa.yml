@@ -34,6 +34,20 @@ jobs:
           mkdir -p twa-build/app/src/main/res/values
           mkdir -p twa-build/gradle/wrapper
 
+      - name: Copy QRaksha logo to APK resources
+        run: |
+          mkdir -p twa-build/app/src/main/res/mipmap-hdpi
+          mkdir -p twa-build/app/src/main/res/mipmap-mdpi
+          mkdir -p twa-build/app/src/main/res/mipmap-xhdpi
+          mkdir -p twa-build/app/src/main/res/mipmap-xxhdpi
+          mkdir -p twa-build/app/src/main/res/mipmap-xxxhdpi
+          # Copy logo from repo (already committed as icon-512.png)
+          cp docs/icons/icon-512.png twa-build/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
+          cp docs/icons/icon-512.png twa-build/app/src/main/res/mipmap-xxhdpi/ic_launcher.png
+          cp docs/icons/icon-192.png twa-build/app/src/main/res/mipmap-xhdpi/ic_launcher.png
+          cp docs/icons/icon-192.png twa-build/app/src/main/res/mipmap-hdpi/ic_launcher.png
+          cp docs/icons/icon-192.png twa-build/app/src/main/res/mipmap-mdpi/ic_launcher.png
+
       - name: Write LinkScanActivity.java
         run: |
           cat > twa-build/app/src/main/java/com/qraksha/app/LinkScanActivity.java << 'EOF'
@@ -73,7 +87,7 @@ jobs:
             <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
             <application
               android:label="QRaksha"
-              android:icon="@android:drawable/sym_def_app_icon"
+              android:icon="@mipmap/ic_launcher"
               android:theme="@style/Theme.AppCompat.Light.NoActionBar">
               <activity
                 android:name="com.google.androidbrowserhelper.trusted.LauncherActivity"
